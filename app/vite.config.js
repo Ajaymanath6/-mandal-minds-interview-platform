@@ -8,10 +8,15 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
+    minify: 'terser', // Fast minification
+    sourcemap: false, // Disable sourcemaps for speed
     rollupOptions: {
       output: {
         manualChunks: undefined,
       },
     },
+  },
+  server: {
+    host: true
   },
 })
