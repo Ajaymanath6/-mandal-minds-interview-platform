@@ -1,0 +1,48 @@
+# GitLab CI/CD configuration for Vite React app deployment to GitLab Pages
+
+# Use the official Node.js image
+image: node:18-alpine
+
+# Define stages
+stages:
+  - build
+  - deploy
+
+# Cache node_modules to speed up builds
+cache:
+  paths:
+    - app/node_modules/
+
+# Build stage
+build:
+  stage: build
+  before_script:
+    - cd app
+    - npm ci --cache .npm --prefer-offline
+  script:
+    - npm run build
+    - ls -la dist/
+  artifacts:
+    paths:
+      - app/dist/
+    expire_in: 1 hour
+  only:
+    - main
+    - master
+
+# Deploy to GitLab Pages
+pages:
+  stage: deploy
+  dependencies:
+    - build
+  script:
+    # Copy build files to public directory for GitLab Pages
+    - mkdir public
+    - cp -r app/dist/* public/
+    - ls -la public/
+  artifacts:
+    paths:
+      - public
+  only:
+    - main
+    - master
