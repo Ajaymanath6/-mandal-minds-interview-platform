@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { RiNotification3Line, RiUser3Fill, RiMenuLine, RiFileTextLine, RiUploadLine, RiFileCopyLine, RiFileList3Line, RiBookmarkLine, RiRobotLine, RiPlayFill, RiAddLine, RiCloseLine, RiSendPlaneLine, RiMicLine, RiLogoutBoxLine, RiArrowDownSLine, RiQuestionLine, RiChatSmile3Line, RiLightbulbLine, RiSparklingFill, RiBarChartBoxLine, RiRefreshLine, RiArrowLeftLine, RiTrophyLine, RiGraduationCapLine, RiStarLine } from '@remixicon/react'
+import logoSvg from '../assets/logo.svg'
 import 'material-symbols/outlined.css'
 import voiceResponsesData from '../data/voiceResponses.json'
 
@@ -330,7 +331,7 @@ export default function Resume() {
         <div className="flex items-center justify-between sm:justify-end">
           {/* Mobile Logo */}
           <div className="flex items-center sm:hidden">
-            <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Mandal Minds" className="w-8 h-6" />
+            <img src={logoSvg} alt="Mandal Minds" className="w-8 h-6" />
             <span className="ml-2 font-semibold text-gray-900 text-sm">Mandal Minds</span>
           </div>
           
@@ -387,7 +388,7 @@ export default function Resume() {
               <div className="flex items-center justify-between">
                 {firstSidebarOpen && (
                   <div className="flex items-center space-x-2">
-                    <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Mandal Minds Logo" className="w-8 h-6" />
+                    <img src={logoSvg} alt="Mandal Minds Logo" className="w-8 h-6" />
                     <span className="font-semibold text-gray-900">Mandal Minds</span>
                   </div>
                 )}
@@ -403,7 +404,7 @@ export default function Resume() {
                         <span className="material-symbols-outlined text-gray-600" style={{ fontSize: 20 }}>dock_to_right</span>
                       </div>
                     ) : (
-                      <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Mandal Minds Logo" className="w-8 h-6" />
+                      <img src={logoSvg} alt="Mandal Minds Logo" className="w-8 h-6" />
                     )}
                   </div>
                 )}
@@ -604,7 +605,7 @@ export default function Resume() {
               <div className="px-4 pb-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Logo" className="w-10 h-7" style={{ filter: 'brightness(0)' }} />
+                    <img src={logoSvg} alt="Logo" className="w-10 h-7" style={{ filter: 'brightness(0)' }} />
                     <div>
                       <h2 className="text-lg font-semibold text-gray-900">AI Interview - Total 10 Questions</h2>
                       <p className="text-sm text-gray-600">Full-Stack Developer Position</p>
@@ -822,7 +823,7 @@ export default function Resume() {
               <div className="text-left max-w-2xl w-full">
                 {/* Logo at the top */}
                 <div className="flex justify-start mb-8">
-                  <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Mandal Minds Logo" className="w-16 h-12" />
+                  <img src={logoSvg} alt="Mandal Minds Logo" className="w-16 h-12" />
                 </div>
                 
                 <div className="mb-6">
@@ -864,7 +865,7 @@ export default function Resume() {
               {/* JD Analysis Header */}
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6">
                             <div className="flex items-center space-x-3 mb-4">
-              <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Mandal Minds Logo" className="w-10 h-7" />
+              <img src={logoSvg} alt="Mandal Minds Logo" className="w-10 h-7" />
               <div>
                 <h2 className="text-xl font-semibold text-gray-900">AI Analysis Complete</h2>
                 <p className="text-sm text-gray-600">Job description analyzed successfully</p>

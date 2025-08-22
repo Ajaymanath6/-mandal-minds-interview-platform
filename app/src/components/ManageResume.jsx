@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { RiNotification3Line, RiUser3Fill, RiMenuLine, RiFileTextLine, RiUploadLine, RiFileCopyLine, RiFileList3Line, RiBookmarkLine, RiAddLine, RiCloseLine, RiLogoutBoxLine, RiArrowDownSLine, RiMoreLine, RiBarChartBoxLine, RiEyeLine, RiDeleteBinLine, RiCheckboxMultipleLine, RiArrowLeftLine, RiStarLine, RiRobotLine, RiDownloadLine, RiEditLine, RiCheckLine } from '@remixicon/react'
+import logoSvg from '../assets/logo.svg'
 import 'material-symbols/outlined.css'
 
 export default function ManageResume() {

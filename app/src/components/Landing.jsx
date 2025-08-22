@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import flogoSvg from '../assets/flogo.svg'
 
 export default function Landing() {
   const [isModalOpen, setIsModalOpen] = useState(true)
@@ -30,7 +31,7 @@ export default function Landing() {
       {isLoading && (
         <div className="fixed inset-0 bg-gray-50 flex items-center justify-center z-50">
           <div className="text-center">
-            <img src={`${import.meta.env.BASE_URL}flogo.svg`} alt="Mandal Minds Logo" className="w-48 h-16 mx-auto mb-4 animate-pulse" />
+            <img src={flogoSvg} alt="Mandal Minds Logo" className="w-48 h-16 mx-auto mb-4 animate-pulse" />
             <p className="text-gray-600 text-lg">Signing you in...</p>
           </div>
         </div>
@@ -39,7 +40,7 @@ export default function Landing() {
       {/* Logo Above Modal */}
       {!isLoading && (
         <div className="mb-8">
-          <img src={`${import.meta.env.BASE_URL}flogo.svg`} alt="Mandal Minds Logo" className="w-36 h-12 mx-auto" />
+          <img src={flogoSvg} alt="Mandal Minds Logo" className="w-36 h-12 mx-auto" />
         </div>
       )}
 
