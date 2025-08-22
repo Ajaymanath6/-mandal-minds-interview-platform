@@ -29,27 +29,27 @@ export default function Resume() {
   const [questionCount, setQuestionCount] = useState(0)
   const [showPerformanceReview, setShowPerformanceReview] = useState(false)
 
-  // Custom User Chat Card Component with Layered Effect
+  // Custom User Chat Card Component with Layered Effect - Responsive
   const UserChatCard = ({ content }) => {
     return (
-      <div className="relative mx-auto w-fit max-w-2xl">
+      <div className="relative mx-auto w-fit max-w-xs sm:max-w-md lg:max-w-2xl">
         {/* Bottom Layer (deepest) */}
-        <div className="absolute top-2 left-2 bg-gray-300 rounded-3xl border border-gray-400 shadow-sm p-6 min-w-64 max-w-2xl opacity-40">
-          <p className="text-gray-700 text-base leading-relaxed whitespace-pre-wrap invisible">
+        <div className="absolute top-2 left-2 bg-gray-300 rounded-3xl border border-gray-400 shadow-sm p-3 sm:p-4 lg:p-6 min-w-32 sm:min-w-48 lg:min-w-64 max-w-xs sm:max-w-md lg:max-w-2xl opacity-40">
+          <p className="text-gray-700 text-sm sm:text-base leading-relaxed whitespace-pre-wrap invisible">
             {content}
           </p>
         </div>
         
         {/* Middle Layer */}
-        <div className="absolute top-1 left-1 bg-gray-200 rounded-3xl border border-gray-300 shadow-sm p-6 min-w-64 max-w-2xl opacity-60">
-          <p className="text-gray-700 text-base leading-relaxed whitespace-pre-wrap invisible">
+        <div className="absolute top-1 left-1 bg-gray-200 rounded-3xl border border-gray-300 shadow-sm p-3 sm:p-4 lg:p-6 min-w-32 sm:min-w-48 lg:min-w-64 max-w-xs sm:max-w-md lg:max-w-2xl opacity-60">
+          <p className="text-gray-700 text-sm sm:text-base leading-relaxed whitespace-pre-wrap invisible">
             {content}
           </p>
         </div>
         
         {/* Top Layer (main visible content) */}
-        <div className="relative bg-white rounded-3xl border border-gray-200 shadow-md p-6 w-fit min-w-64 max-w-2xl">
-          <p className="text-gray-900 text-base leading-relaxed whitespace-pre-wrap">
+        <div className="relative bg-white rounded-3xl border border-gray-200 shadow-md p-3 sm:p-4 lg:p-6 w-fit min-w-32 sm:min-w-48 lg:min-w-64 max-w-xs sm:max-w-md lg:max-w-2xl">
+          <p className="text-gray-900 text-sm sm:text-base leading-relaxed whitespace-pre-wrap">
             {content}
           </p>
         </div>
@@ -325,56 +325,62 @@ export default function Resume() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="px-6 py-4">
-        <div className="flex items-center justify-end">
+      {/* Header - Mobile Optimized */}
+      <header className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 bg-white sm:bg-transparent sm:border-none">
+        <div className="flex items-center justify-between sm:justify-end">
+          {/* Mobile Logo */}
+          <div className="flex items-center sm:hidden">
+            <img src="/logo.svg" alt="Mandal Minds" className="w-8 h-6" />
+            <span className="ml-2 font-semibold text-gray-900 text-sm">Mandal Minds</span>
+          </div>
+          
           {/* Right side - User profile and notifications */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             {/* Notifications */}
-            <button className="relative w-10 h-10 bg-white border border-gray-200 rounded-lg flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors">
-              <RiNotification3Line size={20} />
+            <button className="relative w-8 h-8 sm:w-10 sm:h-10 bg-white border border-gray-200 rounded-lg flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors">
+              <RiNotification3Line size={16} className="sm:w-5 sm:h-5" />
               {/* Notification badge */}
-              <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 h-3 w-3 sm:h-4 sm:w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center text-[10px] sm:text-xs">
                 3
               </span>
             </button>
 
-                    {/* User Profile */}
-        <div className="relative" ref={dropdownRef}>
-          <button 
-            onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
-            className="w-10 h-10 bg-white border border-gray-200 rounded-lg flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors"
-          >
-            <RiUser3Fill size={20} />
-          </button>
-          
-          {/* Dropdown Menu */}
-          {isUserDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-              <div className="px-4 py-2 border-b border-gray-100">
-                <p className="text-sm font-medium text-gray-900">John Doe</p>
-                <p className="text-xs text-gray-500">john.doe@example.com</p>
-              </div>
+            {/* User Profile */}
+            <div className="relative" ref={dropdownRef}>
               <button 
-                onClick={() => {
-                  setIsUserDropdownOpen(false)
-                  navigate('/')
-                }}
-                className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-2"
+                onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
+                className="w-8 h-8 sm:w-10 sm:h-10 bg-white border border-gray-200 rounded-lg flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors"
               >
-                <RiLogoutBoxLine size={16} />
-                <span>Logout</span>
+                <RiUser3Fill size={16} className="sm:w-5 sm:h-5" />
               </button>
+              
+              {/* Dropdown Menu */}
+              {isUserDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-40 sm:w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                  <div className="px-3 sm:px-4 py-2 border-b border-gray-100">
+                    <p className="text-xs sm:text-sm font-medium text-gray-900">John Doe</p>
+                    <p className="text-[10px] sm:text-xs text-gray-500">john.doe@example.com</p>
+                  </div>
+                  <button 
+                    onClick={() => {
+                      setIsUserDropdownOpen(false)
+                      navigate('/')
+                    }}
+                    className="w-full px-3 sm:px-4 py-2 text-left text-xs sm:text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-2"
+                  >
+                    <RiLogoutBoxLine size={14} className="sm:w-4 sm:h-4" />
+                    <span>Logout</span>
+                  </button>
+                </div>
+              )}
             </div>
-          )}
-        </div>
           </div>
         </div>
       </header>
 
-      <div className="flex gap-4" style={{ height: 'calc(100vh - 80px - 32px)' }}>
-        {/* First Sidebar - Collapsed */}
-        <div className={`${firstSidebarOpen ? 'w-64' : 'w-16'} bg-white rounded-lg shadow-sm border border-gray-200 transition-all duration-300 flex-shrink-0 mb-8`}>
+      <div className="flex flex-col lg:flex-row gap-2 sm:gap-4 min-h-0 p-2 sm:p-4 lg:p-0" style={{ height: 'calc(100vh - 60px)' }}>
+        {/* First Sidebar - Always Visible */}
+        <div className={`${firstSidebarOpen ? 'w-64' : 'w-16'} bg-white rounded-lg shadow-sm border border-gray-200 transition-all duration-300 flex-shrink-0 mb-4 lg:mb-8`}>
           <div className="flex flex-col h-full">
             {/* Logo and Toggle */}
             <div className="p-4 border-b border-gray-200">
@@ -443,8 +449,8 @@ export default function Resume() {
           </div>
         </div>
 
-        {/* Second Sidebar - Expanded */}
-        <div className={`${secondSidebarOpen ? 'w-80' : 'w-0'} bg-white rounded-lg shadow-sm border border-gray-200 transition-all duration-300 overflow-hidden flex-shrink-0 mb-8`}>
+        {/* Second Sidebar - Job Description Input */}
+        <div className={`${secondSidebarOpen ? 'w-80' : 'w-12 md:w-0'} bg-white rounded-lg shadow-sm border border-gray-200 transition-all duration-300 ${secondSidebarOpen ? '' : 'md:hidden'} flex-shrink-0 mb-4 lg:mb-8`}>
           <div className="w-80 flex flex-col h-full">
             {/* Header with collapse button */}
             <div className="p-4 border-b border-gray-200">
@@ -524,8 +530,8 @@ export default function Resume() {
                 {/* Tab Content */}
                 <div className="flex-1 p-4">
                   {activeTab === 'paste-jd' && (
-                    <div className="space-y-4">
-                      <div>
+                    <div className="space-y-4 h-full flex flex-col">
+                      <div className="flex-1">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           Job Description
                         </label>
@@ -533,16 +539,18 @@ export default function Resume() {
                           placeholder="Paste the job description here..."
                           value={jdContent}
                           onChange={(e) => setJdContent(e.target.value)}
-                          className="w-full h-64 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent resize-none"
+                          className="w-full h-40 md:h-48 lg:h-56 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent resize-none"
                         />
                       </div>
-                      <button 
-                        onClick={() => setIsAnalyzed(true)}
-                        disabled={!jdContent.trim()}
-                        className="w-full bg-gray-900 hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-md transition-colors"
-                      >
-                        Analyze JD
-                      </button>
+                      <div className="mt-4">
+                        <button 
+                          onClick={() => setIsAnalyzed(true)}
+                          disabled={!jdContent.trim()}
+                          className="w-full bg-gray-900 hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-md transition-colors"
+                        >
+                          Analyze JD
+                        </button>
+                      </div>
                     </div>
                   )}
 
@@ -577,20 +585,21 @@ export default function Resume() {
           </div>
         </div>
 
-        {/* Collapse button for second sidebar when closed */}
+        {/* Collapse button for second sidebar when closed - Always visible on laptop */}
         {!secondSidebarOpen && (
           <button
             onClick={() => setSecondSidebarOpen(true)}
-            className="w-8 h-8 bg-white rounded-lg shadow-sm border border-gray-200 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-gray-50 mb-8"
+            className="w-12 md:w-8 h-8 bg-white rounded-lg shadow-sm border border-gray-200 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-gray-50 mb-8 flex-shrink-0"
+            title="Show Resume Builder"
           >
             <span className="material-symbols-outlined" style={{ fontSize: 20 }}>dock_to_right</span>
           </button>
         )}
 
-        {/* Main Content */}
-        <div className="flex-1 bg-gray-50 px-6 pb-6">
+        {/* Main Content - Responsive */}
+        <div className="flex-1 bg-gray-50 px-4 lg:px-6 pb-4 lg:pb-6 overflow-y-auto">
           {isInterviewStarted ? (
-            <div className="h-full flex flex-col">
+            <div className="h-full flex flex-col min-h-0">
               {/* Interview Header */}
               <div className="px-4 pb-4">
                 <div className="flex items-center justify-between">
@@ -611,8 +620,8 @@ export default function Resume() {
               </div>
 
               {/* Chat Messages */}
-              <div ref={chatContainerRef} className="flex-1 p-4 mb-4 overflow-y-auto">
-                <div className="space-y-4">
+              <div ref={chatContainerRef} className="flex-1 p-2 lg:p-4 mb-4 overflow-y-auto min-h-0">
+                <div className="space-y-4 max-w-full">
                   {messages.map((message) => (
                     <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
                       {message.type === 'user' ? (
@@ -677,8 +686,8 @@ export default function Resume() {
 
 
               {/* Chat Input */}
-              <div className="px-4 pb-4">
-                <div className="relative bg-white rounded-full border border-gray-300 transition-all duration-300">
+              <div className="px-2 lg:px-4 pb-4 flex-shrink-0">
+                <div className="relative bg-white rounded-full border border-gray-300 transition-all duration-300 max-w-full">
                   {/* Voice Animation inside input */}
                   {isVoiceActive && (
                     <div className="absolute left-6 top-1/2 transform -translate-y-1/2 flex space-x-1">
@@ -851,9 +860,9 @@ export default function Resume() {
               </div>
             </div>
           ) : (
-            <div className="max-w-4xl mx-auto space-y-6">
+            <div className="max-w-4xl mx-auto space-y-4 lg:space-y-6 w-full">
               {/* JD Analysis Header */}
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6">
                             <div className="flex items-center space-x-3 mb-4">
               <img src="/logo.svg" alt="Mandal Minds Logo" className="w-10 h-7" />
               <div>
@@ -901,7 +910,7 @@ export default function Resume() {
               </div>
 
               {/* Skills Section */}
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Your Skills</h3>
                 
                 {/* Skills Badges */}
@@ -951,8 +960,8 @@ export default function Resume() {
                   </button>
                 </div>
 
-                {/* Start Interview Button */}
-                <div className="w-full">
+                {/* Start Interview Button - Always Visible */}
+                <div className="w-full sticky bottom-0 bg-white p-4 border-t border-gray-200 -mx-4 lg:-mx-6 -mb-4 lg:-mb-6 mt-4">
                   <button 
                     onClick={() => {
                       const initialMessage = "Hello! I'm here to conduct your interview for the Full-Stack Developer position. I've carefully reviewed the job description and your background. I'd like to approach this conversation thoughtfully, focusing on understanding both your technical capabilities and your problem-solving approach.\n\nLet's begin with something foundational: Could you walk me through your journey into software development? I'm particularly interested in what initially drew you to this field and how your perspective has evolved as you've gained experience."
@@ -971,7 +980,7 @@ export default function Resume() {
                         typeMessage(initialMessage, aiMessage.id)
                       }, 500)
                     }}
-                    className="w-full flex items-center justify-center space-x-3 px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition-colors"
+                    className="w-full flex items-center justify-center space-x-3 px-6 lg:px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition-colors text-sm lg:text-base"
                   >
                     <RiPlayFill size={20} />
                     <span>Start AI Interview</span>
