@@ -223,3 +223,8 @@ base: process.env.NODE_ENV === 'production' ? '/<repo>/' : '/'
 ---
 
 With these in place, future Vite + React projects will deploy cleanly to GitHub Pages without broken routes or missing logos/icons.
+
+- Manage pages (Manage JDs/Manage Resume) logo not rendering in sidebar
+  - Fix: replace any remaining `import.meta.env.BASE_URL` logo references with imported `logoSvg` from `src/assets` (done in both files).
+- 404 on refresh inside nested routes (e.g., /manage-resume, /manage-jds)
+  - Fix: ensured 404.html redirect + index.html SPA script present; router basename configured; verified working after deploy.
