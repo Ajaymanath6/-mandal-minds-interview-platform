@@ -94,7 +94,7 @@ export default function AnalyzeResume() {
                           <span className="material-symbols-outlined text-gray-600" style={{ fontSize: 20 }}>dock_to_right</span>
                         </div>
                       ) : (
-                        <img src="/logo.svg" alt="Mandal Minds Logo" className="w-8 h-6" />
+                        <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Mandal Minds Logo" className="w-8 h-6" />
                       )}
                     </div>
                   )}

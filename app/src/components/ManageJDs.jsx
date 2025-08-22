@@ -246,7 +246,7 @@ Required Skills:
               <div className="flex items-center justify-between">
                 {firstSidebarOpen && (
                   <div className="flex items-center space-x-2">
-                    <img src="/logo.svg" alt="Mandal Minds Logo" className="w-8 h-6" />
+                    <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Mandal Minds Logo" className="w-8 h-6" />
                     <span className="font-semibold text-gray-900">Mandal Minds</span>
                   </div>
                 )}
@@ -262,7 +262,7 @@ Required Skills:
                         <span className="material-symbols-outlined text-gray-600" style={{ fontSize: 20 }}>dock_to_right</span>
                       </div>
                     ) : (
-                      <img src="/logo.svg" alt="Mandal Minds Logo" className="w-8 h-6" />
+                      <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Mandal Minds Logo" className="w-8 h-6" />
                     )}
                   </div>
                 )}
