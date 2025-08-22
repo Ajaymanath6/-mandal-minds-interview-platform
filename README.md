@@ -2,6 +2,8 @@
 
 An advanced AI-powered platform for interview preparation, resume optimization, and job application management.
 
+🚀 **Live Demo**: https://mandal-minds.gitlab.io/mandalminds/
+
 ## 🚀 Features
 
 - **AI Interview Practice**: Conduct mock interviews with AI-powered feedback
