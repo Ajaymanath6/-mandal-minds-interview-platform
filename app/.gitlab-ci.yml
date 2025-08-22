@@ -1,26 +1,49 @@
 # GitLab CI/CD configuration for React Vite app
-image: node:18
+image: node:18-alpine
 
-# Cache node_modules for faster builds
+# Global cache configuration
 cache:
+  key: ${CI_COMMIT_REF_SLUG}
   paths:
     - node_modules/
+    - .npm/
+  policy: pull-push
 
 # Define stages
 stages:
   - build
   - deploy
 
+# Variables for optimization
+variables:
+  NODE_ENV: "production"
+  CI: "true"
+
 # Build stage
 build:
   stage: build
+  before_script:
+    - echo "Node version:" && node --version
+    - echo "NPM version:" && npm --version
+    - echo "Installing dependencies..."
   script:
-    - npm ci --cache .npm --prefer-offline
+    - npm ci --cache .npm --prefer-offline --no-audit --no-fund
+    - echo "Building application..."
     - npm run build
+    - echo "Build completed successfully!"
+    - ls -la dist/
   artifacts:
     paths:
       - dist/
     expire_in: 1 hour
+    reports:
+      junit: dist/test-results.xml
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+      - .npm/
+    policy: pull-push
   only:
     - main
     - master
@@ -28,14 +51,22 @@ build:
 # Deploy to GitLab Pages
 pages:
   stage: deploy
+  image: alpine:latest
+  before_script:
+    - echo "Preparing deployment..."
   script:
     - mkdir public
     - cp -r dist/* public/
+    - echo "Files copied to public directory:"
+    - ls -la public/
+    - echo "Deployment ready!"
   artifacts:
     paths:
       - public
+    expire_in: 30 days
   dependencies:
     - build
+  cache: {}
   only:
     - main
     - master
