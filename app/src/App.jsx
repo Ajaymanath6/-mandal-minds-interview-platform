@@ -6,8 +6,11 @@ import ManageResume from './components/ManageResume'
 import AnalyzeResume from './components/AnalyzeResume'
 
 function App() {
+  // Get the base path for GitHub Pages
+  const basename = process.env.NODE_ENV === 'production' ? '/-mandal-minds-interview-platform' : ''
+  
   return (
-    <Router>
+    <Router basename={basename}>
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/resume" element={<Resume />} />
