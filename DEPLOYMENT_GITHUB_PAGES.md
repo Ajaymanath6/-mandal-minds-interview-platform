@@ -296,6 +296,29 @@ base: process.env.NODE_ENV === 'production' ? '/<repo>/' : '/'
 
 This repository already implements all three requirements above.
 
+---
+
+## 12) Alternative (guaranteed): Use HashRouter in production
+
+If GitHub Pages still serves the default 404 (rare caching/infra cases), switch to hash-based routing in production. This works under any hosting configuration and never 404s on refresh.
+
+Code (in `app/src/App.jsx`):
+
+```jsx
+import { BrowserRouter as Router, HashRouter, Routes, Route } from 'react-router-dom'
+
+const isProd = process.env.NODE_ENV === 'production'
+const RouterComponent = isProd ? HashRouter : Router
+
+return (
+  <RouterComponent>
+    <Routes>{/* ... */}</Routes>
+  </RouterComponent>
+)
+```
+
+URLs will be `/<repo>/#/resume`, `/<repo>/#/manage-resume`, etc., and can be refreshed safely.
+
 - Manage pages (Manage JDs/Manage Resume) logo not rendering in sidebar
   - Fix: replace any remaining `import.meta.env.BASE_URL` logo references with imported `logoSvg` from `src/assets` (done in both files).
 - 404 on refresh inside nested routes (e.g., /manage-resume, /manage-jds)
