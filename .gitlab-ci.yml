@@ -18,7 +18,7 @@ build:
   stage: build
   before_script:
     - cd app
-    - npm ci --cache .npm --prefer-offline
+    - npm install
   script:
     - npm run build
     - ls -la dist/
