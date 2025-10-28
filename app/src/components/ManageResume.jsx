@@ -1,215 +1,205 @@
-import { useState, useEffect, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { RiNotification3Line, RiUser3Fill, RiMenuLine, RiFileTextLine, RiUploadLine, RiFileCopyLine, RiFileList3Line, RiBookmarkLine, RiAddLine, RiCloseLine, RiLogoutBoxLine, RiArrowDownSLine, RiMoreLine, RiBarChartBoxLine, RiEyeLine, RiDeleteBinLine, RiCheckboxMultipleLine, RiArrowLeftLine, RiStarLine, RiRobotLine, RiDownloadLine, RiEditLine, RiCheckLine } from '@remixicon/react'
-import logoSvg from '../assets/logo.svg'
-import 'material-symbols/outlined.css'
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  RiUser3Fill,
+  RiFileTextLine,
+  RiUploadLine,
+  RiFileCopyLine,
+  RiFileList3Line,
+  RiAddLine,
+  RiCloseLine,
+  RiLogoutBoxLine,
+  RiEditLine,
+  RiSparklingFill,
+  RiFolder6Fill,
+  RiLinkM,
+  RiCheckboxMultipleLine,
+} from "@remixicon/react";
+import logoSvg from "../assets/logo.svg";
+import "material-symbols/outlined.css";
 
 export default function ManageResume() {
-  const [firstSidebarOpen, setFirstSidebarOpen] = useState(true)
-  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false)
-  const [isLogoHovered, setIsLogoHovered] = useState(false)
-  const [resumes, setResumes] = useState([])
-  const [isCompareMode, setIsCompareMode] = useState(false)
-  const [selectedResumes, setSelectedResumes] = useState([])
-  const [expandedResumes, setExpandedResumes] = useState([])
-  const dropdownRef = useRef(null)
-  const navigate = useNavigate()
-
-  // Sample Resume data - in real app this would come from API
-  const sampleResumes = [
-    {
-      id: 1,
-      resumeName: "General Developer Resume",
-      version: "v2.1",
-      dateUploaded: "2024-01-15",
-      isDefault: true,
-      description: `Professional full-stack developer with 3+ years of experience in modern web technologies.
-
-Key Skills:
-• JavaScript, TypeScript, HTML5, CSS3
-• React.js, Node.js, Express.js
-• MongoDB, PostgreSQL, MySQL
-• RESTful APIs, GraphQL
-• Git, Docker, CI/CD pipelines
-• AWS, Azure cloud platforms
-
-Professional Experience:
-• Full-Stack Developer at TechCorp (2022-Present)
-• Junior Developer at StartupXYZ (2021-2022)
-• Freelance Web Developer (2020-2021)
-
-Education:
-• Bachelor's in Computer Science - University of Technology (2020)
-• Full-Stack Web Development Bootcamp - CodeAcademy (2020)`
-    },
-    {
-      id: 2,
-      resumeName: "Senior Developer Resume",
-      version: "v1.8",
-      dateUploaded: "2024-01-12",
-      isDefault: false,
-      description: `Senior full-stack developer with 5+ years of experience in enterprise-level applications.
-
-Key Skills:
-• Advanced JavaScript, TypeScript, Python
-• React.js, Angular, Vue.js
-• Node.js, Django, Flask
-• PostgreSQL, MongoDB, Redis
-• Microservices architecture
-• Kubernetes, Docker containers`
-    },
-    {
-      id: 3,
-      resumeName: "Frontend Specialist Resume",
-      version: "v1.3",
-      dateUploaded: "2024-01-10",
-      isDefault: false,
-      description: `Frontend developer with strong full-stack capabilities and design sensibility.
-
-Key Skills:
-• JavaScript, TypeScript, HTML5, CSS3
-• React.js, Vue.js, Angular
-• SASS, Tailwind CSS, Material-UI
-• Node.js, Python basics
-• Responsive design, accessibility`
-    }
-  ]
+  const [firstSidebarOpen, setFirstSidebarOpen] = useState(true);
+  const [isLogoHovered, setIsLogoHovered] = useState(false);
+  const [resumes, setResumes] = useState([]);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [isCompareMode, setIsCompareMode] = useState(false);
+  const [selectedResumes, setSelectedResumes] = useState([]);
+  const [connectJobModal, setConnectJobModal] = useState(null);
+  const [jdContent, setJdContent] = useState("");
+  const [compareModalOpen, setCompareModalOpen] = useState(false);
+  const [compareJDContent, setCompareJDContent] = useState("");
+  const [analyzingResumes, setAnalyzingResumes] = useState([]);
+  const [analyzeModalOpen, setAnalyzeModalOpen] = useState(false);
+  const [selectedResumeForAnalysis, setSelectedResumeForAnalysis] =
+    useState(null);
+  const [logoModalOpen, setLogoModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Load Resumes - in real app this would be from API
-    setResumes(sampleResumes)
-  }, [])
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsUserDropdownOpen(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [])
-
-
-
-  const handleLogout = () => {
-    navigate('/')
-  }
+    setResumes([]);
+  }, []);
 
   const handleAnalyze = (resume) => {
-    // Navigate to analysis page with selected Resume
-    console.log('Analyzing Resume:', resume)
-    // In real app: navigate('/analyze', { state: { selectedResume: resume } })
-  }
+    setSelectedResumeForAnalysis(resume);
+    setAnalyzeModalOpen(true);
+  };
 
-  const handleCompareSelected = () => {
-    if (selectedResumes.length > 0) {
-      console.log('Comparing Resumes:', selectedResumes)
-      // In real app: navigate to comparison page
-    }
-  }
+  const handleEditResume = (resume) => {
+    // Navigate to edit resume page
+    navigate("/edit-resume", { state: { resume } });
+  };
 
-  const handleDeleteResume = (id) => {
-    if (window.confirm('Are you sure you want to delete this resume?')) {
-      setResumes(resumes.filter(resume => resume.id !== id))
-    }
-  }
+  const handleUploadResume = () => {
+    // Add dummy resume to the list
+    const dummyResume = {
+      id: Date.now(),
+      resumeName: "Untitled Resume",
+      matchedJob: null,
+      match: null,
+      created: new Date().toISOString().split("T")[0],
+      lastEdited: new Date().toISOString().split("T")[0],
+    };
+    setResumes([...resumes, dummyResume]);
+    setIsUploadModalOpen(false);
+  };
 
   const toggleResumeSelection = (id) => {
-    setSelectedResumes(prev => 
-      prev.includes(id) 
-        ? prev.filter(resumeId => resumeId !== id)
+    setSelectedResumes((prev) =>
+      prev.includes(id)
+        ? prev.filter((resumeId) => resumeId !== id)
         : [...prev, id]
-    )
-  }
+    );
+  };
 
-  const toggleResumeExpansion = (id) => {
-    setExpandedResumes(prev => 
-      prev.includes(id) 
-        ? prev.filter(resumeId => resumeId !== id)
-        : [...prev, id]
-    )
-  }
+  const handleCompareSelected = () => {
+    if (selectedResumes.length === 0) {
+      alert("Please select at least one resume");
+      return;
+    }
+    setCompareModalOpen(true);
+    setCompareJDContent("");
+  };
 
-  const getMatchScoreColor = (score) => {
-    if (score >= 90) return 'text-green-600 bg-green-50'
-    if (score >= 80) return 'text-purple-600 bg-purple-50'
-    if (score >= 70) return 'text-yellow-600 bg-yellow-50'
-    return 'text-red-600 bg-red-50'
-  }
+  const handleCompareAnalyze = () => {
+    if (!compareJDContent.trim()) {
+      alert("Please enter a job description");
+      return;
+    }
+
+    // Close modal immediately
+    setCompareModalOpen(false);
+    setCompareJDContent("");
+
+    // Start analyzing - show spinners
+    setAnalyzingResumes(selectedResumes);
+
+    // Simulate analysis for each selected resume
+    selectedResumes.forEach((resumeId, index) => {
+      setTimeout(() => {
+        const matchScore = Math.floor(Math.random() * 30) + 70; // Random score 70-100
+        const companyName = "TechCorp Inc"; // In real app, extract from JD
+        setResumes((prevResumes) =>
+          prevResumes.map((resume) =>
+            resume.id === resumeId
+              ? {
+                  ...resume,
+                  matchedJob: companyName,
+                  match: matchScore,
+                }
+              : resume
+          )
+        );
+
+        // Remove from analyzing list
+        setAnalyzingResumes((prev) => prev.filter((id) => id !== resumeId));
+
+        // Exit compare mode when all done
+        if (index === selectedResumes.length - 1) {
+          setTimeout(() => {
+            setIsCompareMode(false);
+            setSelectedResumes([]);
+          }, 500);
+        }
+      }, 1000 + index * 500); // Stagger the results
+    });
+  };
+
+  const handleConnectJob = (resumeId) => {
+    setConnectJobModal(resumeId);
+    setJdContent("");
+  };
+
+  const handleAnalyzeWithJD = () => {
+    if (!jdContent.trim()) {
+      alert("Please enter a job description");
+      return;
+    }
+
+    // Update the resume with matched job and score
+    const matchScore = Math.floor(Math.random() * 30) + 70; // Random score 70-100
+    const companyName = "Mandal Minds"; // In real app, extract from JD
+    setResumes(
+      resumes.map((resume) =>
+        resume.id === connectJobModal
+          ? {
+              ...resume,
+              matchedJob: companyName,
+              match: matchScore,
+            }
+          : resume
+      )
+    );
+    setConnectJobModal(null);
+    setJdContent("");
+  };
+
+  const getScoreColor = (score) => {
+    if (score >= 80) return "text-green-600";
+    if (score >= 60) return "text-yellow-600";
+    if (score >= 40) return "text-orange-600";
+    return "text-red-600";
+  };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    })
-  }
+    return new Date(dateString).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
 
   return (
-    <div className="h-screen bg-gray-50 flex flex-col">
-      {/* Header */}
-      <header className="px-6 py-4">
-        <div className="flex items-center justify-end">
-          <div className="flex items-center space-x-4">
-            <button className="relative w-10 h-10 bg-white border border-gray-200 rounded-lg flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors">
-              <RiNotification3Line size={20} />
-              {/* Notification badge */}
-              <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                3
-              </span>
-            </button>
-            
-            <div className="relative" ref={dropdownRef}>
-              <button
-                onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
-                className="w-10 h-10 bg-white border border-gray-200 rounded-lg flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors"
-              >
-                <RiUser3Fill size={20} />
-              </button>
-              
-              {isUserDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-                  <div className="px-4 py-2 border-b border-gray-100">
-                    <p className="text-sm font-medium text-gray-900">John Doe</p>
-                    <p className="text-xs text-gray-500">john.doe@example.com</p>
-                  </div>
-                  <button 
-                    onClick={() => {
-                      setIsUserDropdownOpen(false)
-                      navigate('/')
-                    }}
-                    className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-2"
-                  >
-                    <RiLogoutBoxLine size={16} />
-                    <span>Logout</span>
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div className="flex gap-4" style={{ height: 'calc(100vh - 80px - 32px)' }}>
+    <div className="h-screen bg-gray-50 flex">
+      <div className="flex w-full" style={{ height: "100vh" }}>
         {/* First Sidebar - Always Visible */}
-        <div className={`${firstSidebarOpen ? 'w-64' : 'w-16'} bg-white rounded-lg shadow-sm border border-gray-200 transition-all duration-300 flex-shrink-0 mb-8`}>
+        <div
+          className={`${
+            firstSidebarOpen ? "w-52" : "w-16"
+          } bg-white transition-all duration-300 flex-shrink-0 h-full`}
+        >
           <div className="flex flex-col h-full">
             {/* Logo and Toggle */}
             <div className="p-4 border-b border-gray-200">
               <div className="flex items-center justify-between">
                 {firstSidebarOpen && (
-                  <div className="flex items-center space-x-2">
-                    <img src={logoSvg} alt="Mandal Minds Logo" className="w-8 h-6" />
-                    <span className="font-semibold text-gray-900">Mandal Minds</span>
+                  <div
+                    className="flex items-center space-x-2 cursor-pointer"
+                    onClick={() => setLogoModalOpen(true)}
+                  >
+                    <img
+                      src={logoSvg}
+                      alt="Mandal Minds Logo"
+                      className="w-8 h-6"
+                    />
+                    <span className="font-semibold text-gray-900">
+                      Mandal Minds
+                    </span>
                   </div>
                 )}
                 {!firstSidebarOpen && (
-                  <div 
+                  <div
                     className="w-8 h-8 rounded-lg flex items-center justify-center mx-auto cursor-pointer relative overflow-hidden"
                     onMouseEnter={() => setIsLogoHovered(true)}
                     onMouseLeave={() => setIsLogoHovered(false)}
@@ -217,10 +207,19 @@ Key Skills:
                   >
                     {isLogoHovered ? (
                       <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                        <span className="material-symbols-outlined text-gray-600" style={{ fontSize: 20 }}>dock_to_right</span>
+                        <span
+                          className="material-symbols-outlined text-gray-600"
+                          style={{ fontSize: 20 }}
+                        >
+                          dock_to_right
+                        </span>
                       </div>
                     ) : (
-                      <img src={logoSvg} alt="Mandal Minds Logo" className="w-8 h-6" />
+                      <img
+                        src={logoSvg}
+                        alt="Mandal Minds Logo"
+                        className="w-8 h-6"
+                      />
                     )}
                   </div>
                 )}
@@ -229,7 +228,12 @@ Key Skills:
                     onClick={() => setFirstSidebarOpen(false)}
                     className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded"
                   >
-                    <span className="material-symbols-outlined" style={{ fontSize: 20 }}>dock_to_left</span>
+                    <span
+                      className="material-symbols-outlined"
+                      style={{ fontSize: 20 }}
+                    >
+                      dock_to_left
+                    </span>
                   </button>
                 )}
               </div>
@@ -237,69 +241,149 @@ Key Skills:
 
             {/* Navigation */}
             <nav className="flex-1 p-2 space-y-2">
-              <button 
-                onClick={() => navigate('/resume')}
-                className={`flex items-center ${firstSidebarOpen ? 'space-x-3 px-3' : 'justify-center px-2'} py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md w-full`}
+              <button
+                onClick={() => navigate("/resume")}
+                className={`flex items-center ${
+                  firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
+                } py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full`}
               >
-                <RiStarLine size={20} />
-                {firstSidebarOpen && <span className="font-medium">AI Interview</span>}
+                <RiSparklingFill size={16} />
+                {firstSidebarOpen && (
+                  <span className="text-sm">AI Interview</span>
+                )}
               </button>
-              
-              <a href="#" className={`flex items-center ${firstSidebarOpen ? 'space-x-3 px-3' : 'justify-center px-2'} py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md`}>
-                <RiFileTextLine size={20} />
-                {firstSidebarOpen && <span className="font-medium">Resume Editor</span>}
-              </a>
-              
-              <a href="#" className={`flex items-center ${firstSidebarOpen ? 'space-x-3 px-3' : 'justify-center px-2'} py-2 text-purple-600 bg-gray-50 rounded-md`}>
-                <RiFileCopyLine size={20} />
-                {firstSidebarOpen && <span className="font-medium">Manage Resume</span>}
-              </a>
-              
-              <button 
-                onClick={() => navigate('/manage-jds')}
-                className={`flex items-center ${firstSidebarOpen ? 'space-x-3 px-3' : 'justify-center px-2'} py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md w-full`}
+
+              <a
+                href="#"
+                className={`flex items-center ${
+                  firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
+                } py-2 text-gray-900 hover:bg-gray-50 rounded-md`}
               >
-                <RiFileList3Line size={20} />
-                {firstSidebarOpen && <span className="font-medium">Manage JDs</span>}
+                <RiFileTextLine size={16} />
+                {firstSidebarOpen && (
+                  <span className="text-sm">Resume Editor</span>
+                )}
+              </a>
+
+              <a
+                href="#"
+                className={`flex items-center ${
+                  firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
+                } py-2 text-purple-600 bg-gray-50 rounded-md`}
+              >
+                <RiFileCopyLine size={16} />
+                {firstSidebarOpen && (
+                  <span className="text-sm">Manage Resume</span>
+                )}
+              </a>
+
+              <button
+                onClick={() => navigate("/manage-jds")}
+                className={`flex items-center ${
+                  firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
+                } py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full`}
+              >
+                <RiFileList3Line size={16} />
+                {firstSidebarOpen && (
+                  <span className="text-sm">Manage JDs</span>
+                )}
               </button>
             </nav>
+
+            {/* User Profile - Bottom */}
+            <div className="p-3 border-t border-gray-200">
+              {firstSidebarOpen ? (
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                    <RiUser3Fill size={16} className="text-purple-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      John Doe
+                    </p>
+                    <p className="text-xs text-gray-500 truncate">
+                      john.doe@example.com
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={() => navigate("/")}
+                  className="w-full p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors flex items-center justify-center"
+                  title="Logout"
+                >
+                  <RiLogoutBoxLine size={20} />
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col px-6 pb-6">
+        <div className="flex-1 flex flex-col overflow-hidden px-6 py-6">
           {/* Page Title */}
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Manage Resume</h1>
-            <p className="text-sm text-gray-600">Organize and manage your resume versions</p>
+            <h1 className="text-base font-bold text-gray-900">Manage Resume</h1>
           </div>
-          
+
           {/* Scrollable Content Area */}
           <div className="flex-1 overflow-y-auto">
-            {resumes.length === 0 ? (
-              // Empty State
-              <div className="flex flex-col items-center justify-center h-full max-w-md mx-auto text-center">
-                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-6">
-                  <RiFileCopyLine size={32} className="text-purple-600" />
+            <div className="max-w-6xl mx-auto">
+              {/* Action Buttons */}
+              <div className="mb-8">
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Upload Resume Button */}
+                  <button
+                    onClick={() => setIsUploadModalOpen(true)}
+                    className="flex flex-col items-center p-6 bg-white rounded-xl transition-all group"
+                  >
+                    <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                      <RiUploadLine size={28} className="text-blue-600" />
+                    </div>
+                    <span className="text-sm font-medium text-gray-900">
+                      Upload Resume
+                    </span>
+                  </button>
+
+                  {/* New Resume Button */}
+                  <button className="flex flex-col items-center p-6 bg-white rounded-xl transition-all group">
+                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                      <RiAddLine size={28} className="text-green-600" />
+                    </div>
+                    <span className="text-sm font-medium text-gray-900">
+                      New Resume
+                    </span>
+                  </button>
                 </div>
-                <h2 className="text-xl font-semibold text-gray-900 mb-2">Your Resume Workspace</h2>
-                <p className="text-gray-600 mb-8">Upload your resumes here to start practicing for interviews, analyzing skill gaps, and building tailored applications.</p>
-                <button className="flex items-center space-x-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors">
-                  <RiAddLine size={20} />
-                  <span>Upload Your First Resume</span>
-                </button>
               </div>
-            ) : (
-              // Populated State
-              <div>
-                {/* Header Actions */}
-                <div className="mb-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-semibold text-gray-900">
-                      {resumes.length} Resume{resumes.length !== 1 ? 's' : ''}
-                    </h2>
-                    
-                    <div className="flex items-center space-x-3">
+
+              {resumes.length === 0 ? (
+                // Empty State
+                <div className="flex items-center justify-center h-64">
+                  <div className="max-w-2xl w-full">
+                    <div className="bg-white rounded-lg p-8 text-center">
+                      <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <RiFileCopyLine size={32} className="text-purple-600" />
+                      </div>
+                      <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                        No Resumes Yet
+                      </h2>
+                      <p className="text-gray-600 mb-6">
+                        Create your first resume to get started with AI-powered
+                        optimization.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                // Populated State - Table View
+                <div>
+                  {/* Header */}
+                  <div className="mb-6">
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-lg font-semibold text-gray-900">
+                        All Files
+                      </h2>
                       {!isCompareMode && (
                         <button
                           onClick={() => setIsCompareMode(true)}
@@ -309,149 +393,430 @@ Key Skills:
                           <span>Compare Multiple</span>
                         </button>
                       )}
-                      <button className="flex items-center space-x-2 px-4 py-2 bg-white border border-gray-300 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors">
-                        <RiAddLine size={16} />
-                        <span>Upload New Resume</span>
-                      </button>
                     </div>
-                  </div>
-                  
-                  {/* Compare Mode Controls - Second Line */}
-                  {isCompareMode && (
-                    <div className="flex items-center space-x-2">
-                      <span className="text-sm text-gray-600">
-                        {selectedResumes.length} selected
-                      </span>
-                      <button
-                        onClick={handleCompareSelected}
-                        disabled={selectedResumes.length === 0}
-                        className="px-4 py-2 bg-white border border-gray-300 text-purple-600 hover:bg-purple-50 disabled:text-gray-400 disabled:border-gray-200 rounded-lg transition-colors text-sm"
-                      >
-                        Compare Selected
-                      </button>
-                      <button
-                        onClick={() => {
-                          setIsCompareMode(false)
-                          setSelectedResumes([])
-                        }}
-                        className="px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors text-sm"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  )}
-                </div>
 
-                {/* Resume Cards - Scrollable */}
-                <div className="grid gap-4">
-                  {resumes.map((resume) => (
-                    <div
-                      key={resume.id}
-                      className="bg-white rounded-xl border border-gray-200 p-4 lg:p-6 hover:shadow-md transition-shadow"
-                    >
-                      <div 
-                        className="flex items-start justify-between cursor-pointer"
-                        onClick={() => toggleResumeExpansion(resume.id)}
-                      >
-                        <div className="flex-1">
-                          <div className="flex items-start space-x-4">
+                    {/* Compare Mode Controls */}
+                    {isCompareMode && (
+                      <div className="flex items-center space-x-2 mt-4">
+                        <span className="text-sm text-gray-600">
+                          {selectedResumes.length} selected
+                        </span>
+                        <button
+                          onClick={handleCompareSelected}
+                          disabled={selectedResumes.length === 0}
+                          className="px-4 py-2 bg-white border border-gray-300 text-purple-600 hover:bg-purple-50 disabled:text-gray-400 disabled:border-gray-200 rounded-lg transition-colors text-sm"
+                        >
+                          Compare Selected
+                        </button>
+                        <button
+                          onClick={() => {
+                            setIsCompareMode(false);
+                            setSelectedResumes([]);
+                          }}
+                          className="px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Resume Table */}
+                  <div className="bg-white rounded-lg overflow-hidden">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="bg-white border-b border-gray-200">
+                          {isCompareMode && (
+                            <th className="px-6 py-3 text-left text-sm font-medium text-gray-900">
+                              <input
+                                type="checkbox"
+                                className="w-4 h-4 accent-purple-600 border-gray-300 rounded focus:ring-purple-600"
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedResumes(resumes.map((r) => r.id));
+                                  } else {
+                                    setSelectedResumes([]);
+                                  }
+                                }}
+                              />
+                            </th>
+                          )}
+                          <th className="px-6 py-3 text-left text-sm font-medium text-gray-900">
+                            Resume
+                          </th>
+                          <th className="px-6 py-3 text-left text-sm font-medium text-gray-900">
+                            Matched Job
+                          </th>
+                          <th className="px-6 py-3 text-left text-sm font-medium text-gray-900">
+                            Match
+                          </th>
+                          <th className="px-6 py-3 text-left text-sm font-medium text-gray-900">
+                            Created
+                          </th>
+                          <th className="px-6 py-3 text-left text-sm font-medium text-gray-900">
+                            Last Edited
+                          </th>
+                          <th className="px-6 py-3 text-left text-sm font-medium text-gray-900">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {resumes.map((resume) => (
+                          <tr
+                            key={resume.id}
+                            className="bg-white hover:bg-gray-50/80 border-b border-gray-200"
+                          >
                             {isCompareMode && (
-                              <div className="mt-1" onClick={(e) => e.stopPropagation()}>
+                              <td className="px-6 py-4">
                                 <input
                                   type="checkbox"
                                   checked={selectedResumes.includes(resume.id)}
-                                  onChange={() => toggleResumeSelection(resume.id)}
-                                  className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+                                  onChange={() =>
+                                    toggleResumeSelection(resume.id)
+                                  }
+                                  className="w-4 h-4 accent-purple-600 border-gray-300 rounded focus:ring-purple-600"
                                 />
-                              </div>
+                              </td>
                             )}
-                            
-                            <div className="flex-1">
-                              <div className="flex items-center space-x-3 mb-2">
-                                <h3 className="text-lg font-semibold text-gray-900">{resume.resumeName}</h3>
-                                {resume.isDefault && (
-                                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600">
-                                    Default
-                                  </span>
-                                )}
+                            <td className="px-6 py-4">
+                              <div className="flex items-center gap-3">
+                                <RiFolder6Fill
+                                  size={18}
+                                  className="text-gray-900"
+                                />
+                                <span className="text-sm font-medium text-gray-900">
+                                  {resume.resumeName}
+                                </span>
                               </div>
-                              
-                              <p className="text-gray-600 mb-1">{resume.version}</p>
-                              <p className="text-sm text-gray-500">Uploaded {formatDate(resume.dateUploaded)}</p>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        {!isCompareMode && (
-                          <div className="flex flex-col sm:flex-row items-end sm:items-center space-y-2 sm:space-y-0 sm:space-x-2" onClick={(e) => e.stopPropagation()}>
-                            <button
-                              onClick={() => navigate('/analyze-resume')}
-                              className="flex items-center space-x-2 px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors text-sm w-full sm:w-auto justify-center"
-                            >
-                              <RiEditLine size={14} />
-                              <span>Edit with AI</span>
-                            </button>
-                            
-                            <div className="relative group">
-                              <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-                                <RiMoreLine size={16} />
-                              </button>
-                              
-                              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                            </td>
+                            <td className="px-6 py-4">
+                              {resume.matchedJob ? (
+                                <button className="flex items-center gap-1.5 text-sm text-gray-900 hover:text-purple-600">
+                                  <RiLinkM size={14} />
+                                  <span>{resume.matchedJob}</span>
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => handleConnectJob(resume.id)}
+                                  className="flex items-center gap-1.5 text-sm text-purple-600 hover:text-purple-700"
+                                >
+                                  <RiLinkM size={14} />
+                                  <span>Connect Job</span>
+                                </button>
+                              )}
+                            </td>
+                            <td className="px-6 py-4">
+                              {analyzingResumes.includes(resume.id) ? (
+                                <div className="flex flex-col items-center gap-1">
+                                  <div className="w-4 h-4 border-2 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+                                  <span className="text-xs text-gray-500">
+                                    Analyzing
+                                  </span>
+                                </div>
+                              ) : resume.matchedJob ? (
+                                <div
+                                  className={`text-sm font-semibold ${getScoreColor(
+                                    resume.match
+                                  )}`}
+                                >
+                                  {resume.match}%
+                                </div>
+                              ) : (
+                                <div className="text-sm text-gray-400">—</div>
+                              )}
+                            </td>
+                            <td className="px-6 py-4">
+                              <div className="text-sm text-gray-900">
+                                {formatDate(resume.created)}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4">
+                              <div className="text-sm text-gray-900">
+                                {formatDate(resume.lastEdited)}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4">
+                              <div className="flex items-center gap-3">
                                 <button
                                   onClick={() => handleAnalyze(resume)}
-                                  className="w-full flex items-center space-x-2 px-4 py-2 text-gray-900 hover:bg-gray-100 transition-colors"
+                                  disabled={!resume.matchedJob}
+                                  className={`flex items-center justify-center gap-1.5 px-3 py-1.5 border rounded-md text-sm font-medium transition-colors ${
+                                    resume.matchedJob
+                                      ? "border-gray-300 bg-transparent text-gray-900 hover:bg-gray-50"
+                                      : "border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed"
+                                  }`}
                                 >
-                                  <RiBarChartBoxLine size={16} />
-                                  <span>Analyze vs. JD</span>
-                                </button>
-                                {!resume.isDefault && (
-                                  <button
-                                    onClick={() => console.log('Set as default:', resume.id)}
-                                    className="w-full flex items-center space-x-2 px-4 py-2 text-gray-900 hover:bg-gray-100 transition-colors"
-                                  >
-                                    <RiCheckLine size={16} />
-                                    <span>Set as Default</span>
-                                  </button>
-                                )}
-                                <button className="w-full flex items-center space-x-2 px-4 py-2 text-gray-900 hover:bg-gray-100 transition-colors">
-                                  <RiEyeLine size={16} />
-                                  <span>Preview</span>
-                                </button>
-                                <button className="w-full flex items-center space-x-2 px-4 py-2 text-gray-900 hover:bg-gray-100 transition-colors">
-                                  <RiDownloadLine size={16} />
-                                  <span>Download</span>
+                                  <RiSparklingFill
+                                    size={16}
+                                    className={
+                                      resume.matchedJob
+                                        ? "text-purple-600"
+                                        : "text-gray-400"
+                                    }
+                                  />
+                                  <span>Analyze</span>
                                 </button>
                                 <button
-                                  onClick={() => handleDeleteResume(resume.id)}
-                                  className="w-full flex items-center space-x-2 px-4 py-2 text-red-600 hover:bg-red-50 transition-colors"
+                                  onClick={() => handleEditResume(resume)}
+                                  className="flex items-center justify-center gap-1.5 px-3 py-1.5 border border-gray-300 bg-transparent text-gray-900 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors"
                                 >
-                                  <RiDeleteBinLine size={16} />
-                                  <span>Delete</span>
+                                  <RiEditLine size={16} />
+                                  <span>Edit</span>
                                 </button>
                               </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                      
-                      {/* Expanded Content */}
-                      {expandedResumes.includes(resume.id) && (
-                        <div className="mt-4 pt-4 border-t border-gray-200">
-                          <h4 className="text-sm font-medium text-gray-900 mb-2">Resume Preview:</h4>
-                          <div className="bg-gray-50 rounded-lg p-4">
-                            <p className="text-sm text-gray-900 whitespace-pre-wrap">{resume.description}</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Upload Modal */}
+      {isUploadModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Upload Resume
+            </h3>
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center mb-4">
+              <RiUploadLine size={48} className="text-gray-400 mx-auto mb-2" />
+              <p className="text-sm text-gray-600">
+                Drop your resume here or click to browse
+              </p>
+              <p className="text-xs text-gray-500 mt-2">
+                Supports PDF, DOC, DOCX files
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={handleUploadResume}
+                className="flex-1 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+              >
+                OK
+              </button>
+              <button
+                onClick={() => setIsUploadModalOpen(false)}
+                className="px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Connect Job Modal */}
+      {connectJobModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Connect Job Description
+            </h3>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Job Description
+              </label>
+              <textarea
+                value={jdContent}
+                onChange={(e) => setJdContent(e.target.value)}
+                placeholder="Paste the job description here..."
+                rows={8}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+              />
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={handleAnalyzeWithJD}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+              >
+                <RiSparklingFill size={16} />
+                <span>Analyze</span>
+              </button>
+              <button
+                onClick={() => {
+                  setConnectJobModal(null);
+                  setJdContent("");
+                }}
+                className="px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Compare Multiple Modal */}
+      {compareModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Compare Resumes with Job Description
+            </h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Comparing {selectedResumes.length} resume
+              {selectedResumes.length > 1 ? "s" : ""} against this job
+              description
+            </p>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Job Description
+              </label>
+              <textarea
+                value={compareJDContent}
+                onChange={(e) => setCompareJDContent(e.target.value)}
+                placeholder="Paste the job description here..."
+                rows={8}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+              />
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={handleCompareAnalyze}
+                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors font-medium"
+              >
+                <RiSparklingFill size={20} />
+                <span>Analyze All</span>
+              </button>
+              <button
+                onClick={() => {
+                  setCompareModalOpen(false);
+                  setCompareJDContent("");
+                }}
+                className="px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Analyze Modal */}
+      {analyzeModalOpen && selectedResumeForAnalysis && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Analyze Resume
+            </h3>
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-4">
+                <strong>Resume:</strong> {selectedResumeForAnalysis.resumeName}
+              </p>
+              <p className="text-sm text-gray-600 mb-4">
+                <strong>Matched Job:</strong>{" "}
+                {selectedResumeForAnalysis.matchedJob || "Not connected"}
+              </p>
+              {selectedResumeForAnalysis.matchedJob && (
+                <p className="text-sm text-gray-600 mb-4">
+                  <strong>Current Match Score:</strong>{" "}
+                  <span
+                    className={`font-semibold ${getScoreColor(
+                      selectedResumeForAnalysis.match
+                    )}`}
+                  >
+                    {selectedResumeForAnalysis.match}%
+                  </span>
+                </p>
+              )}
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  console.log(
+                    "Starting analysis for:",
+                    selectedResumeForAnalysis
+                  );
+                  setAnalyzeModalOpen(false);
+                  setSelectedResumeForAnalysis(null);
+                }}
+                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors font-medium"
+              >
+                <RiSparklingFill size={20} />
+                <span>Start Analysis</span>
+              </button>
+              <button
+                onClick={() => {
+                  setAnalyzeModalOpen(false);
+                  setSelectedResumeForAnalysis(null);
+                }}
+                className="px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Logo Modal - Navigation */}
+      {logoModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Navigate To
+              </h3>
+              <button
+                onClick={() => setLogoModalOpen(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <RiCloseLine size={20} />
+              </button>
+            </div>
+
+            <div className="space-y-2">
+              <button
+                onClick={() => {
+                  navigate("/");
+                  setLogoModalOpen(false);
+                }}
+                className="w-full flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-left"
+              >
+                <span className="text-gray-900 font-medium">Landing Page</span>
+              </button>
+              <button
+                onClick={() => {
+                  navigate("/resume");
+                  setLogoModalOpen(false);
+                }}
+                className="w-full flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-left"
+              >
+                <RiSparklingFill size={16} className="text-purple-600" />
+                <span className="text-gray-900 font-medium">AI Interview</span>
+              </button>
+              <button
+                onClick={() => {
+                  navigate("/manage-jds");
+                  setLogoModalOpen(false);
+                }}
+                className="w-full flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-left"
+              >
+                <RiFileList3Line size={16} />
+                <span className="text-gray-900 font-medium">Manage JDs</span>
+              </button>
+              <button
+                onClick={() => {
+                  setLogoModalOpen(false);
+                }}
+                className="w-full flex items-center gap-3 p-3 border border-gray-300 rounded-lg bg-purple-50 text-left"
+              >
+                <RiFileCopyLine size={16} className="text-purple-600" />
+                <span className="text-gray-900 font-medium">
+                  Manage Resume (Current)
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
-  )
+  );
 }
