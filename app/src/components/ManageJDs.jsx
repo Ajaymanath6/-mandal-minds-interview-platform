@@ -450,11 +450,11 @@ export default function ManageJDs() {
                 )}
               </button>
 
-              <a
-                href="#"
+              <button
+                onClick={() => navigate("/resume-editor")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-900 hover:bg-gray-50 rounded-md transition-colors`}
+                } py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full transition-colors`}
               >
                 <span
                   className="material-symbols-outlined"
@@ -469,7 +469,7 @@ export default function ManageJDs() {
                 {firstSidebarOpen && (
                   <span className="text-sm">Resume Editor</span>
                 )}
-              </a>
+              </button>
 
               <button
                 onClick={() => navigate("/manage-resume")}

@@ -1085,156 +1085,156 @@ export default function Resume() {
           ) : (
             <div className="flex items-center justify-center h-full">
               <div className="max-w-4xl space-y-4 lg:space-y-6 w-full">
-              {/* JD Analysis Header */}
-              <div className="bg-white rounded-lg p-4 lg:p-6">
-                <div className="flex items-center space-x-3 mb-4">
-                  <img
-                    src={logoSvg}
-                    alt="Mandal Minds Logo"
-                    className="w-10 h-7"
-                  />
-                  <div>
-                    <h2 className="text-xl font-semibold text-gray-900">
-                      AI Analysis Complete
-                    </h2>
-                    <p className="text-sm text-gray-600">
-                      Job description analyzed successfully
-                    </p>
-                  </div>
-                </div>
-
-                {/* Job Focus */}
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                    Job Focus
-                  </h3>
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <p className="text-gray-900">
-                      This position focuses on{" "}
-                      <strong>full-stack development</strong> with emphasis on
-                      modern web technologies, API development, and
-                      collaborative software engineering practices. The role
-                      requires strong problem-solving skills and experience with
-                      agile methodologies.
-                    </p>
-                  </div>
-                </div>
-
-                {/* AI Assessment Points */}
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                    AI Will Assess
-                  </h3>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="bg-blue-50 rounded-lg p-4">
-                      <h4 className="font-medium text-blue-900 mb-2">
-                        Technical Skills
-                      </h4>
-                      <ul className="text-sm text-blue-800 space-y-1">
-                        <li>• JavaScript/TypeScript proficiency</li>
-                        <li>• React.js and modern frameworks</li>
-                        <li>• API design and integration</li>
-                        <li>• Database management</li>
-                      </ul>
-                    </div>
-                    <div className="bg-green-50 rounded-lg p-4">
-                      <h4 className="font-medium text-green-900 mb-2">
-                        Soft Skills
-                      </h4>
-                      <ul className="text-sm text-green-800 space-y-1">
-                        <li>• Problem-solving approach</li>
-                        <li>• Team collaboration</li>
-                        <li>• Communication skills</li>
-                        <li>• Adaptability</li>
-                      </ul>
+                {/* JD Analysis Header */}
+                <div className="bg-white rounded-lg p-4 lg:p-6">
+                  <div className="flex items-center space-x-3 mb-4">
+                    <img
+                      src={logoSvg}
+                      alt="Mandal Minds Logo"
+                      className="w-10 h-7"
+                    />
+                    <div>
+                      <h2 className="text-xl font-semibold text-gray-900">
+                        AI Analysis Complete
+                      </h2>
+                      <p className="text-sm text-gray-600">
+                        Job description analyzed successfully
+                      </p>
                     </div>
                   </div>
+
+                  {/* Job Focus */}
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                      Job Focus
+                    </h3>
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <p className="text-gray-900">
+                        This position focuses on{" "}
+                        <strong>full-stack development</strong> with emphasis on
+                        modern web technologies, API development, and
+                        collaborative software engineering practices. The role
+                        requires strong problem-solving skills and experience
+                        with agile methodologies.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* AI Assessment Points */}
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                      AI Will Assess
+                    </h3>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="bg-blue-50 rounded-lg p-4">
+                        <h4 className="font-medium text-blue-900 mb-2">
+                          Technical Skills
+                        </h4>
+                        <ul className="text-sm text-blue-800 space-y-1">
+                          <li>• JavaScript/TypeScript proficiency</li>
+                          <li>• React.js and modern frameworks</li>
+                          <li>• API design and integration</li>
+                          <li>• Database management</li>
+                        </ul>
+                      </div>
+                      <div className="bg-green-50 rounded-lg p-4">
+                        <h4 className="font-medium text-green-900 mb-2">
+                          Soft Skills
+                        </h4>
+                        <ul className="text-sm text-green-800 space-y-1">
+                          <li>• Problem-solving approach</li>
+                          <li>• Team collaboration</li>
+                          <li>• Communication skills</li>
+                          <li>• Adaptability</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
 
-              {/* Skills Section */}
-              <div className="bg-white rounded-lg p-4 lg:p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  Your Skills
-                </h3>
+                {/* Skills Section */}
+                <div className="bg-white rounded-lg p-4 lg:p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                    Your Skills
+                  </h3>
 
-                {/* Skills Badges */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {skills.map((skill, index) => (
-                    <span
-                      key={index}
-                      className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-50 border border-gray-200 text-gray-800"
-                    >
-                      {skill}
-                      <button
-                        onClick={() =>
-                          setSkills(skills.filter((_, i) => i !== index))
-                        }
-                        className="ml-2 text-gray-500 hover:text-gray-700"
+                  {/* Skills Badges */}
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {skills.map((skill, index) => (
+                      <span
+                        key={index}
+                        className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-50 border border-gray-200 text-gray-800"
                       >
-                        <RiCloseLine size={14} />
-                      </button>
-                    </span>
-                  ))}
+                        {skill}
+                        <button
+                          onClick={() =>
+                            setSkills(skills.filter((_, i) => i !== index))
+                          }
+                          className="ml-2 text-gray-500 hover:text-gray-700"
+                        >
+                          <RiCloseLine size={14} />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Add Skill */}
+                  <div className="flex space-x-2 mb-6">
+                    <input
+                      type="text"
+                      value={newSkill}
+                      onChange={(e) => setNewSkill(e.target.value)}
+                      placeholder="Add a skill..."
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter" && newSkill.trim()) {
+                          setSkills([...skills, newSkill.trim()]);
+                          setNewSkill("");
+                        }
+                      }}
+                    />
+                    <button
+                      onClick={() => {
+                        if (newSkill.trim()) {
+                          setSkills([...skills, newSkill.trim()]);
+                          setNewSkill("");
+                        }
+                      }}
+                      className="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-md transition-colors flex items-center space-x-2"
+                    >
+                      <RiAddLine size={16} />
+                      <span>Add</span>
+                    </button>
+                  </div>
+
+                  {/* Start Interview Button - Always Visible */}
+                  <div className="w-full sticky bottom-0 bg-white p-4 border-t border-gray-200 -mx-4 lg:-mx-6 -mb-4 lg:-mb-6 mt-4">
+                    <button
+                      onClick={() => {
+                        const initialMessage =
+                          "Hello! I'm here to conduct your interview for the Full-Stack Developer position. I've carefully reviewed the job description and your background. I'd like to approach this conversation thoughtfully, focusing on understanding both your technical capabilities and your problem-solving approach.\n\nLet's begin with something foundational: Could you walk me through your journey into software development? I'm particularly interested in what initially drew you to this field and how your perspective has evolved as you've gained experience.";
+
+                        setIsInterviewStarted(true);
+                        const aiMessage = {
+                          id: 1,
+                          type: "ai",
+                          content: initialMessage,
+                          timestamp: new Date(),
+                        };
+                        setMessages([aiMessage]);
+
+                        // Start typing animation for initial message
+                        setTimeout(() => {
+                          typeMessage(initialMessage, aiMessage.id);
+                        }, 500);
+                      }}
+                      className="w-full flex items-center justify-center space-x-3 px-6 lg:px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition-colors text-sm lg:text-base"
+                    >
+                      <RiPlayFill size={20} />
+                      <span>Start AI Interview</span>
+                    </button>
+                  </div>
                 </div>
-
-                {/* Add Skill */}
-                <div className="flex space-x-2 mb-6">
-                  <input
-                    type="text"
-                    value={newSkill}
-                    onChange={(e) => setNewSkill(e.target.value)}
-                    placeholder="Add a skill..."
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
-                    onKeyPress={(e) => {
-                      if (e.key === "Enter" && newSkill.trim()) {
-                        setSkills([...skills, newSkill.trim()]);
-                        setNewSkill("");
-                      }
-                    }}
-                  />
-                  <button
-                    onClick={() => {
-                      if (newSkill.trim()) {
-                        setSkills([...skills, newSkill.trim()]);
-                        setNewSkill("");
-                      }
-                    }}
-                    className="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-md transition-colors flex items-center space-x-2"
-                  >
-                    <RiAddLine size={16} />
-                    <span>Add</span>
-                  </button>
-                </div>
-
-                {/* Start Interview Button - Always Visible */}
-                <div className="w-full sticky bottom-0 bg-white p-4 border-t border-gray-200 -mx-4 lg:-mx-6 -mb-4 lg:-mb-6 mt-4">
-                  <button
-                    onClick={() => {
-                      const initialMessage =
-                        "Hello! I'm here to conduct your interview for the Full-Stack Developer position. I've carefully reviewed the job description and your background. I'd like to approach this conversation thoughtfully, focusing on understanding both your technical capabilities and your problem-solving approach.\n\nLet's begin with something foundational: Could you walk me through your journey into software development? I'm particularly interested in what initially drew you to this field and how your perspective has evolved as you've gained experience.";
-
-                      setIsInterviewStarted(true);
-                      const aiMessage = {
-                        id: 1,
-                        type: "ai",
-                        content: initialMessage,
-                        timestamp: new Date(),
-                      };
-                      setMessages([aiMessage]);
-
-                      // Start typing animation for initial message
-                      setTimeout(() => {
-                        typeMessage(initialMessage, aiMessage.id);
-                      }, 500);
-                    }}
-                    className="w-full flex items-center justify-center space-x-3 px-6 lg:px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition-colors text-sm lg:text-base"
-                  >
-                    <RiPlayFill size={20} />
-                    <span>Start AI Interview</span>
-                  </button>
-                </div>
-              </div>
               </div>
             </div>
           )}
