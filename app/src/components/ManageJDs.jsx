@@ -182,6 +182,9 @@ export default function ManageJDs() {
   const [selectedResultIndex, setSelectedResultIndex] = useState(0);
   const [singleAnalyzeModal, setSingleAnalyzeModal] = useState(false);
   const [singleJDToAnalyze, setSingleJDToAnalyze] = useState(null);
+  const [editJDModal, setEditJDModal] = useState(false);
+  const [selectedJDForEdit, setSelectedJDForEdit] = useState(null);
+  const [analyzingJDs, setAnalyzingJDs] = useState([]);
 
   useEffect(() => {
     // Load JDs - in real app this would be from API
@@ -200,22 +203,31 @@ export default function ManageJDs() {
       return;
     }
 
-    const matchScore = Math.floor(Math.random() * 30) + 70; // Random score 70-100
-
-    // Update the JD with match results
-    setJds((prevJds) =>
-      prevJds.map((jd) =>
-        jd.id === singleJDToAnalyze.id
-          ? {
-              ...jd,
-              matchedResume: selectedResume.resumeName,
-              matchScore: matchScore,
-            }
-          : jd
-      )
-    );
-
+    // Close modal and start analyzing
     setSingleAnalyzeModal(false);
+    setAnalyzingJDs([singleJDToAnalyze.id]);
+
+    // Simulate analysis with fast spinner (1.5 seconds)
+    setTimeout(() => {
+      const matchScore = Math.floor(Math.random() * 30) + 70; // Random score 70-100
+
+      // Update the JD with match results
+      setJds((prevJds) =>
+        prevJds.map((jd) =>
+          jd.id === singleJDToAnalyze.id
+            ? {
+                ...jd,
+                matchedResume: selectedResume.resumeName,
+                matchScore: matchScore,
+              }
+            : jd
+        )
+      );
+
+      // Remove from analyzing list
+      setAnalyzingJDs([]);
+    }, 1500);
+
     setSelectedResume(null);
     setSingleJDToAnalyze(null);
   };
@@ -319,6 +331,30 @@ export default function ManageJDs() {
     setJds([...jds, jdToAdd]);
     setNewJD({ jobTitle: "", companyName: "", description: "" });
     setIsTableView(false);
+  };
+
+  const handleUpdateJD = () => {
+    if (!selectedJDForEdit.jobTitle || !selectedJDForEdit.companyName || !selectedJDForEdit.description) {
+      alert("Please fill in all fields");
+      return;
+    }
+
+    // Update the JD in the list
+    setJds((prevJds) =>
+      prevJds.map((jd) =>
+        jd.id === selectedJDForEdit.id
+          ? {
+              ...jd,
+              jobTitle: selectedJDForEdit.jobTitle,
+              companyName: selectedJDForEdit.companyName,
+              description: selectedJDForEdit.description,
+            }
+          : jd
+      )
+    );
+
+    setEditJDModal(false);
+    setSelectedJDForEdit(null);
   };
 
   return (
@@ -538,7 +574,10 @@ export default function ManageJDs() {
                 <div className="flex items-center justify-center mb-8">
                   <div className="max-w-6xl w-full">
                     {/* White Box Container */}
-                    <div className="bg-white rounded-lg p-10" style={{ minHeight: "390px" }}>
+                    <div
+                      className="bg-white rounded-lg p-10"
+                      style={{ minHeight: "390px" }}
+                    >
                       {/* Default Empty State */}
                       <div className="text-center">
                         <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4 mx-auto">
@@ -908,7 +947,14 @@ export default function ManageJDs() {
                               </div>
                             </td>
                             <td className="px-6 py-4">
-                              {jd.matchedResume ? (
+                              {analyzingJDs.includes(jd.id) ? (
+                                <div className="flex flex-col items-center gap-1">
+                                  <div className="w-4 h-4 border-2 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+                                  <span className="text-xs text-gray-500">
+                                    Analyzing
+                                  </span>
+                                </div>
+                              ) : jd.matchedResume ? (
                                 <div className="text-sm">
                                   <div className="font-medium text-gray-900">
                                     {jd.matchedResume}
@@ -935,10 +981,13 @@ export default function ManageJDs() {
                                     size={16}
                                     className="text-purple-600"
                                   />
-                                  <span>Analyze</span>
+                                  <span>Analysis</span>
                                 </button>
                                 <button
-                                  onClick={() => console.log("Edit JD:", jd)}
+                                  onClick={() => {
+                                    setSelectedJDForEdit(jd);
+                                    setEditJDModal(true);
+                                  }}
                                   className="flex items-center justify-center gap-1.5 px-3 py-1.5 border border-gray-300 bg-transparent text-gray-900 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors"
                                 >
                                   <span
@@ -1275,6 +1324,108 @@ export default function ManageJDs() {
               >
                 Cancel
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit JD Modal */}
+      {editJDModal && selectedJDForEdit && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Edit Job Description
+              </h3>
+              <button
+                onClick={() => {
+                  setEditJDModal(false);
+                  setSelectedJDForEdit(null);
+                }}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <span
+                  className="material-symbols-outlined"
+                  style={{
+                    fontSize: "24px",
+                    fontVariationSettings:
+                      '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24',
+                  }}
+                >
+                  close
+                </span>
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Job Title
+                </label>
+                <input
+                  type="text"
+                  value={selectedJDForEdit.jobTitle}
+                  onChange={(e) =>
+                    setSelectedJDForEdit({
+                      ...selectedJDForEdit,
+                      jobTitle: e.target.value,
+                    })
+                  }
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Company Name
+                </label>
+                <input
+                  type="text"
+                  value={selectedJDForEdit.companyName}
+                  onChange={(e) =>
+                    setSelectedJDForEdit({
+                      ...selectedJDForEdit,
+                      companyName: e.target.value,
+                    })
+                  }
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Job Description
+                </label>
+                <textarea
+                  rows={8}
+                  value={selectedJDForEdit.description}
+                  onChange={(e) =>
+                    setSelectedJDForEdit({
+                      ...selectedJDForEdit,
+                      description: e.target.value,
+                    })
+                  }
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+                />
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={handleUpdateJD}
+                  className="flex-1 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                >
+                  Update JD
+                </button>
+                <button
+                  onClick={() => {
+                    setEditJDModal(false);
+                    setSelectedJDForEdit(null);
+                  }}
+                  className="px-6 py-3 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
         </div>
