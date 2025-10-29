@@ -45,7 +45,7 @@ export default function ResumeEditor() {
   const [folders, setFolders] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   // Resume form data
   const [resumeData, setResumeData] = useState({
     personalInfo: {
@@ -54,7 +54,7 @@ export default function ResumeEditor() {
       phone: "",
       location: "",
       linkedin: "",
-      portfolio: ""
+      portfolio: "",
     },
     summary: "",
     experience: [
@@ -65,8 +65,8 @@ export default function ResumeEditor() {
         startDate: "",
         endDate: "",
         current: false,
-        description: ""
-      }
+        description: "",
+      },
     ],
     education: [
       {
@@ -74,12 +74,12 @@ export default function ResumeEditor() {
         degree: "",
         school: "",
         graduationYear: "",
-        gpa: ""
-      }
+        gpa: "",
+      },
     ],
     skills: {
       technical: [],
-      soft: []
+      soft: [],
     },
     projects: [
       {
@@ -87,11 +87,11 @@ export default function ResumeEditor() {
         name: "",
         description: "",
         technologies: [],
-        link: ""
-      }
-    ]
+        link: "",
+      },
+    ],
   });
-  
+
   const [matchedJD, setMatchedJD] = useState(null);
   const [showResumeForm, setShowResumeForm] = useState(false);
 
@@ -101,7 +101,7 @@ export default function ResumeEditor() {
       const { resumeData: navResumeData } = location.state;
       setMatchedJD(navResumeData.matchedJD);
       setShowResumeForm(true);
-      
+
       // Load existing resume data (in real app, fetch from API)
       setResumeData({
         ...resumeData,
@@ -110,9 +110,10 @@ export default function ResumeEditor() {
           fullName: "John Doe",
           email: "john.doe@example.com",
           phone: "+1 (555) 123-4567",
-          location: "San Francisco, CA"
+          location: "San Francisco, CA",
         },
-        summary: "Experienced full-stack developer with 5+ years of experience in building scalable web applications.",
+        summary:
+          "Experienced full-stack developer with 5+ years of experience in building scalable web applications.",
         experience: [
           {
             id: 1,
@@ -121,13 +122,14 @@ export default function ResumeEditor() {
             startDate: "2021-01",
             endDate: "",
             current: true,
-            description: "Led development of scalable web applications using React and Node.js. Collaborated with cross-functional teams to deliver high-quality features."
-          }
+            description:
+              "Led development of scalable web applications using React and Node.js. Collaborated with cross-functional teams to deliver high-quality features.",
+          },
         ],
         skills: {
           technical: ["React", "Node.js", "JavaScript", "Python", "MongoDB"],
-          soft: ["Leadership", "Communication", "Problem Solving"]
-        }
+          soft: ["Leadership", "Communication", "Problem Solving"],
+        },
       });
     }
   }, [location.state]);
@@ -155,16 +157,37 @@ export default function ResumeEditor() {
 
     // Sample JD requirements (in real app, this would come from AI analysis)
     const jdRequirements = {
-      technical: ["React", "Node.js", "TypeScript", "AWS", "Docker", "GraphQL", "PostgreSQL", "Redis"],
-      soft: ["Leadership", "Communication", "Problem Solving", "Team Collaboration", "Project Management"],
-      experience: ["Full-stack development", "Microservices", "CI/CD", "Agile methodology"]
+      technical: [
+        "React",
+        "Node.js",
+        "TypeScript",
+        "AWS",
+        "Docker",
+        "GraphQL",
+        "PostgreSQL",
+        "Redis",
+      ],
+      soft: [
+        "Leadership",
+        "Communication",
+        "Problem Solving",
+        "Team Collaboration",
+        "Project Management",
+      ],
+      experience: [
+        "Full-stack development",
+        "Microservices",
+        "CI/CD",
+        "Agile methodology",
+      ],
     };
 
-    const userSkills = currentSkills.map(skill => skill.toLowerCase());
+    const userSkills = currentSkills.map((skill) => skill.toLowerCase());
     const requiredSkills = jdRequirements[fieldType] || [];
-    
-    const missing = requiredSkills.filter(skill => 
-      !userSkills.some(userSkill => userSkill.includes(skill.toLowerCase()))
+
+    const missing = requiredSkills.filter(
+      (skill) =>
+        !userSkills.some((userSkill) => userSkill.includes(skill.toLowerCase()))
     );
 
     const suggestions = missing.slice(0, 3); // Top 3 missing skills
@@ -175,15 +198,20 @@ export default function ResumeEditor() {
 
   const SkillAnalysisCard = ({ fieldName, currentSkills, fieldType }) => {
     const analysis = analyzeSkillGaps(currentSkills, fieldType);
-    
+
     if (analysis.suggestions.length === 0 && analysis.warnings.length === 0) {
       return (
         <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-green-600" style={{ fontSize: 16 }}>
+            <span
+              className="material-symbols-outlined text-green-600"
+              style={{ fontSize: 16 }}
+            >
               check_circle
             </span>
-            <span className="text-sm font-medium text-green-800">Great! Your {fieldName} aligns well with the JD</span>
+            <span className="text-sm font-medium text-green-800">
+              Great! Your {fieldName} aligns well with the JD
+            </span>
           </div>
         </div>
       );
@@ -194,25 +222,32 @@ export default function ResumeEditor() {
         {analysis.suggestions.length > 0 && (
           <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
             <div className="flex items-start gap-2 mb-2">
-              <span className="material-symbols-outlined text-blue-600" style={{ fontSize: 16 }}>
+              <span
+                className="material-symbols-outlined text-blue-600"
+                style={{ fontSize: 16 }}
+              >
                 lightbulb
               </span>
               <div className="flex-1">
-                <p className="text-sm font-medium text-blue-800 mb-1">AI Suggestions for {fieldName}</p>
-                <p className="text-xs text-blue-700 mb-2">Based on the JD for {matchedJD?.title} at {matchedJD?.company}</p>
+                <p className="text-sm font-medium text-blue-800 mb-1">
+                  AI Suggestions for {fieldName}
+                </p>
+                <p className="text-xs text-blue-700 mb-2">
+                  Based on the JD for {matchedJD?.title} at {matchedJD?.company}
+                </p>
                 <div className="flex flex-wrap gap-1">
                   {analysis.suggestions.map((skill, index) => (
                     <button
                       key={index}
                       onClick={() => {
                         // Add skill to resume
-                        if (fieldType === 'technical') {
-                          setResumeData(prev => ({
+                        if (fieldType === "technical") {
+                          setResumeData((prev) => ({
                             ...prev,
                             skills: {
                               ...prev.skills,
-                              technical: [...prev.skills.technical, skill]
-                            }
+                              technical: [...prev.skills.technical, skill],
+                            },
                           }));
                         }
                       }}
@@ -226,17 +261,23 @@ export default function ResumeEditor() {
             </div>
           </div>
         )}
-        
+
         {analysis.warnings.length > 0 && (
           <div className="p-3 bg-amber-50 rounded-lg border border-amber-200">
             <div className="flex items-start gap-2">
-              <span className="material-symbols-outlined text-amber-600" style={{ fontSize: 16 }}>
+              <span
+                className="material-symbols-outlined text-amber-600"
+                style={{ fontSize: 16 }}
+              >
                 warning
               </span>
               <div className="flex-1">
-                <p className="text-sm font-medium text-amber-800 mb-1">Skills Gap Warning</p>
+                <p className="text-sm font-medium text-amber-800 mb-1">
+                  Skills Gap Warning
+                </p>
                 <p className="text-xs text-amber-700 mb-2">
-                  Consider learning these skills before applying: {analysis.warnings.join(", ")}
+                  Consider learning these skills before applying:{" "}
+                  {analysis.warnings.join(", ")}
                 </p>
                 <button className="text-xs text-amber-800 underline hover:no-underline">
                   View learning resources →
@@ -519,10 +560,14 @@ export default function ResumeEditor() {
           {/* Page Title */}
           <div className="mb-6">
             <div className="flex items-center justify-between">
-              <h1 className="text-base font-bold text-gray-900">Resume Editor</h1>
+              <h1 className="text-base font-bold text-gray-900">
+                Resume Editor
+              </h1>
               {matchedJD && (
                 <div className="text-sm text-gray-600">
-                  Editing for: <span className="font-medium">{matchedJD.title}</span> at <span className="font-medium">{matchedJD.company}</span>
+                  Editing for:{" "}
+                  <span className="font-medium">{matchedJD.title}</span> at{" "}
+                  <span className="font-medium">{matchedJD.company}</span>
                 </div>
               )}
             </div>
@@ -534,53 +579,83 @@ export default function ResumeEditor() {
               <div className="max-w-4xl mx-auto space-y-8">
                 {/* Personal Information */}
                 <div className="bg-white rounded-lg p-6">
-                  <h2 className="text-lg font-semibold text-gray-900 mb-4">Personal Information</h2>
+                  <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                    Personal Information
+                  </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Full Name
+                      </label>
                       <input
                         type="text"
                         value={resumeData.personalInfo.fullName}
-                        onChange={(e) => setResumeData(prev => ({
-                          ...prev,
-                          personalInfo: { ...prev.personalInfo, fullName: e.target.value }
-                        }))}
+                        onChange={(e) =>
+                          setResumeData((prev) => ({
+                            ...prev,
+                            personalInfo: {
+                              ...prev.personalInfo,
+                              fullName: e.target.value,
+                            },
+                          }))
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Email
+                      </label>
                       <input
                         type="email"
                         value={resumeData.personalInfo.email}
-                        onChange={(e) => setResumeData(prev => ({
-                          ...prev,
-                          personalInfo: { ...prev.personalInfo, email: e.target.value }
-                        }))}
+                        onChange={(e) =>
+                          setResumeData((prev) => ({
+                            ...prev,
+                            personalInfo: {
+                              ...prev.personalInfo,
+                              email: e.target.value,
+                            },
+                          }))
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Phone
+                      </label>
                       <input
                         type="tel"
                         value={resumeData.personalInfo.phone}
-                        onChange={(e) => setResumeData(prev => ({
-                          ...prev,
-                          personalInfo: { ...prev.personalInfo, phone: e.target.value }
-                        }))}
+                        onChange={(e) =>
+                          setResumeData((prev) => ({
+                            ...prev,
+                            personalInfo: {
+                              ...prev.personalInfo,
+                              phone: e.target.value,
+                            },
+                          }))
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Location
+                      </label>
                       <input
                         type="text"
                         value={resumeData.personalInfo.location}
-                        onChange={(e) => setResumeData(prev => ({
-                          ...prev,
-                          personalInfo: { ...prev.personalInfo, location: e.target.value }
-                        }))}
+                        onChange={(e) =>
+                          setResumeData((prev) => ({
+                            ...prev,
+                            personalInfo: {
+                              ...prev.personalInfo,
+                              location: e.target.value,
+                            },
+                          }))
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                       />
                     </div>
@@ -589,24 +664,35 @@ export default function ResumeEditor() {
 
                 {/* Professional Summary */}
                 <div className="bg-white rounded-lg p-6">
-                  <h2 className="text-lg font-semibold text-gray-900 mb-4">Professional Summary</h2>
+                  <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                    Professional Summary
+                  </h2>
                   <textarea
                     rows={4}
                     value={resumeData.summary}
-                    onChange={(e) => setResumeData(prev => ({ ...prev, summary: e.target.value }))}
+                    onChange={(e) =>
+                      setResumeData((prev) => ({
+                        ...prev,
+                        summary: e.target.value,
+                      }))
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     placeholder="Write a compelling summary of your professional background..."
                   />
-                  <SkillAnalysisCard 
-                    fieldName="Professional Summary" 
-                    currentSkills={resumeData.summary.split(' ').filter(word => word.length > 3)} 
-                    fieldType="experience" 
+                  <SkillAnalysisCard
+                    fieldName="Professional Summary"
+                    currentSkills={resumeData.summary
+                      .split(" ")
+                      .filter((word) => word.length > 3)}
+                    fieldType="experience"
                   />
                 </div>
 
                 {/* Technical Skills */}
                 <div className="bg-white rounded-lg p-6">
-                  <h2 className="text-lg font-semibold text-gray-900 mb-4">Technical Skills</h2>
+                  <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                    Technical Skills
+                  </h2>
                   <div className="space-y-3">
                     <div className="flex flex-wrap gap-2">
                       {resumeData.skills.technical.map((skill, index) => (
@@ -617,12 +703,14 @@ export default function ResumeEditor() {
                           {skill}
                           <button
                             onClick={() => {
-                              setResumeData(prev => ({
+                              setResumeData((prev) => ({
                                 ...prev,
                                 skills: {
                                   ...prev.skills,
-                                  technical: prev.skills.technical.filter((_, i) => i !== index)
-                                }
+                                  technical: prev.skills.technical.filter(
+                                    (_, i) => i !== index
+                                  ),
+                                },
                               }));
                             }}
                             className="text-purple-600 hover:text-purple-800"
@@ -637,77 +725,102 @@ export default function ResumeEditor() {
                       placeholder="Add a technical skill (press Enter)"
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                       onKeyPress={(e) => {
-                        if (e.key === 'Enter' && e.target.value.trim()) {
-                          setResumeData(prev => ({
+                        if (e.key === "Enter" && e.target.value.trim()) {
+                          setResumeData((prev) => ({
                             ...prev,
                             skills: {
                               ...prev.skills,
-                              technical: [...prev.skills.technical, e.target.value.trim()]
-                            }
+                              technical: [
+                                ...prev.skills.technical,
+                                e.target.value.trim(),
+                              ],
+                            },
                           }));
-                          e.target.value = '';
+                          e.target.value = "";
                         }
                       }}
                     />
                   </div>
-                  <SkillAnalysisCard 
-                    fieldName="Technical Skills" 
-                    currentSkills={resumeData.skills.technical} 
-                    fieldType="technical" 
+                  <SkillAnalysisCard
+                    fieldName="Technical Skills"
+                    currentSkills={resumeData.skills.technical}
+                    fieldType="technical"
                   />
                 </div>
 
                 {/* Work Experience */}
                 <div className="bg-white rounded-lg p-6">
-                  <h2 className="text-lg font-semibold text-gray-900 mb-4">Work Experience</h2>
+                  <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                    Work Experience
+                  </h2>
                   {resumeData.experience.map((exp, index) => (
-                    <div key={exp.id} className="space-y-4 pb-6 border-b border-gray-200 last:border-b-0">
+                    <div
+                      key={exp.id}
+                      className="space-y-4 pb-6 border-b border-gray-200 last:border-b-0"
+                    >
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Job Title</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Job Title
+                          </label>
                           <input
                             type="text"
                             value={exp.jobTitle}
                             onChange={(e) => {
                               const newExp = [...resumeData.experience];
                               newExp[index].jobTitle = e.target.value;
-                              setResumeData(prev => ({ ...prev, experience: newExp }));
+                              setResumeData((prev) => ({
+                                ...prev,
+                                experience: newExp,
+                              }));
                             }}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Company</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Company
+                          </label>
                           <input
                             type="text"
                             value={exp.company}
                             onChange={(e) => {
                               const newExp = [...resumeData.experience];
                               newExp[index].company = e.target.value;
-                              setResumeData(prev => ({ ...prev, experience: newExp }));
+                              setResumeData((prev) => ({
+                                ...prev,
+                                experience: newExp,
+                              }));
                             }}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                           />
                         </div>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Description
+                        </label>
                         <textarea
                           rows={3}
                           value={exp.description}
                           onChange={(e) => {
                             const newExp = [...resumeData.experience];
                             newExp[index].description = e.target.value;
-                            setResumeData(prev => ({ ...prev, experience: newExp }));
+                            setResumeData((prev) => ({
+                              ...prev,
+                              experience: newExp,
+                            }));
                           }}
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                           placeholder="Describe your responsibilities and achievements..."
                         />
                       </div>
-                      <SkillAnalysisCard 
-                        fieldName="Work Experience" 
-                        currentSkills={exp.description.split(' ').filter(word => word.length > 3)} 
-                        fieldType="experience" 
+                      <SkillAnalysisCard
+                        fieldName="Work Experience"
+                        currentSkills={exp.description
+                          .split(" ")
+                          .filter((word) => word.length > 3)}
+                        fieldType="experience"
                       />
                     </div>
                   ))}
@@ -719,7 +832,7 @@ export default function ResumeEditor() {
                     <button className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors font-medium">
                       Save Resume
                     </button>
-                    <button 
+                    <button
                       onClick={() => navigate("/manage-jds")}
                       className="px-6 py-3 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors font-medium"
                     >
@@ -742,7 +855,7 @@ export default function ResumeEditor() {
                 <p className="text-gray-600 mb-6">
                   Create and organize your resume outlines in folders.
                 </p>
-                <button 
+                <button
                   onClick={() => setShowResumeForm(true)}
                   className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
                 >

@@ -913,7 +913,8 @@ export default function ManageJDs() {
                                 Led development of scalable web applications
                                 using React and Node.js. Collaborated with
                                 cross-functional teams to deliver high-quality
-                                features and ensure optimal performance across multiple platforms and devices.
+                                features and ensure optimal performance across
+                                multiple platforms and devices.
                               </p>
                             </div>
                           </div>
@@ -953,21 +954,21 @@ export default function ManageJDs() {
                             </span>
                             <span>Take Interview</span>
                           </button>
-                          
+
                           <button
                             onClick={() => {
                               // Navigate to resume editor with this resume data
-                              navigate("/resume-editor", { 
-                                state: { 
+                              navigate("/resume-editor", {
+                                state: {
                                   resumeData: {
                                     id: suggestedMatch?.id,
                                     resumeName: suggestedMatch?.resumeName,
                                     matchedJD: {
                                       title: suggestedMatch?.jdTitle,
-                                      company: suggestedMatch?.jdCompany
-                                    }
-                                  }
-                                }
+                                      company: suggestedMatch?.jdCompany,
+                                    },
+                                  },
+                                },
                               });
                             }}
                             className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-black hover:bg-gray-50 rounded-lg transition-colors font-medium"
