@@ -23,8 +23,6 @@ import {
   RiRobotLine,
   RiEditLine,
   RiSparklingFill,
-  RiFolderLine,
-  RiFolder3Line,
   RiArrowRightLine,
 } from "@remixicon/react";
 import logoSvg from "../assets/logo.svg";
@@ -265,45 +263,63 @@ export default function ResumeEditor() {
         </div>
 
         {/* Second Sidebar - Resume Organization */}
-        <div className="w-80 bg-white border-l border-gray-200 flex-shrink-0 h-full">
+        <div className="w-64 bg-white border-l border-gray-200 flex-shrink-0 h-full">
           <div className="flex flex-col h-full">
             {/* Header with Add Resume Button */}
-            <div className="p-4 border-b border-gray-200">
-              <button className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-white border border-gray-600 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors font-medium">
-                <RiAddLine size={20} className="text-gray-600" />
-                <span>Add Resume</span>
+            <div className="p-4">
+              <button className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-white border border-gray-700 text-gray-800 hover:bg-gray-50 rounded-lg transition-colors font-medium">
+                <RiAddLine size={20} className="text-gray-700" />
+                <span className="text-gray-800">Add Resume</span>
               </button>
             </div>
 
             {/* All Resumes Section */}
-            <div className="flex-1 p-4">
-              <div className="mb-4">
-                <div className="flex items-center justify-between px-3 py-2 bg-gray-50 rounded-md">
+            <div className="flex-1 px-4 pb-4">
+              <div className="mb-3">
+                <div className="flex items-center justify-between px-2 py-1.5 bg-gray-50 rounded-md">
                   <div className="flex items-center space-x-2">
-                    <RiFolderLine size={20} className="text-gray-600" />
-                    <span className="text-base font-medium text-gray-900">
+                    <span
+                      className="material-symbols-outlined text-gray-700"
+                      style={{
+                        fontSize: "20px",
+                        fontVariationSettings:
+                          '"FILL" 0, "wght" 300, "GRAD" 0, "opsz" 20',
+                      }}
+                    >
+                      folder
+                    </span>
+                    <span className="text-sm font-medium text-gray-800">
                       All Resumes
                     </span>
                   </div>
                   <button
                     onClick={() => setCreateFolderModal(true)}
-                    className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-white rounded transition-colors"
+                    className="w-7 h-7 flex items-center justify-center text-gray-600 hover:text-gray-800 hover:bg-white rounded transition-colors"
                     title="Create Folder"
                   >
-                    <RiAddLine size={18} />
+                    <RiAddLine size={16} className="text-gray-700" />
                   </button>
                 </div>
               </div>
 
               {/* Folder List */}
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 {folders.map((folder) => (
                   <div
                     key={folder.id}
-                    className="flex items-center space-x-2 px-3 py-2 text-gray-900 hover:bg-gray-50 rounded-md cursor-pointer transition-colors ml-6"
+                    className="flex items-center space-x-2 px-2 py-1.5 text-gray-900 hover:bg-gray-50 rounded-md cursor-pointer transition-colors ml-5"
                   >
-                    <RiFolder3Line size={18} className="text-gray-600" />
-                    <span className="text-sm text-gray-900">{folder.name}</span>
+                    <span
+                      className="material-symbols-outlined text-gray-600"
+                      style={{
+                        fontSize: "18px",
+                        fontVariationSettings:
+                          '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 18',
+                      }}
+                    >
+                      folder
+                    </span>
+                    <span className="text-sm text-gray-800">{folder.name}</span>
                   </div>
                 ))}
               </div>
@@ -389,7 +405,10 @@ export default function ResumeEditor() {
                 className="flex-1 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-all duration-200 flex items-center justify-center space-x-2 group"
               >
                 <span>Create</span>
-                <RiArrowRightLine size={16} className="transition-transform duration-200 group-hover:translate-x-1" />
+                <RiArrowRightLine
+                  size={16}
+                  className="transition-transform duration-200 group-hover:translate-x-1"
+                />
               </button>
               <button
                 onClick={() => {
