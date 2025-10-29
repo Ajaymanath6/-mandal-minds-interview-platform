@@ -454,9 +454,18 @@ export default function Resume() {
                 href="#"
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-purple-600 bg-gray-50 rounded-md`}
+                } py-2 text-purple-600 bg-gray-50 rounded-md transition-colors`}
               >
-                <RiStarLine size={16} />
+                <span
+                  className="material-symbols-outlined"
+                  style={{
+                    fontSize: "24px",
+                    fontVariationSettings:
+                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                  }}
+                >
+                  auto_awesome
+                </span>
                 {firstSidebarOpen && (
                   <span className="text-sm">AI Interview</span>
                 )}
@@ -466,9 +475,18 @@ export default function Resume() {
                 href="#"
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md`}
+                } py-2 text-gray-900 hover:bg-gray-50 rounded-md transition-colors`}
               >
-                <RiFileTextLine size={16} />
+                <span
+                  className="material-symbols-outlined"
+                  style={{
+                    fontSize: "24px",
+                    fontVariationSettings:
+                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                  }}
+                >
+                  edit_document
+                </span>
                 {firstSidebarOpen && (
                   <span className="text-sm">Resume Editor</span>
                 )}
@@ -478,9 +496,18 @@ export default function Resume() {
                 onClick={() => navigate("/manage-resume")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md w-full`}
+                } py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full transition-colors`}
               >
-                <RiFileCopyLine size={16} />
+                <span
+                  className="material-symbols-outlined"
+                  style={{
+                    fontSize: "24px",
+                    fontVariationSettings:
+                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                  }}
+                >
+                  content_copy
+                </span>
                 {firstSidebarOpen && (
                   <span className="text-sm">Manage Resume</span>
                 )}
@@ -490,9 +517,18 @@ export default function Resume() {
                 onClick={() => navigate("/manage-jds")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md w-full`}
+                } py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full transition-colors`}
               >
-                <RiFileList3Line size={16} />
+                <span
+                  className="material-symbols-outlined"
+                  style={{
+                    fontSize: "24px",
+                    fontVariationSettings:
+                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                  }}
+                >
+                  description
+                </span>
                 {firstSidebarOpen && (
                   <span className="text-sm">Manage JDs</span>
                 )}
@@ -504,7 +540,16 @@ export default function Resume() {
               {firstSidebarOpen ? (
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                    <RiUser3Fill size={16} className="text-purple-600" />
+                    <span
+                      className="material-symbols-outlined text-purple-600"
+                      style={{
+                        fontSize: "18px",
+                        fontVariationSettings:
+                          '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 18',
+                      }}
+                    >
+                      person
+                    </span>
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 truncate">
@@ -521,7 +566,16 @@ export default function Resume() {
                   className="w-full p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors flex items-center justify-center"
                   title="Logout"
                 >
-                  <RiLogoutBoxLine size={20} />
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: "24px",
+                      fontVariationSettings:
+                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                    }}
+                  >
+                    logout
+                  </span>
                 </button>
               )}
             </div>

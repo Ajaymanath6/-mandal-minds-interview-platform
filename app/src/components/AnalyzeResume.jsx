@@ -115,10 +115,19 @@ export default function AnalyzeResume() {
             <nav className="flex-1 p-2 space-y-2">
               <button 
                 onClick={() => navigate('/manage-resume')}
-                className={`flex items-center ${firstSidebarOpen ? 'space-x-3 px-3' : 'justify-center px-2'} py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md w-full`}
+                className={`flex items-center ${firstSidebarOpen ? 'space-x-3 px-3' : 'justify-center px-2'} py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full transition-colors`}
               >
-                <RiArrowLeftLine size={20} />
-                {firstSidebarOpen && <span className="font-medium">Back to Manage Resume</span>}
+                <span
+                  className="material-symbols-outlined"
+                  style={{
+                    fontSize: "24px",
+                    fontVariationSettings:
+                      '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24',
+                  }}
+                >
+                  arrow_back
+                </span>
+                {firstSidebarOpen && <span className="text-sm">Back to Manage Resume</span>}
               </button>
             </nav>
           </div>
