@@ -851,7 +851,7 @@ export default function ManageJDs() {
 
               {/* AI Suggestion Card - Above All Files */}
               {(suggestedMatch || isAnalyzingNew) && (
-                <div className="mb-8 max-w-4xl">
+                <div className="mb-8 w-full">
                   <div className="flex items-center gap-2 mb-3">
                     <RiSparklingFill size={20} className="text-purple-600" />
                     <h2 className="text-base font-semibold text-gray-900">
@@ -880,11 +880,11 @@ export default function ManageJDs() {
                         {/* Left: Resume Content Preview */}
                         <div className="flex-1">
                           {/* Header Section - Like Resume */}
-                          <div className="text-center mb-3 pb-2 border-b border-gray-200">
-                            <h2 className="text-lg font-bold text-gray-900 mb-1">
+                          <div className="text-center mb-3 pb-2 border-b border-gray-300">
+                            <h2 className="text-lg font-bold text-black mb-1">
                               John Doe
                             </h2>
-                            <p className="text-xs text-gray-800">
+                            <p className="text-xs text-black">
                               john.doe@example.com | +1 (555) 123-4567 | San
                               Francisco, CA
                             </p>
@@ -892,28 +892,28 @@ export default function ManageJDs() {
 
                           {/* Work Experience Section */}
                           <div>
-                            <h3 className="text-xs font-semibold text-gray-900 mb-2 uppercase tracking-wide">
+                            <h3 className="text-xs font-semibold text-black mb-2 uppercase tracking-wide">
                               WORK EXPERIENCE
                             </h3>
                             <div className="space-y-1">
                               <div className="flex justify-between items-start">
-                                <div>
-                                  <h4 className="font-medium text-gray-900 text-sm">
+                                <div className="flex-1">
+                                  <h4 className="font-medium text-black text-sm">
                                     Backend Developer Resume
                                   </h4>
-                                  <p className="text-xs text-gray-800">
+                                  <p className="text-xs text-black">
                                     Mandal Minds
                                   </p>
                                 </div>
-                                <span className="text-xs text-gray-700">
+                                <span className="text-xs text-black">
                                   2021-01 - Present
                                 </span>
                               </div>
-                              <p className="text-xs text-gray-800 leading-relaxed">
+                              <p className="text-xs text-black leading-relaxed line-clamp-2">
                                 Led development of scalable web applications
                                 using React and Node.js. Collaborated with
                                 cross-functional teams to deliver high-quality
-                                features...
+                                features and ensure optimal performance across multiple platforms and devices.
                               </p>
                             </div>
                           </div>
@@ -936,11 +936,51 @@ export default function ManageJDs() {
                         </div>
                       </div>
 
-                      {/* Resume File Name at Bottom */}
-                      <div className="mt-3 pt-2 border-t border-gray-200">
-                        <p className="text-xs font-medium text-gray-900">
-                          📄 {suggestedMatch?.resumeName}
-                        </p>
+                      {/* Action Buttons at Bottom */}
+                      <div className="mt-4 pt-3 border-t border-gray-300">
+                        <div className="flex gap-3">
+                          <button
+                            onClick={() => {
+                              navigate("/resume");
+                            }}
+                            className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors font-medium"
+                          >
+                            <span
+                              className="material-symbols-outlined"
+                              style={{ fontSize: 16 }}
+                            >
+                              auto_awesome
+                            </span>
+                            <span>Take Interview</span>
+                          </button>
+                          
+                          <button
+                            onClick={() => {
+                              // Navigate to resume editor with this resume data
+                              navigate("/resume-editor", { 
+                                state: { 
+                                  resumeData: {
+                                    id: suggestedMatch?.id,
+                                    resumeName: suggestedMatch?.resumeName,
+                                    matchedJD: {
+                                      title: suggestedMatch?.jdTitle,
+                                      company: suggestedMatch?.jdCompany
+                                    }
+                                  }
+                                }
+                              });
+                            }}
+                            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-black hover:bg-gray-50 rounded-lg transition-colors font-medium"
+                          >
+                            <span
+                              className="material-symbols-outlined"
+                              style={{ fontSize: 16 }}
+                            >
+                              edit_document
+                            </span>
+                            <span>Edit Resume</span>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   )}
