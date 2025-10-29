@@ -851,7 +851,7 @@ export default function ManageJDs() {
 
               {/* AI Suggestion Card - Above All Files */}
               {(suggestedMatch || isAnalyzingNew) && (
-                <div className="mb-8">
+                <div className="mb-8 max-w-4xl">
                   <div className="flex items-center gap-2 mb-3">
                     <RiSparklingFill size={20} className="text-purple-600" />
                     <h2 className="text-base font-semibold text-gray-900">
@@ -880,11 +880,11 @@ export default function ManageJDs() {
                         {/* Left: Resume Content Preview */}
                         <div className="flex-1">
                           {/* Header Section - Like Resume */}
-                          <div className="text-center mb-3 pb-2 border-b border-gray-100">
-                            <h2 className="text-lg font-bold text-gray-700 mb-1">
+                          <div className="text-center mb-3 pb-2 border-b border-gray-200">
+                            <h2 className="text-lg font-bold text-gray-900 mb-1">
                               John Doe
                             </h2>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-gray-800">
                               john.doe@example.com | +1 (555) 123-4567 | San
                               Francisco, CA
                             </p>
@@ -892,24 +892,24 @@ export default function ManageJDs() {
 
                           {/* Work Experience Section */}
                           <div>
-                            <h3 className="text-xs font-semibold text-gray-600 mb-2 uppercase tracking-wide">
+                            <h3 className="text-xs font-semibold text-gray-900 mb-2 uppercase tracking-wide">
                               WORK EXPERIENCE
                             </h3>
                             <div className="space-y-1">
                               <div className="flex justify-between items-start">
                                 <div>
-                                  <h4 className="font-medium text-gray-700 text-sm">
+                                  <h4 className="font-medium text-gray-900 text-sm">
                                     Backend Developer Resume
                                   </h4>
-                                  <p className="text-xs text-gray-500">
+                                  <p className="text-xs text-gray-800">
                                     Mandal Minds
                                   </p>
                                 </div>
-                                <span className="text-xs text-gray-400">
+                                <span className="text-xs text-gray-700">
                                   2021-01 - Present
                                 </span>
                               </div>
-                              <p className="text-xs text-gray-500 leading-relaxed">
+                              <p className="text-xs text-gray-800 leading-relaxed">
                                 Led development of scalable web applications
                                 using React and Node.js. Collaborated with
                                 cross-functional teams to deliver high-quality
@@ -919,28 +919,8 @@ export default function ManageJDs() {
                           </div>
                         </div>
 
-                        {/* Right: Match Info - Single Line */}
-                        <div className="flex items-center gap-3">
-                          {/* Match Score */}
-                          <div
-                            className={`text-2xl font-bold ${getScoreColor(
-                              suggestedMatch?.matchScore
-                            )}`}
-                          >
-                            {suggestedMatch?.matchScore}%
-                          </div>
-
-                          {/* Badges */}
-                          <div className="flex gap-2">
-                            <span className="px-2 py-1 bg-purple-50 text-purple-700 text-xs font-medium rounded">
-                              Best Match
-                            </span>
-                            <span className="px-2 py-1 bg-gray-50 text-gray-600 text-xs font-medium rounded">
-                              Auto-Analyzed
-                            </span>
-                          </div>
-
-                          {/* Close Button */}
+                        {/* Right: Close Button Only */}
+                        <div className="flex items-start">
                           <button
                             onClick={() => setSuggestedMatch(null)}
                             className="p-1 hover:bg-gray-100 rounded transition-colors"
@@ -957,8 +937,8 @@ export default function ManageJDs() {
                       </div>
 
                       {/* Resume File Name at Bottom */}
-                      <div className="mt-3 pt-2 border-t border-gray-100">
-                        <p className="text-xs font-medium text-gray-600">
+                      <div className="mt-3 pt-2 border-t border-gray-200">
+                        <p className="text-xs font-medium text-gray-900">
                           📄 {suggestedMatch?.resumeName}
                         </p>
                       </div>
