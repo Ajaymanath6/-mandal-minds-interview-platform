@@ -10,6 +10,7 @@ import ManageJDs from "./components/ManageJDs";
 import ManageResume from "./components/ManageResume";
 import AnalyzeResume from "./components/AnalyzeResume";
 import EditResume from "./components/EditResume";
+import ResumeEditor from "./components/ResumeEditor";
 
 function App() {
   const isProd = process.env.NODE_ENV === "production";
@@ -27,6 +28,7 @@ function App() {
         <Route path="/manage-resume" element={<ManageResume />} />
         <Route path="/analyze-resume" element={<AnalyzeResume />} />
         <Route path="/edit-resume" element={<EditResume />} />
+        <Route path="/resume-editor" element={<ResumeEditor />} />
       </Routes>
     </RouterComponent>
   );

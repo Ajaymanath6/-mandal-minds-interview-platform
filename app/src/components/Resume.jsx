@@ -471,11 +471,11 @@ export default function Resume() {
                 )}
               </a>
 
-              <a
-                href="#"
+              <button
+                onClick={() => navigate("/resume-editor")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-900 hover:bg-gray-50 rounded-md transition-colors`}
+                } py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full transition-colors`}
               >
                 <span
                   className="material-symbols-outlined"
@@ -490,7 +490,7 @@ export default function Resume() {
                 {firstSidebarOpen && (
                   <span className="text-sm">Resume Editor</span>
                 )}
-              </a>
+              </button>
 
               <button
                 onClick={() => navigate("/manage-resume")}
@@ -1083,9 +1083,10 @@ export default function Resume() {
               </div>
             </div>
           ) : (
-            <div className="max-w-4xl mx-auto space-y-4 lg:space-y-6 w-full">
+            <div className="flex items-center justify-center h-full">
+              <div className="max-w-4xl space-y-4 lg:space-y-6 w-full">
               {/* JD Analysis Header */}
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6">
+              <div className="bg-white rounded-lg p-4 lg:p-6">
                 <div className="flex items-center space-x-3 mb-4">
                   <img
                     src={logoSvg}
@@ -1152,7 +1153,7 @@ export default function Resume() {
               </div>
 
               {/* Skills Section */}
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6">
+              <div className="bg-white rounded-lg p-4 lg:p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   Your Skills
                 </h3>
@@ -1233,6 +1234,7 @@ export default function Resume() {
                     <span>Start AI Interview</span>
                   </button>
                 </div>
+              </div>
               </div>
             </div>
           )}

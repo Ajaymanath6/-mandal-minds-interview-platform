@@ -207,7 +207,7 @@ export default function ManageJDs() {
     setSingleAnalyzeModal(false);
     setAnalyzingJDs([singleJDToAnalyze.id]);
 
-    // Simulate analysis with fast spinner (1.5 seconds)
+    // Simulate analysis with spinner (3 seconds)
     setTimeout(() => {
       const matchScore = Math.floor(Math.random() * 30) + 70; // Random score 70-100
 
@@ -226,7 +226,7 @@ export default function ManageJDs() {
 
       // Remove from analyzing list
       setAnalyzingJDs([]);
-    }, 1500);
+    }, 3000);
 
     setSelectedResume(null);
     setSingleJDToAnalyze(null);
@@ -334,7 +334,11 @@ export default function ManageJDs() {
   };
 
   const handleUpdateJD = () => {
-    if (!selectedJDForEdit.jobTitle || !selectedJDForEdit.companyName || !selectedJDForEdit.description) {
+    if (
+      !selectedJDForEdit.jobTitle ||
+      !selectedJDForEdit.companyName ||
+      !selectedJDForEdit.description
+    ) {
       alert("Please fill in all fields");
       return;
     }

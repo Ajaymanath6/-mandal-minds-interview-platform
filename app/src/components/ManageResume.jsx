@@ -487,7 +487,9 @@ export default function ManageResume() {
                                 className="w-4 h-4 accent-purple-600 border-gray-300 rounded focus:ring-purple-600"
                                 onChange={(e) => {
                                   if (e.target.checked) {
-                                    setSelectedResumes(resumes.map((r) => r.id));
+                                    setSelectedResumes(
+                                      resumes.map((r) => r.id)
+                                    );
                                   } else {
                                     setSelectedResumes([]);
                                   }
