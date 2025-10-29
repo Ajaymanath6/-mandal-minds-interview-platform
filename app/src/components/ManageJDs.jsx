@@ -185,6 +185,8 @@ export default function ManageJDs() {
   const [editJDModal, setEditJDModal] = useState(false);
   const [selectedJDForEdit, setSelectedJDForEdit] = useState(null);
   const [analyzingJDs, setAnalyzingJDs] = useState([]);
+  const [suggestedMatch, setSuggestedMatch] = useState(null);
+  const [isAnalyzingNew, setIsAnalyzingNew] = useState(false);
 
   useEffect(() => {
     // Load JDs - in real app this would be from API
@@ -331,6 +333,40 @@ export default function ManageJDs() {
     setJds([...jds, jdToAdd]);
     setNewJD({ jobTitle: "", companyName: "", description: "" });
     setIsTableView(false);
+
+    // Automatically analyze against all resumes and suggest best match
+    setIsAnalyzingNew(true);
+
+    setTimeout(() => {
+      // Find best matching resume (highest score)
+      const resumeMatches = SAMPLE_RESUMES.map((resume) => ({
+        ...resume,
+        matchScore: Math.floor(Math.random() * 30) + 70, // Random score 70-100
+        jdId: jdToAdd.id,
+        jdTitle: jdToAdd.jobTitle,
+        jdCompany: jdToAdd.companyName,
+      }));
+
+      // Sort by match score and get the best one
+      resumeMatches.sort((a, b) => b.matchScore - a.matchScore);
+      const bestMatch = resumeMatches[0];
+
+      setSuggestedMatch(bestMatch);
+      setIsAnalyzingNew(false);
+
+      // Update the JD with the best match
+      setJds((prevJds) =>
+        prevJds.map((jd) =>
+          jd.id === jdToAdd.id
+            ? {
+                ...jd,
+                matchedResume: bestMatch.resumeName,
+                matchScore: bestMatch.matchScore,
+              }
+            : jd
+        )
+      );
+    }, 2000); // 2 second analysis simulation
   };
 
   const handleUpdateJD = () => {
@@ -810,6 +846,124 @@ export default function ManageJDs() {
                       </div>
                     </div>
                   </div>
+                </div>
+              )}
+
+              {/* AI Suggestion Card - Above All Files */}
+              {(suggestedMatch || isAnalyzingNew) && (
+                <div className="mb-8">
+                  <div className="flex items-center gap-2 mb-3">
+                    <RiSparklingFill size={20} className="text-purple-600" />
+                    <h2 className="text-base font-semibold text-gray-900">
+                      AI Suggested Match
+                    </h2>
+                  </div>
+
+                  {isAnalyzingNew ? (
+                    <div className="bg-white rounded-lg p-6">
+                      <div className="flex items-center gap-4">
+                        <div className="w-6 h-6 border-2 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+                        <div>
+                          <p className="font-medium text-gray-900">
+                            Analyzing your JD against available resumes...
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            Finding the best match for you
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-white rounded-lg p-4 relative">
+                      {/* Resume Preview Layout */}
+                      <div className="flex gap-4">
+                        {/* Left: Resume Content Preview */}
+                        <div className="flex-1">
+                          {/* Header Section - Like Resume */}
+                          <div className="text-center mb-3 pb-2 border-b border-gray-100">
+                            <h2 className="text-lg font-bold text-gray-700 mb-1">
+                              John Doe
+                            </h2>
+                            <p className="text-xs text-gray-500">
+                              john.doe@example.com | +1 (555) 123-4567 | San
+                              Francisco, CA
+                            </p>
+                          </div>
+
+                          {/* Work Experience Section */}
+                          <div>
+                            <h3 className="text-xs font-semibold text-gray-600 mb-2 uppercase tracking-wide">
+                              WORK EXPERIENCE
+                            </h3>
+                            <div className="space-y-1">
+                              <div className="flex justify-between items-start">
+                                <div>
+                                  <h4 className="font-medium text-gray-700 text-sm">
+                                    Backend Developer Resume
+                                  </h4>
+                                  <p className="text-xs text-gray-500">
+                                    Mandal Minds
+                                  </p>
+                                </div>
+                                <span className="text-xs text-gray-400">
+                                  2021-01 - Present
+                                </span>
+                              </div>
+                              <p className="text-xs text-gray-500 leading-relaxed">
+                                Led development of scalable web applications
+                                using React and Node.js. Collaborated with
+                                cross-functional teams to deliver high-quality
+                                features...
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Right: Match Info - Single Line */}
+                        <div className="flex items-center gap-3">
+                          {/* Match Score */}
+                          <div
+                            className={`text-2xl font-bold ${getScoreColor(
+                              suggestedMatch?.matchScore
+                            )}`}
+                          >
+                            {suggestedMatch?.matchScore}%
+                          </div>
+
+                          {/* Badges */}
+                          <div className="flex gap-2">
+                            <span className="px-2 py-1 bg-purple-50 text-purple-700 text-xs font-medium rounded">
+                              Best Match
+                            </span>
+                            <span className="px-2 py-1 bg-gray-50 text-gray-600 text-xs font-medium rounded">
+                              Auto-Analyzed
+                            </span>
+                          </div>
+
+                          {/* Close Button */}
+                          <button
+                            onClick={() => setSuggestedMatch(null)}
+                            className="p-1 hover:bg-gray-100 rounded transition-colors"
+                            title="Dismiss suggestion"
+                          >
+                            <span
+                              className="material-symbols-outlined text-gray-400"
+                              style={{ fontSize: 16 }}
+                            >
+                              close
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Resume File Name at Bottom */}
+                      <div className="mt-3 pt-2 border-t border-gray-100">
+                        <p className="text-xs font-medium text-gray-600">
+                          📄 {suggestedMatch?.resumeName}
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
