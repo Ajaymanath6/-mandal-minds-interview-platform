@@ -22,34 +22,51 @@ import {
   RiStarLine,
   RiRobotLine,
   RiEditLine,
+  RiSparklingFill,
 } from "@remixicon/react";
 import logoSvg from "../assets/logo.svg";
 import "material-symbols/outlined.css";
 
-export default function ManageJDs() {
-  const [firstSidebarOpen, setFirstSidebarOpen] = useState(true);
-  const [isLogoHovered, setIsLogoHovered] = useState(false);
-  const [jds, setJds] = useState([]);
-  const [isCompareMode, setIsCompareMode] = useState(false);
-  const [selectedJDs, setSelectedJDs] = useState([]);
-  const navigate = useNavigate();
-  const [isTableView, setIsTableView] = useState(false);
-  const [isUploadView, setIsUploadView] = useState(false);
-  const [newJD, setNewJD] = useState({
-    jobTitle: "",
-    companyName: "",
-    description: "",
-  });
+// Add Google Fonts Material Icons
+const link = document.createElement("link");
+link.href =
+  "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200";
+link.rel = "stylesheet";
+if (!document.head.querySelector('link[href*="material+symbols"]')) {
+  document.head.appendChild(link);
+}
 
-  // Sample JD data - in real app this would come from API
-  const SAMPLE_JDS = [
-    {
-      id: 1,
-      jobTitle: "Full-Stack Developer",
-      companyName: "Mandal Minds",
-      dateAdded: "2024-01-15",
-      matchScore: 87,
-      description: `We are looking for a skilled Full-Stack Developer to join our team at Mandal Minds. You will be responsible for developing and maintaining web applications using modern technologies.
+// Sample Resume data - in real app this would come from API
+const SAMPLE_RESUMES = [
+  {
+    id: 1,
+    resumeName: "Frontend Developer Resume",
+    created: "2024-01-15",
+    lastEdited: "2024-01-20",
+  },
+  {
+    id: 2,
+    resumeName: "Full-Stack Developer Resume",
+    created: "2024-01-10",
+    lastEdited: "2024-01-18",
+  },
+  {
+    id: 3,
+    resumeName: "Backend Developer Resume",
+    created: "2024-01-08",
+    lastEdited: "2024-01-15",
+  },
+];
+
+// Sample JD data - in real app this would come from API
+const SAMPLE_JDS = [
+  {
+    id: 1,
+    jobTitle: "Full-Stack Developer",
+    companyName: "Mandal Minds",
+    dateAdded: "2024-01-15",
+    matchScore: 87,
+    description: `We are looking for a skilled Full-Stack Developer to join our team at Mandal Minds. You will be responsible for developing and maintaining web applications using modern technologies.
 
 Key Responsibilities:
 • Design and develop scalable web applications using React, Node.js, and MongoDB
@@ -85,14 +102,14 @@ What We Offer:
 • Health, dental, and vision insurance
 • 401(k) with company matching
 • Unlimited PTO policy`,
-    },
-    {
-      id: 2,
-      jobTitle: "Full-Stack Developer",
-      companyName: "TechCorp Inc",
-      dateAdded: "2024-01-12",
-      matchScore: 92,
-      description: `We are looking for a skilled Full-Stack Developer to join our team at TechCorp Inc. You will be responsible for developing and maintaining web applications using modern technologies.
+  },
+  {
+    id: 2,
+    jobTitle: "Full-Stack Developer",
+    companyName: "TechCorp Inc",
+    dateAdded: "2024-01-12",
+    matchScore: 92,
+    description: `We are looking for a skilled Full-Stack Developer to join our team at TechCorp Inc. You will be responsible for developing and maintaining web applications using modern technologies.
 
 Key Responsibilities:
 • Design and develop scalable web applications using React, Node.js, and PostgreSQL
@@ -113,14 +130,14 @@ Required Skills:
 • Familiarity with version control systems (Git)
 • Understanding of cloud platforms (AWS preferred)
 • Experience with containerization (Docker) and Kubernetes`,
-    },
-    {
-      id: 3,
-      jobTitle: "Full-Stack Developer",
-      companyName: "DataFlow Solutions",
-      dateAdded: "2024-01-10",
-      matchScore: 78,
-      description: `We are looking for a skilled Full-Stack Developer to join our team at DataFlow Solutions. You will be responsible for developing and maintaining web applications using modern technologies.
+  },
+  {
+    id: 3,
+    jobTitle: "Full-Stack Developer",
+    companyName: "DataFlow Solutions",
+    dateAdded: "2024-01-10",
+    matchScore: 78,
+    description: `We are looking for a skilled Full-Stack Developer to join our team at DataFlow Solutions. You will be responsible for developing and maintaining web applications using modern technologies.
 
 Key Responsibilities:
 • Design and develop scalable web applications using Vue.js, Python, and MySQL
@@ -141,28 +158,140 @@ Required Skills:
 • Familiarity with version control systems (Git)
 • Understanding of data visualization libraries (D3.js, Chart.js)
 • Experience with Python data libraries (Pandas, NumPy)`,
-    },
-  ];
+  },
+];
+
+export default function ManageJDs() {
+  const [firstSidebarOpen, setFirstSidebarOpen] = useState(true);
+  const [isLogoHovered, setIsLogoHovered] = useState(false);
+  const [jds, setJds] = useState([]);
+  const [isCompareMode, setIsCompareMode] = useState(false);
+  const [selectedJDs, setSelectedJDs] = useState([]);
+  const navigate = useNavigate();
+  const [isTableView, setIsTableView] = useState(false);
+  const [isUploadView, setIsUploadView] = useState(false);
+  const [newJD, setNewJD] = useState({
+    jobTitle: "",
+    companyName: "",
+    description: "",
+  });
+  const [resumeSelectionModal, setResumeSelectionModal] = useState(false);
+  const [selectedResume, setSelectedResume] = useState(null);
+  const [analysisResults, setAnalysisResults] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [selectedResultIndex, setSelectedResultIndex] = useState(0);
+  const [singleAnalyzeModal, setSingleAnalyzeModal] = useState(false);
+  const [singleJDToAnalyze, setSingleJDToAnalyze] = useState(null);
 
   useEffect(() => {
     // Load JDs - in real app this would be from API
-    setJds([]);
+    setJds(SAMPLE_JDS);
   }, []);
 
   const handleAnalyze = (jd) => {
-    // Navigate to analysis page with selected JD
-    console.log("Analyzing JD:", jd);
-    // In real app: navigate('/analyze', { state: { selectedJD: jd } })
+    setSingleJDToAnalyze(jd);
+    setSingleAnalyzeModal(true);
+    setSelectedResume(null);
+  };
+
+  const handleSingleAnalysis = () => {
+    if (!selectedResume || !singleJDToAnalyze) {
+      alert("Please select a resume");
+      return;
+    }
+
+    const matchScore = Math.floor(Math.random() * 30) + 70; // Random score 70-100
+
+    // Update the JD with match results
+    setJds((prevJds) =>
+      prevJds.map((jd) =>
+        jd.id === singleJDToAnalyze.id
+          ? {
+              ...jd,
+              matchedResume: selectedResume.resumeName,
+              matchScore: matchScore,
+            }
+          : jd
+      )
+    );
+
+    setSingleAnalyzeModal(false);
+    setSelectedResume(null);
+    setSingleJDToAnalyze(null);
   };
 
   const handleCompareSelected = () => {
     if (selectedJDs.length > 0) {
-      console.log("Comparing JDs:", selectedJDs);
-      // In real app: navigate to comparison page
+      setResumeSelectionModal(true);
+    } else {
+      alert("Please select at least one JD to compare");
     }
   };
 
-  // Removed handleDeleteJD - no longer needed with Edit action
+  const handleResumeSelection = (resume) => {
+    setSelectedResume(resume);
+  };
+
+  const handleStartAnalysis = () => {
+    if (!selectedResume) {
+      alert("Please select a resume");
+      return;
+    }
+
+    setResumeSelectionModal(false);
+
+    // Simulate analysis for each selected JD
+    const results = selectedJDs.map((jdId) => {
+      const jd = jds.find((j) => j.id === jdId);
+      const matchScore = Math.floor(Math.random() * 30) + 70; // Random score 70-100
+      return {
+        jdId: jd.id,
+        jobTitle: jd.jobTitle,
+        companyName: jd.companyName,
+        matchScore: matchScore,
+        resumeName: selectedResume.resumeName,
+      };
+    });
+
+    // Update JDs with match results
+    setJds((prevJds) =>
+      prevJds.map((jd) => {
+        const result = results.find((r) => r.jdId === jd.id);
+        if (result) {
+          return {
+            ...jd,
+            matchedResume: result.resumeName,
+            matchScore: result.matchScore,
+          };
+        }
+        return jd;
+      })
+    );
+
+    // Sort by match score (highest first)
+    results.sort((a, b) => b.matchScore - a.matchScore);
+
+    setAnalysisResults(results);
+    setShowResults(true);
+
+    // Reset compare mode
+    setIsCompareMode(false);
+    setSelectedJDs([]);
+  };
+
+  const getScoreColor = (score) => {
+    if (score >= 90) return "text-green-600";
+    if (score >= 80) return "text-green-500";
+    if (score >= 70) return "text-yellow-600";
+    if (score >= 60) return "text-orange-600";
+    return "text-red-600";
+  };
+
+  const toggleJDSelection = (id) => {
+    setSelectedJDs((prev) =>
+      prev.includes(id) ? prev.filter((jdId) => jdId !== id) : [...prev, id]
+    );
+  };
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -264,9 +393,18 @@ Required Skills:
                 onClick={() => navigate("/resume")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md w-full`}
+                } py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full transition-colors`}
               >
-                <RiStarLine size={16} />
+                <span
+                  className="material-symbols-outlined"
+                  style={{
+                    fontSize: "24px",
+                    fontVariationSettings:
+                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                  }}
+                >
+                  auto_awesome
+                </span>
                 {firstSidebarOpen && (
                   <span className="text-sm">AI Interview</span>
                 )}
@@ -276,9 +414,18 @@ Required Skills:
                 href="#"
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md`}
+                } py-2 text-gray-900 hover:bg-gray-50 rounded-md transition-colors`}
               >
-                <RiFileTextLine size={16} />
+                <span
+                  className="material-symbols-outlined"
+                  style={{
+                    fontSize: "24px",
+                    fontVariationSettings:
+                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                  }}
+                >
+                  edit_document
+                </span>
                 {firstSidebarOpen && (
                   <span className="text-sm">Resume Editor</span>
                 )}
@@ -288,9 +435,18 @@ Required Skills:
                 onClick={() => navigate("/manage-resume")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md w-full`}
+                } py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full transition-colors`}
               >
-                <RiFileCopyLine size={16} />
+                <span
+                  className="material-symbols-outlined"
+                  style={{
+                    fontSize: "24px",
+                    fontVariationSettings:
+                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                  }}
+                >
+                  content_copy
+                </span>
                 {firstSidebarOpen && (
                   <span className="text-sm">Manage Resume</span>
                 )}
@@ -300,9 +456,18 @@ Required Skills:
                 href="#"
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-purple-600 bg-gray-50 rounded-md`}
+                } py-2 text-purple-600 bg-gray-50 rounded-md transition-colors`}
               >
-                <RiFileList3Line size={16} />
+                <span
+                  className="material-symbols-outlined"
+                  style={{
+                    fontSize: "24px",
+                    fontVariationSettings:
+                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                  }}
+                >
+                  description
+                </span>
                 {firstSidebarOpen && (
                   <span className="text-sm">Manage JDs</span>
                 )}
@@ -314,7 +479,16 @@ Required Skills:
               {firstSidebarOpen ? (
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                    <RiUser3Fill size={16} className="text-purple-600" />
+                    <span
+                      className="material-symbols-outlined text-purple-600"
+                      style={{
+                        fontSize: "18px",
+                        fontVariationSettings:
+                          '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 18',
+                      }}
+                    >
+                      person
+                    </span>
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 truncate">
@@ -331,7 +505,16 @@ Required Skills:
                   className="w-full p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors flex items-center justify-center"
                   title="Logout"
                 >
-                  <RiLogoutBoxLine size={20} />
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: "24px",
+                      fontVariationSettings:
+                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                    }}
+                  >
+                    logout
+                  </span>
                 </button>
               )}
             </div>
@@ -353,16 +536,22 @@ Required Skills:
               {/* Empty State - Always Show */}
               {!isTableView && !isUploadView && (
                 <div className="flex items-center justify-center mb-8">
-                  <div className="max-w-2xl w-full">
+                  <div className="max-w-6xl w-full">
                     {/* White Box Container */}
-                    <div className="bg-white rounded-lg p-8">
+                    <div className="bg-white rounded-lg p-10" style={{ minHeight: "390px" }}>
                       {/* Default Empty State */}
                       <div className="text-center">
                         <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4 mx-auto">
-                          <RiFileList3Line
-                            size={32}
-                            className="text-purple-600"
-                          />
+                          <span
+                            className="material-symbols-outlined text-purple-600"
+                            style={{
+                              fontSize: "32px",
+                              fontVariationSettings:
+                                '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 32',
+                            }}
+                          >
+                            description
+                          </span>
                         </div>
                         <h2 className="text-xl font-semibold text-gray-900 mb-2">
                           Your Job Description Hub
@@ -411,7 +600,16 @@ Required Skills:
                           onClick={() => setIsTableView(false)}
                           className="text-gray-500 hover:text-gray-700"
                         >
-                          <RiCloseLine size={20} />
+                          <span
+                            className="material-symbols-outlined"
+                            style={{
+                              fontSize: "24px",
+                              fontVariationSettings:
+                                '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24',
+                            }}
+                          >
+                            close
+                          </span>
                         </button>
                       </div>
 
@@ -507,7 +705,16 @@ Required Skills:
                           onClick={() => setIsUploadView(false)}
                           className="text-gray-500 hover:text-gray-700"
                         >
-                          <RiCloseLine size={20} />
+                          <span
+                            className="material-symbols-outlined"
+                            style={{
+                              fontSize: "24px",
+                              fontVariationSettings:
+                                '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24',
+                            }}
+                          >
+                            close
+                          </span>
                         </button>
                       </div>
 
@@ -627,6 +834,21 @@ Required Skills:
                     <table className="w-full">
                       <thead>
                         <tr className="bg-white border-b border-gray-200">
+                          {isCompareMode && (
+                            <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
+                              <input
+                                type="checkbox"
+                                className="w-4 h-4 accent-purple-600 border-gray-300 rounded focus:ring-purple-600"
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedJDs(jds.map((jd) => jd.id));
+                                  } else {
+                                    setSelectedJDs([]);
+                                  }
+                                }}
+                              />
+                            </th>
+                          )}
                           <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
                             Name
                           </th>
@@ -635,6 +857,9 @@ Required Skills:
                           </th>
                           <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
                             Last Updated
+                          </th>
+                          <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
+                            Match
                           </th>
                           <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
                             Actions
@@ -651,6 +876,16 @@ Required Skills:
                                 : "bg-gray-50 hover:bg-gray-100"
                             }
                           >
+                            {isCompareMode && (
+                              <td className="px-6 py-4">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedJDs.includes(jd.id)}
+                                  onChange={() => toggleJDSelection(jd.id)}
+                                  className="w-4 h-4 accent-purple-600 border-gray-300 rounded focus:ring-purple-600"
+                                />
+                              </td>
+                            )}
                             <td className="px-6 py-4">
                               <div className="flex items-center gap-3">
                                 <RiFileTextLine
@@ -673,19 +908,49 @@ Required Skills:
                               </div>
                             </td>
                             <td className="px-6 py-4">
+                              {jd.matchedResume ? (
+                                <div className="text-sm">
+                                  <div className="font-medium text-gray-900">
+                                    {jd.matchedResume}
+                                  </div>
+                                  <div
+                                    className={`text-sm font-semibold ${getScoreColor(
+                                      jd.matchScore
+                                    )}`}
+                                  >
+                                    {jd.matchScore}%
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="text-sm text-gray-400">—</div>
+                              )}
+                            </td>
+                            <td className="px-6 py-4">
                               <div className="flex items-center gap-3">
                                 <button
                                   onClick={() => handleAnalyze(jd)}
-                                  className="flex items-center gap-1.5 text-purple-600 hover:text-purple-700 text-sm font-medium"
+                                  className="flex items-center justify-center gap-1.5 px-3 py-1.5 border border-gray-300 bg-transparent text-gray-900 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors"
                                 >
-                                  <RiBarChartBoxLine size={16} />
+                                  <RiSparklingFill
+                                    size={16}
+                                    className="text-purple-600"
+                                  />
                                   <span>Analyze</span>
                                 </button>
                                 <button
                                   onClick={() => console.log("Edit JD:", jd)}
-                                  className="flex items-center gap-1.5 text-gray-600 hover:text-gray-700 text-sm font-medium"
+                                  className="flex items-center justify-center gap-1.5 px-3 py-1.5 border border-gray-300 bg-transparent text-gray-900 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors"
                                 >
-                                  <RiEditLine size={16} />
+                                  <span
+                                    className="material-symbols-outlined"
+                                    style={{
+                                      fontSize: "16px",
+                                      fontVariationSettings:
+                                        '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 16',
+                                    }}
+                                  >
+                                    edit
+                                  </span>
                                   <span>Edit</span>
                                 </button>
                               </div>
@@ -701,6 +966,319 @@ Required Skills:
           </div>
         </div>
       </div>
+
+      {/* Resume Selection Modal */}
+      {resumeSelectionModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Select Resume to Compare Against
+              </h3>
+              <button
+                onClick={() => {
+                  setResumeSelectionModal(false);
+                  setSelectedResume(null);
+                }}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <span
+                  className="material-symbols-outlined"
+                  style={{
+                    fontSize: "24px",
+                    fontVariationSettings:
+                      '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24',
+                  }}
+                >
+                  close
+                </span>
+              </button>
+            </div>
+
+            <p className="text-sm text-gray-600 mb-4">
+              Comparing {selectedJDs.length} JD
+              {selectedJDs.length > 1 ? "s" : ""} against selected resume
+            </p>
+
+            <div className="space-y-3 mb-6">
+              {SAMPLE_RESUMES.map((resume) => (
+                <div
+                  key={resume.id}
+                  onClick={() => handleResumeSelection(resume)}
+                  className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                    selectedResume?.id === resume.id
+                      ? "border-purple-500 bg-purple-50"
+                      : "border-gray-300 hover:bg-gray-50"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium text-gray-900">
+                        {resume.resumeName}
+                      </h4>
+                      <p className="text-sm text-gray-500">
+                        Last edited: {formatDate(resume.lastEdited)}
+                      </p>
+                    </div>
+                    {selectedResume?.id === resume.id && (
+                      <div className="w-5 h-5 bg-purple-600 rounded-full flex items-center justify-center">
+                        <span className="text-white text-xs">✓</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={handleStartAnalysis}
+                disabled={!selectedResume}
+                className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg transition-colors font-medium ${
+                  selectedResume
+                    ? "bg-purple-600 hover:bg-purple-700 text-white"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
+              >
+                <RiSparklingFill size={20} />
+                <span>Analyze All JDs</span>
+              </button>
+              <button
+                onClick={() => {
+                  setResumeSelectionModal(false);
+                  setSelectedResume(null);
+                }}
+                className="px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Analysis Results Modal */}
+      {showResults && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Analysis Results
+              </h3>
+              <button
+                onClick={() => {
+                  setShowResults(false);
+                  setAnalysisResults([]);
+                  setSelectedResume(null);
+                }}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <span
+                  className="material-symbols-outlined"
+                  style={{
+                    fontSize: "24px",
+                    fontVariationSettings:
+                      '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24',
+                  }}
+                >
+                  close
+                </span>
+              </button>
+            </div>
+
+            <div className="mb-4 p-4 bg-gray-50 rounded-lg">
+              <h4 className="font-medium text-gray-900 mb-2">
+                Resume Analyzed:
+              </h4>
+              <p className="text-gray-700">{analysisResults[0]?.resumeName}</p>
+            </div>
+
+            <div className="mb-4">
+              <h4 className="font-medium text-gray-900 mb-3">
+                JD Match Scores (Ranked by Best Match)
+              </h4>
+              <div className="space-y-3">
+                {analysisResults.map((result, index) => (
+                  <div
+                    key={result.jdId}
+                    onClick={() => setSelectedResultIndex(index)}
+                    className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                      selectedResultIndex === index
+                        ? "border-purple-500 bg-purple-50"
+                        : index === 0
+                        ? "border-green-300 bg-green-50 hover:bg-green-100"
+                        : "border-gray-200 hover:bg-gray-50"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          {index === 0 && (
+                            <span className="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">
+                              Best Match
+                            </span>
+                          )}
+                          {selectedResultIndex === index && (
+                            <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded">
+                              Selected
+                            </span>
+                          )}
+                          <h5 className="font-medium text-gray-900">
+                            {result.jobTitle}
+                          </h5>
+                        </div>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {result.companyName}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <div
+                          className={`text-2xl font-bold ${getScoreColor(
+                            result.matchScore
+                          )}`}
+                        >
+                          {result.matchScore}%
+                        </div>
+                        <div className="text-xs text-gray-500">Match Score</div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  const selectedMatch = analysisResults[selectedResultIndex];
+                  console.log("Proceeding with selected match:", selectedMatch);
+                  // In real app: navigate to detailed analysis or application page
+                  setShowResults(false);
+                  setAnalysisResults([]);
+                  setSelectedResume(null);
+                  setSelectedResultIndex(0);
+                }}
+                className="flex-1 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors font-medium"
+              >
+                Proceed with Selected
+              </button>
+              <button
+                onClick={() => {
+                  setShowResults(false);
+                  setAnalysisResults([]);
+                  setSelectedResume(null);
+                }}
+                className="px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Single JD Analysis Modal */}
+      {singleAnalyzeModal && singleJDToAnalyze && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Analyze Job Description
+              </h3>
+              <button
+                onClick={() => {
+                  setSingleAnalyzeModal(false);
+                  setSingleJDToAnalyze(null);
+                  setSelectedResume(null);
+                }}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <span
+                  className="material-symbols-outlined"
+                  style={{
+                    fontSize: "24px",
+                    fontVariationSettings:
+                      '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24',
+                  }}
+                >
+                  close
+                </span>
+              </button>
+            </div>
+
+            <div className="mb-4 p-4 bg-gray-50 rounded-lg">
+              <h4 className="font-medium text-gray-900 mb-2">
+                Job Description:
+              </h4>
+              <p className="font-medium text-gray-900">
+                {singleJDToAnalyze.jobTitle}
+              </p>
+              <p className="text-sm text-gray-600">
+                {singleJDToAnalyze.companyName}
+              </p>
+            </div>
+
+            <p className="text-sm text-gray-600 mb-4">
+              Select a resume to compare against this job description
+            </p>
+
+            <div className="space-y-3 mb-6">
+              {SAMPLE_RESUMES.map((resume) => (
+                <div
+                  key={resume.id}
+                  onClick={() => handleResumeSelection(resume)}
+                  className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                    selectedResume?.id === resume.id
+                      ? "border-purple-500 bg-purple-50"
+                      : "border-gray-300 hover:bg-gray-50"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium text-gray-900">
+                        {resume.resumeName}
+                      </h4>
+                      <p className="text-sm text-gray-500">
+                        Last edited: {formatDate(resume.lastEdited)}
+                      </p>
+                    </div>
+                    {selectedResume?.id === resume.id && (
+                      <div className="w-5 h-5 bg-purple-600 rounded-full flex items-center justify-center">
+                        <span className="text-white text-xs">✓</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={handleSingleAnalysis}
+                disabled={!selectedResume}
+                className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg transition-colors font-medium ${
+                  selectedResume
+                    ? "bg-purple-600 hover:bg-purple-700 text-white"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
+              >
+                <RiSparklingFill size={20} />
+                <span>Analyze</span>
+              </button>
+              <button
+                onClick={() => {
+                  setSingleAnalyzeModal(false);
+                  setSingleJDToAnalyze(null);
+                  setSelectedResume(null);
+                }}
+                className="px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
