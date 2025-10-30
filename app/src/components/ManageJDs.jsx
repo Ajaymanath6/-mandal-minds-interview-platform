@@ -500,10 +500,10 @@ export default function ManageJDs() {
                       '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
                   }}
                 >
-                  edit_document
+                  verified_user
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm">Resume Editor</span>
+                  <span className="text-sm">Get Vetted</span>
                 )}
               </button>
 
@@ -977,9 +977,9 @@ export default function ManageJDs() {
                               className="material-symbols-outlined"
                               style={{ fontSize: 16 }}
                             >
-                              edit_document
+                              verified_user
                             </span>
-                            <span>Edit Resume</span>
+                            <span>Get Vetted</span>
                           </button>
                         </div>
                       </div>

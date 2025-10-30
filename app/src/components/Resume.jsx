@@ -485,10 +485,10 @@ export default function Resume() {
                       '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
                   }}
                 >
-                  edit_document
+                  verified_user
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm">Resume Editor</span>
+                  <span className="text-sm">Get Vetted</span>
                 )}
               </button>
 
