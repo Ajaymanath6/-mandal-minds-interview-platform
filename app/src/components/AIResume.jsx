@@ -218,7 +218,7 @@ export default function AIResume() {
               <h2 className="text-xl font-bold text-gray-900 mb-3 border-b-2 border-gray-300 pb-2">
                 WORK EXPERIENCE
               </h2>
-              {resumeData.work.map((workItem, workIndex) => (
+              {resumeData.work.map((workItem) => (
                 <div key={workItem.id} className="mb-6 relative">
                   <div className="flex justify-between items-start mb-2">
                     <div>
@@ -233,12 +233,6 @@ export default function AIResume() {
                   </div>
                   <div className="relative">
                     <p className="text-gray-700">{workItem.description}</p>
-                    <RemovableSkillsOverlay
-                      text={workItem.description}
-                      sectionId="work"
-                      field="description"
-                      index={workIndex}
-                    />
                   </div>
                 </div>
               ))}
@@ -263,11 +257,6 @@ export default function AIResume() {
                       <h3 className="text-lg font-semibold text-gray-900">
                         {resumeData.education.degree}
                       </h3>
-                      <RemovableSkillsOverlay
-                        text={resumeData.education.degree}
-                        sectionId="education"
-                        field="degree"
-                      />
                     </div>
                     <p className="text-gray-700">
                       {resumeData.education.institution}
@@ -303,22 +292,12 @@ export default function AIResume() {
                     <p className="text-gray-700">
                       {resumeData.skills.frontend}
                     </p>
-                    <RemovableSkillsOverlay
-                      text={resumeData.skills.frontend}
-                      sectionId="skills"
-                      field="frontend"
-                    />
                   </div>
                 </div>
                 <div className="relative">
                   <h4 className="font-semibold text-gray-900 mb-2">Backend:</h4>
                   <div className="relative">
                     <p className="text-gray-700">{resumeData.skills.backend}</p>
-                    <RemovableSkillsOverlay
-                      text={resumeData.skills.backend}
-                      sectionId="skills"
-                      field="backend"
-                    />
                   </div>
                 </div>
                 <div className="relative">
@@ -329,22 +308,12 @@ export default function AIResume() {
                     <p className="text-gray-700">
                       {resumeData.skills.database}
                     </p>
-                    <RemovableSkillsOverlay
-                      text={resumeData.skills.database}
-                      sectionId="skills"
-                      field="database"
-                    />
                   </div>
                 </div>
                 <div className="relative">
                   <h4 className="font-semibold text-gray-900 mb-2">Tools:</h4>
                   <div className="relative">
                     <p className="text-gray-700">{resumeData.skills.tools}</p>
-                    <RemovableSkillsOverlay
-                      text={resumeData.skills.tools}
-                      sectionId="skills"
-                      field="tools"
-                    />
                   </div>
                 </div>
               </div>
@@ -574,7 +543,7 @@ export default function AIResume() {
   const rephraseWithAI = (text, type) => {
     // Clean up text first - remove orphaned phrases and fix grammar
     let cleanedText = text;
-    
+
     // Remove orphaned AI-added phrases that might be left after skill removal
     const orphanedPhrases = [
       /Designed and implemented\s*\./gi,
@@ -585,21 +554,21 @@ export default function AIResume() {
       /Containerized applications using\s*\./gi,
       /Developed serverless functions with\s*\./gi,
     ];
-    
-    orphanedPhrases.forEach(phrase => {
-      cleanedText = cleanedText.replace(phrase, '');
+
+    orphanedPhrases.forEach((phrase) => {
+      cleanedText = cleanedText.replace(phrase, "");
     });
-    
+
     // Fix grammar issues after removal
     cleanedText = cleanedText
-      .replace(/\.\s*\./g, '.') // Remove double periods
-      .replace(/\s+/g, ' ') // Remove extra spaces
-      .replace(/,\s*,/g, ',') // Remove double commas
-      .replace(/\s*,\s*\./g, '.') // Fix comma before period
-      .replace(/^\s*,\s*/, '') // Remove leading comma
-      .replace(/\s*,$/, '') // Remove trailing comma
+      .replace(/\.\s*\./g, ".") // Remove double periods
+      .replace(/\s+/g, " ") // Remove extra spaces
+      .replace(/,\s*,/g, ",") // Remove double commas
+      .replace(/\s*,\s*\./g, ".") // Fix comma before period
+      .replace(/^\s*,\s*/, "") // Remove leading comma
+      .replace(/\s*,$/, "") // Remove trailing comma
       .trim();
-    
+
     if (type === "work-description") {
       // Improve grammar and flow while keeping remaining keywords
       if (cleanedText.includes("Microservices")) {
@@ -620,10 +589,10 @@ export default function AIResume() {
           "Developed high-performance GraphQL APIs to optimize data fetching and improve client-server communication"
         );
       }
-      
+
       // Ensure proper sentence structure
-      if (cleanedText && !cleanedText.endsWith('.')) {
-        cleanedText += '.';
+      if (cleanedText && !cleanedText.endsWith(".")) {
+        cleanedText += ".";
       }
     }
 
@@ -702,42 +671,6 @@ export default function AIResume() {
     );
   };
 
-  // Component to show removable skills as yellow badges directly on resume text
-  const RemovableSkillsOverlay = ({ text, sectionId, field, index = null }) => {
-    const isActive = activeResumeSection === sectionId;
-
-    if (!isActive) return null;
-
-    const skills = extractSkillsFromText(text, sectionId, field, index);
-
-    if (skills.length === 0) return null;
-
-    return (
-      <div className="absolute top-0 left-0 right-0 bg-transparent p-2 z-20">
-        <div className="flex flex-wrap gap-1">
-          {skills.map((skill, skillIndex) => (
-            <button
-              key={skillIndex}
-              onClick={(e) => {
-                e.stopPropagation();
-                removeSkillFromText(text, skill, sectionId, field, index);
-              }}
-              className="px-2 py-1 bg-yellow-200 hover:bg-yellow-300 text-yellow-800 text-xs rounded-md transition-all duration-200 flex items-center gap-1 border border-yellow-300 hover:border-yellow-400 hover:shadow-sm"
-              title={`Remove "${skill}" from this section`}
-            >
-              <span
-                className="material-symbols-outlined"
-                style={{ fontSize: 12 }}
-              >
-                remove
-              </span>
-              {skill}
-            </button>
-          ))}
-        </div>
-      </div>
-    );
-  };
 
   // AI Skill Suggestions based on field content
   const getAISuggestions = (fieldId, currentValue) => {
@@ -783,7 +716,180 @@ export default function AIResume() {
     return missingSkills.slice(0, 3); // Return top 3 suggestions
   };
 
-  // Editable Field Component
+  // Enhanced Editable Field Component with removable skill badges
+  const EditableFieldWithBadges = ({
+    fieldId,
+    value,
+    placeholder,
+    type = "text",
+    rows = 1,
+    section,
+    field,
+    index = null,
+    isHighlighted = false,
+  }) => {
+    const [hoveredField, setHoveredField] = useState(null);
+    const isEditing = editingFields[fieldId];
+    const aiSuggestions = getAISuggestions(fieldId, value);
+    
+    // Extract AI-added skills from the current value
+    const aiAddedSkills = extractSkillsFromText(value, section, field, index);
+
+    const handleValueChange = (newValue) => {
+      if (section && field) {
+        updateResumeData(section, field, newValue, index);
+      }
+      toggleFieldEdit(fieldId);
+    };
+
+    const addSuggestionToField = (suggestion) => {
+      let newValue;
+
+      if (fieldId.includes("work-description")) {
+        // For work descriptions, add contextual sentence
+        const contextualPhrases = {
+          Microservices: "Designed and implemented microservices architecture",
+          Kubernetes: "Deployed applications using Kubernetes orchestration",
+          GraphQL: "Built efficient APIs using GraphQL",
+          "CI/CD": "Implemented CI/CD pipelines for automated deployment",
+          DevOps: "Applied DevOps practices for streamlined development",
+          Docker: "Containerized applications using Docker",
+          "AWS Lambda": "Developed serverless functions with AWS Lambda",
+        };
+
+        const phrase =
+          contextualPhrases[suggestion] ||
+          `Worked extensively with ${suggestion}`;
+        newValue = value + (value.endsWith(".") ? " " : ". ") + `${phrase}.`;
+      } else if (fieldId.includes("work-title")) {
+        // For job titles, prepend the suggestion
+        newValue = `${suggestion} ${value}`;
+      } else {
+        // Default behavior
+        newValue = value + (value ? `, ${suggestion}` : suggestion);
+      }
+
+      if (section && field) {
+        updateResumeData(section, field, newValue, index);
+
+        // Track AI-added skill
+        setAddedAISkills((prev) => [...prev, suggestion]);
+      }
+    };
+
+    const removeSkillFromField = (skillToRemove) => {
+      removeSkillFromText(value, skillToRemove, section, field, index);
+    };
+
+    if (isEditing) {
+      if (type === "textarea") {
+        return (
+          <textarea
+            rows={rows}
+            defaultValue={value}
+            placeholder={placeholder}
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black"
+            autoFocus
+            onBlur={(e) => handleValueChange(e.target.value)}
+          />
+        );
+      }
+      return (
+        <input
+          type={type}
+          defaultValue={value}
+          placeholder={placeholder}
+          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black"
+          autoFocus
+          onBlur={(e) => handleValueChange(e.target.value)}
+        />
+      );
+    }
+
+    return (
+      <div className="space-y-2">
+        <div
+          className={`relative w-full px-3 py-2 text-sm border rounded-lg cursor-pointer transition-colors ${
+            isHighlighted
+              ? "border-purple-300 bg-purple-50"
+              : hoveredField === fieldId
+              ? "border-gray-300 bg-gray-50"
+              : "border-gray-300 bg-white"
+          }`}
+          onMouseEnter={() => setHoveredField(fieldId)}
+          onMouseLeave={() => setHoveredField(null)}
+        >
+          <div className="flex flex-wrap items-center gap-1">
+            {/* Show AI-added skills as removable badges inside the field */}
+            {aiAddedSkills.map((skill, skillIndex) => (
+              <button
+                key={skillIndex}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  removeSkillFromField(skill);
+                }}
+                className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-200 hover:bg-yellow-300 text-yellow-800 text-xs rounded-md transition-colors border border-yellow-300 hover:border-yellow-400"
+                title={`Remove "${skill}" from this field`}
+              >
+                <span
+                  className="material-symbols-outlined"
+                  style={{ fontSize: 10 }}
+                >
+                  remove
+                </span>
+                {skill}
+              </button>
+            ))}
+            
+            {/* Show the text content */}
+            <span className="text-gray-900 flex-1">{value}</span>
+          </div>
+          
+          {hoveredField === fieldId && (
+            <button
+              onClick={() => toggleFieldEdit(fieldId)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+            >
+              <span
+                className="material-symbols-outlined"
+                style={{
+                  fontSize: "16px",
+                  fontVariationSettings:
+                    '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 16',
+                }}
+              >
+                edit
+              </span>
+            </button>
+          )}
+        </div>
+
+        {/* AI Suggestions Badges */}
+        {aiSuggestions.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {aiSuggestions.map((suggestion, index) => (
+              <button
+                key={index}
+                onClick={() => addSuggestionToField(suggestion)}
+                className="group px-2 py-1 bg-orange-100 hover:bg-orange-200 text-orange-800 text-xs rounded-md transition-colors flex items-center gap-1"
+                title={`Add "${suggestion}" to this field`}
+              >
+                <span
+                  className="material-symbols-outlined"
+                  style={{ fontSize: 10 }}
+                >
+                  add
+                </span>
+                {suggestion}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // Original Editable Field Component (for fields that don't need skill badges)
   const EditableField = ({
     fieldId,
     value,
@@ -1028,7 +1134,7 @@ export default function AIResume() {
                       isHighlighted={isHighlighted}
                     />
                   </div>
-                  <EditableField
+                  <EditableFieldWithBadges
                     fieldId={`work-description-${workIndex}`}
                     value={workItem.description}
                     placeholder="Description"
@@ -1112,7 +1218,7 @@ export default function AIResume() {
                 </h4>
                 <div className="space-y-3">
                   {/* Frontend */}
-                  <EditableField
+                  <EditableFieldWithBadges
                     fieldId="skills-frontend"
                     value={resumeData.skills.frontend}
                     placeholder="Frontend Skills"
@@ -1121,7 +1227,7 @@ export default function AIResume() {
                     isHighlighted={isHighlighted}
                   />
                   {/* Backend */}
-                  <EditableField
+                  <EditableFieldWithBadges
                     fieldId="skills-backend"
                     value={resumeData.skills.backend}
                     placeholder="Backend Skills"
@@ -1130,7 +1236,7 @@ export default function AIResume() {
                     isHighlighted={isHighlighted}
                   />
                   {/* Database */}
-                  <EditableField
+                  <EditableFieldWithBadges
                     fieldId="skills-database"
                     value={resumeData.skills.database}
                     placeholder="Database Skills"
@@ -1139,7 +1245,7 @@ export default function AIResume() {
                     isHighlighted={isHighlighted}
                   />
                   {/* Tools */}
-                  <EditableField
+                  <EditableFieldWithBadges
                     fieldId="skills-tools"
                     value={resumeData.skills.tools}
                     placeholder="Tools & Technologies"
