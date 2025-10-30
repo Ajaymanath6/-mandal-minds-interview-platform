@@ -514,8 +514,6 @@ export default function ManageResume() {
               onMouseLeave={handleInspectLeave}
               onClick={(e) => handleInspectClick(e, 'page-title')}
               style={{ 
-                outline: inspectMode ? '2px dashed #8b5cf6' : 'none',
-                outlineOffset: '2px',
                 cursor: inspectMode ? 'pointer' : 'default'
               }}
             >
@@ -528,7 +526,7 @@ export default function ManageResume() {
               className={`flex items-center justify-center w-6 h-6 rounded transition-colors ${
                 inspectMode 
                   ? 'bg-purple-100 text-purple-700' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
               }`}
               title={inspectMode ? 'Exit Inspect Mode' : 'Toggle Inspect Mode'}
             >
@@ -555,8 +553,6 @@ export default function ManageResume() {
                     onMouseLeave={handleInspectLeave}
                     className="flex flex-col items-center p-6 bg-white rounded-xl transition-all group"
                     style={{ 
-                      outline: inspectMode ? '2px dashed #8b5cf6' : 'none',
-                      outlineOffset: '2px',
                       cursor: inspectMode ? 'pointer' : 'default'
                     }}
                   >
@@ -575,8 +571,6 @@ export default function ManageResume() {
                     onMouseLeave={handleInspectLeave}
                     className="flex flex-col items-center p-6 bg-white rounded-xl transition-all group"
                     style={{ 
-                      outline: inspectMode ? '2px dashed #8b5cf6' : 'none',
-                      outlineOffset: '2px',
                       cursor: inspectMode ? 'pointer' : 'default'
                     }}
                   >
@@ -1068,31 +1062,26 @@ export default function ManageResume() {
             }
           }}
         >
-          {/* Compact Header with Copy Buttons */}
+          {/* Compact Header with Close Button */}
           <div className="flex items-center justify-between p-2 border-b border-gray-700">
             <span className="text-xs font-medium text-gray-300">
               {inspectData.name}
             </span>
-            <div className="flex gap-1">
-              <button
-                onClick={() => copyToClipboard(inspectData.jsx)}
-                className="px-2 py-1 text-xs bg-purple-600 hover:bg-purple-700 text-white rounded transition-colors duration-200"
-                title="Copy JSX"
-              >
-                JSX
-              </button>
-              <button
-                onClick={closeTooltip}
-                className="px-1 py-1 text-xs bg-gray-700 hover:bg-gray-600 text-white rounded transition-colors duration-200"
-                title="Close"
-              >
-                ✕
-              </button>
-            </div>
+            <button
+              onClick={closeTooltip}
+              className="px-1 py-1 text-xs bg-white hover:bg-gray-100 text-gray-800 rounded transition-colors duration-200"
+              title="Close"
+            >
+              ✕
+            </button>
           </div>
 
           {/* Compact Code Content */}
-          <div className="p-2 max-h-60 overflow-y-auto">
+          <div 
+            className="p-2 max-h-60 overflow-y-auto cursor-pointer hover:bg-gray-900 transition-colors duration-200"
+            onClick={() => copyToClipboard(inspectData.jsx)}
+            title="Click to copy code"
+          >
             <pre className="text-xs text-gray-300 whitespace-pre-wrap font-mono leading-tight">
               <code>{inspectData.jsx}</code>
             </pre>
