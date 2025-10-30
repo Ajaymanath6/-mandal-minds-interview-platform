@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import {
-  RiSparklingFill,
-  RiArrowLeftLine,
-} from "@remixicon/react";
+import { RiSparklingFill, RiArrowLeftLine } from "@remixicon/react";
 import logoSvg from "../assets/logo.svg";
 import "material-symbols/outlined.css";
 
@@ -21,7 +18,7 @@ export default function AIResume() {
   const [isLogoHovered, setIsLogoHovered] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   // Resume form data
   const [resumeData, setResumeData] = useState({
     personalInfo: {
@@ -30,9 +27,10 @@ export default function AIResume() {
       phone: "+1 (555) 123-4567",
       location: "San Francisco, CA",
       linkedin: "",
-      portfolio: ""
+      portfolio: "",
     },
-    summary: "Experienced full-stack developer with 5+ years of experience in building scalable web applications.",
+    summary:
+      "Experienced full-stack developer with 5+ years of experience in building scalable web applications.",
     experience: [
       {
         id: 1,
@@ -41,8 +39,9 @@ export default function AIResume() {
         startDate: "2021-01",
         endDate: "",
         current: true,
-        description: "Led development of scalable web applications using React and Node.js. Collaborated with cross-functional teams to deliver high-quality features."
-      }
+        description:
+          "Led development of scalable web applications using React and Node.js. Collaborated with cross-functional teams to deliver high-quality features.",
+      },
     ],
     education: [
       {
@@ -50,15 +49,15 @@ export default function AIResume() {
         degree: "Bachelor of Computer Science",
         school: "University of California",
         graduationYear: "2019",
-        gpa: "3.8"
-      }
+        gpa: "3.8",
+      },
     ],
     skills: {
       technical: ["React", "Node.js", "JavaScript", "Python", "MongoDB"],
-      soft: ["Leadership", "Communication", "Problem Solving"]
-    }
+      soft: ["Leadership", "Communication", "Problem Solving"],
+    },
   });
-  
+
   const [matchedJD, setMatchedJD] = useState(null);
 
   useEffect(() => {
@@ -269,93 +268,15 @@ export default function AIResume() {
           </div>
         </div>
 
-        {/* Second Sidebar - Resume Sections */}
-        <div className="w-80 bg-white border-l border-gray-200 flex-shrink-0 h-full">
-          <div className="flex flex-col h-full">
-            {/* Header */}
-            <div className="p-4 border-b border-gray-200">
-              <h2 className="text-base font-semibold text-gray-900">Resume Sections</h2>
-            </div>
-
-            {/* Resume Sections */}
-            <div className="flex-1 overflow-y-auto p-4">
-              <div className="space-y-4">
-                {/* Personal Information Section */}
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="material-symbols-outlined text-gray-600" style={{ fontSize: 18 }}>
-                      person
-                    </span>
-                    <h3 className="text-sm font-semibold text-gray-800">Personal Information</h3>
-                  </div>
-                  <div className="text-xs text-gray-600">
-                    <p>Name: {resumeData.personalInfo.fullName}</p>
-                    <p>Email: {resumeData.personalInfo.email}</p>
-                    <p>Phone: {resumeData.personalInfo.phone}</p>
-                  </div>
-                </div>
-
-                {/* Professional Summary Section */}
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="material-symbols-outlined text-gray-600" style={{ fontSize: 18 }}>
-                      description
-                    </span>
-                    <h3 className="text-sm font-semibold text-gray-800">Professional Summary</h3>
-                  </div>
-                  <div className="text-xs text-gray-600">
-                    <p className="line-clamp-3">{resumeData.summary}</p>
-                  </div>
-                </div>
-
-                {/* Work Experience Section */}
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="material-symbols-outlined text-gray-600" style={{ fontSize: 18 }}>
-                      work
-                    </span>
-                    <h3 className="text-sm font-semibold text-gray-800">Work Experience</h3>
-                  </div>
-                  <div className="space-y-2">
-                    {resumeData.experience.map((exp) => (
-                      <div key={exp.id} className="text-xs text-gray-600">
-                        <p className="font-medium">{exp.jobTitle}</p>
-                        <p>{exp.company}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Technical Skills Section */}
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="material-symbols-outlined text-gray-600" style={{ fontSize: 18 }}>
-                      psychology
-                    </span>
-                    <h3 className="text-sm font-semibold text-gray-800">Technical Skills</h3>
-                  </div>
-                  <div className="flex flex-wrap gap-1">
-                    {resumeData.skills.technical.map((skill, index) => (
-                      <span
-                        key={index}
-                        className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-md"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden px-6 py-6">
           {/* Page Title */}
           <div className="mb-6">
             <div className="flex items-center justify-between">
-              <h1 className="text-base font-bold text-gray-900">AI Resume Optimizer</h1>
+              <h1 className="text-base font-bold text-gray-900">
+                AI Resume Optimizer
+              </h1>
               <button
                 onClick={() => navigate("/manage-jds")}
                 className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors text-sm"
@@ -371,53 +292,83 @@ export default function AIResume() {
             <div className="max-w-4xl mx-auto space-y-8">
               {/* Personal Information */}
               <div className="bg-white rounded-lg p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Personal Information</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                  Personal Information
+                </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Full Name
+                    </label>
                     <input
                       type="text"
                       value={resumeData.personalInfo.fullName}
-                      onChange={(e) => setResumeData(prev => ({
-                        ...prev,
-                        personalInfo: { ...prev.personalInfo, fullName: e.target.value }
-                      }))}
+                      onChange={(e) =>
+                        setResumeData((prev) => ({
+                          ...prev,
+                          personalInfo: {
+                            ...prev.personalInfo,
+                            fullName: e.target.value,
+                          },
+                        }))
+                      }
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Email
+                    </label>
                     <input
                       type="email"
                       value={resumeData.personalInfo.email}
-                      onChange={(e) => setResumeData(prev => ({
-                        ...prev,
-                        personalInfo: { ...prev.personalInfo, email: e.target.value }
-                      }))}
+                      onChange={(e) =>
+                        setResumeData((prev) => ({
+                          ...prev,
+                          personalInfo: {
+                            ...prev.personalInfo,
+                            email: e.target.value,
+                          },
+                        }))
+                      }
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Phone
+                    </label>
                     <input
                       type="tel"
                       value={resumeData.personalInfo.phone}
-                      onChange={(e) => setResumeData(prev => ({
-                        ...prev,
-                        personalInfo: { ...prev.personalInfo, phone: e.target.value }
-                      }))}
+                      onChange={(e) =>
+                        setResumeData((prev) => ({
+                          ...prev,
+                          personalInfo: {
+                            ...prev.personalInfo,
+                            phone: e.target.value,
+                          },
+                        }))
+                      }
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Location
+                    </label>
                     <input
                       type="text"
                       value={resumeData.personalInfo.location}
-                      onChange={(e) => setResumeData(prev => ({
-                        ...prev,
-                        personalInfo: { ...prev.personalInfo, location: e.target.value }
-                      }))}
+                      onChange={(e) =>
+                        setResumeData((prev) => ({
+                          ...prev,
+                          personalInfo: {
+                            ...prev.personalInfo,
+                            location: e.target.value,
+                          },
+                        }))
+                      }
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     />
                   </div>
@@ -426,11 +377,18 @@ export default function AIResume() {
 
               {/* Professional Summary */}
               <div className="bg-white rounded-lg p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Professional Summary</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                  Professional Summary
+                </h2>
                 <textarea
                   rows={4}
                   value={resumeData.summary}
-                  onChange={(e) => setResumeData(prev => ({ ...prev, summary: e.target.value }))}
+                  onChange={(e) =>
+                    setResumeData((prev) => ({
+                      ...prev,
+                      summary: e.target.value,
+                    }))
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                   placeholder="Write a compelling summary of your professional background..."
                 />
@@ -438,7 +396,9 @@ export default function AIResume() {
 
               {/* Technical Skills */}
               <div className="bg-white rounded-lg p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Technical Skills</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                  Technical Skills
+                </h2>
                 <div className="space-y-3">
                   <div className="flex flex-wrap gap-2">
                     {resumeData.skills.technical.map((skill, index) => (
@@ -449,12 +409,14 @@ export default function AIResume() {
                         {skill}
                         <button
                           onClick={() => {
-                            setResumeData(prev => ({
+                            setResumeData((prev) => ({
                               ...prev,
                               skills: {
                                 ...prev.skills,
-                                technical: prev.skills.technical.filter((_, i) => i !== index)
-                              }
+                                technical: prev.skills.technical.filter(
+                                  (_, i) => i !== index
+                                ),
+                              },
                             }));
                           }}
                           className="text-purple-600 hover:text-purple-800"
@@ -469,15 +431,18 @@ export default function AIResume() {
                     placeholder="Add a technical skill (press Enter)"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     onKeyPress={(e) => {
-                      if (e.key === 'Enter' && e.target.value.trim()) {
-                        setResumeData(prev => ({
+                      if (e.key === "Enter" && e.target.value.trim()) {
+                        setResumeData((prev) => ({
                           ...prev,
                           skills: {
                             ...prev.skills,
-                            technical: [...prev.skills.technical, e.target.value.trim()]
-                          }
+                            technical: [
+                              ...prev.skills.technical,
+                              e.target.value.trim(),
+                            ],
+                          },
                         }));
-                        e.target.value = '';
+                        e.target.value = "";
                       }
                     }}
                   />
@@ -486,46 +451,66 @@ export default function AIResume() {
 
               {/* Work Experience */}
               <div className="bg-white rounded-lg p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Work Experience</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                  Work Experience
+                </h2>
                 {resumeData.experience.map((exp, index) => (
-                  <div key={exp.id} className="space-y-4 pb-6 border-b border-gray-200 last:border-b-0">
+                  <div
+                    key={exp.id}
+                    className="space-y-4 pb-6 border-b border-gray-200 last:border-b-0"
+                  >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Job Title</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Job Title
+                        </label>
                         <input
                           type="text"
                           value={exp.jobTitle}
                           onChange={(e) => {
                             const newExp = [...resumeData.experience];
                             newExp[index].jobTitle = e.target.value;
-                            setResumeData(prev => ({ ...prev, experience: newExp }));
+                            setResumeData((prev) => ({
+                              ...prev,
+                              experience: newExp,
+                            }));
                           }}
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Company</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Company
+                        </label>
                         <input
                           type="text"
                           value={exp.company}
                           onChange={(e) => {
                             const newExp = [...resumeData.experience];
                             newExp[index].company = e.target.value;
-                            setResumeData(prev => ({ ...prev, experience: newExp }));
+                            setResumeData((prev) => ({
+                              ...prev,
+                              experience: newExp,
+                            }));
                           }}
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                         />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Description
+                      </label>
                       <textarea
                         rows={3}
                         value={exp.description}
                         onChange={(e) => {
                           const newExp = [...resumeData.experience];
                           newExp[index].description = e.target.value;
-                          setResumeData(prev => ({ ...prev, experience: newExp }));
+                          setResumeData((prev) => ({
+                            ...prev,
+                            experience: newExp,
+                          }));
                         }}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                         placeholder="Describe your responsibilities and achievements..."
@@ -541,7 +526,7 @@ export default function AIResume() {
                   <button className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors font-medium">
                     Save Optimized Resume
                   </button>
-                  <button 
+                  <button
                     onClick={() => navigate("/manage-jds")}
                     className="px-6 py-3 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors font-medium"
                   >
