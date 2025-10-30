@@ -38,7 +38,15 @@ export default function AIResume() {
     { id: "personal", name: "Personal Information", icon: RiUserLine },
     { id: "work", name: "Work Experience", icon: RiBriefcaseLine },
     { id: "education", name: "Education", icon: RiGraduationCapLine },
-    { id: "skills", name: "Technical Skills", icon: () => <span className="material-symbols-outlined" style={{ fontSize: 16 }}>psychology</span> },
+    {
+      id: "skills",
+      name: "Technical Skills",
+      icon: () => (
+        <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
+          psychology
+        </span>
+      ),
+    },
   ]);
   const [editingFields, setEditingFields] = useState({}); // Track which fields are being edited
   const [hoveredResumeSection, setHoveredResumeSection] = useState(null);
@@ -84,6 +92,53 @@ export default function AIResume() {
       tools: "Git, Docker, AWS, CI/CD, Agile/Scrum",
     },
   });
+  
+  // Track original resume content to only allow removal of AI-added skills
+  const [originalResumeData] = useState({
+    personal: {
+      name: "John Doe",
+      email: "john.doe@example.com",
+      phone: "+1 (555) 123-4567",
+      location: "San Francisco, CA",
+    },
+    work: [
+      {
+        id: 1,
+        title: "Senior Full-Stack Developer",
+        company: "Mandal Minds",
+        startDate: "2021-01",
+        endDate: "Present",
+        description:
+          "Led development of scalable web applications using React and Node.js. Collaborated with cross-functional teams to deliver high-quality features.",
+      },
+      {
+        id: 2,
+        title: "Full-Stack Developer",
+        company: "TechCorp Inc",
+        startDate: "2019-06",
+        endDate: "2020-12",
+        description:
+          "Developed and maintained web applications using modern JavaScript frameworks. Implemented RESTful APIs and integrated third-party services.",
+      },
+    ],
+    education: {
+      degree: "Bachelor of Science in Computer Science",
+      institution: "Stanford University",
+      startYear: "2015",
+      endYear: "2019",
+      gpa: "3.8/4.0",
+    },
+    skills: {
+      frontend: "React, Vue.js, TypeScript, HTML5, CSS3, Tailwind CSS",
+      backend: "Node.js, Express.js, Python, Django, RESTful APIs",
+      database: "MongoDB, PostgreSQL, MySQL, Redis",
+      tools: "Git, Docker, AWS, CI/CD, Agile/Scrum",
+    },
+  });
+  
+  // Track AI-suggested skills that have been added
+  const [addedAISkills, setAddedAISkills] = useState([]);
+  console.log("Added AI skills:", addedAISkills); // For debugging - remove in production
   const navigate = useNavigate();
   const location = useLocation();
   // const [matchedJD, setMatchedJD] = useState(null);
@@ -256,13 +311,9 @@ export default function AIResume() {
                   </div>
                 </div>
                 <div className="relative">
-                  <h4 className="font-semibold text-gray-900 mb-2">
-                    Backend:
-                  </h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">Backend:</h4>
                   <div className="relative">
-                    <p className="text-gray-700">
-                      {resumeData.skills.backend}
-                    </p>
+                    <p className="text-gray-700">{resumeData.skills.backend}</p>
                     <RemovableSkillsOverlay
                       text={resumeData.skills.backend}
                       sectionId="skills"
@@ -286,13 +337,9 @@ export default function AIResume() {
                   </div>
                 </div>
                 <div className="relative">
-                  <h4 className="font-semibold text-gray-900 mb-2">
-                    Tools:
-                  </h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">Tools:</h4>
                   <div className="relative">
-                    <p className="text-gray-700">
-                      {resumeData.skills.tools}
-                    </p>
+                    <p className="text-gray-700">{resumeData.skills.tools}</p>
                     <RemovableSkillsOverlay
                       text={resumeData.skills.tools}
                       sectionId="skills"
@@ -309,6 +356,47 @@ export default function AIResume() {
     }
   };
 
+  // Render Suggested Skills section (always visible)
+  const renderSuggestedSkillsSection = () => {
+    const suggestedSkills = ["Microservices", "Kubernetes", "GraphQL", "Next.js", "Terraform"];
+    
+    return (
+      <div className="mb-8 relative">
+        <h2 className="text-xl font-bold text-gray-900 mb-3 border-b-2 border-gray-300 pb-2">
+          SUGGESTED SKILLS
+        </h2>
+        <div className="flex flex-wrap gap-2">
+          {suggestedSkills.map((skill, index) => (
+            <button
+              key={index}
+              onClick={() => {
+                // Add skill to appropriate category in Technical Skills
+                const newSkills = resumeData.skills.tools + `, ${skill}`;
+                updateResumeData("skills", "tools", newSkills);
+                
+                // Track added AI skill
+                setAddedAISkills(prev => [...prev, skill]);
+              }}
+              className="group px-3 py-2 bg-orange-100 hover:bg-orange-200 text-orange-800 text-sm rounded-lg transition-colors flex items-center gap-2 border border-orange-200 hover:border-orange-300 hover:shadow-sm"
+              title={`Add ${skill} to your Technical Skills`}
+            >
+              <span
+                className="material-symbols-outlined"
+                style={{ fontSize: 16 }}
+              >
+                add
+              </span>
+              {skill}
+            </button>
+          ))}
+        </div>
+        <p className="text-sm text-gray-500 mt-2">
+          AI-recommended skills based on job requirements analysis
+        </p>
+      </div>
+    );
+  };
+
   // Clear active section highlighting after 3 seconds
   useEffect(() => {
     if (activeResumeSection) {
@@ -319,47 +407,45 @@ export default function AIResume() {
     }
   }, [activeResumeSection]);
 
-  // Function to extract skills from text
-  const extractSkillsFromText = (text) => {
-    const allSkills = [
-      "React",
-      "Vue.js",
-      "TypeScript",
-      "HTML5",
-      "CSS3",
-      "Tailwind CSS",
-      "Node.js",
-      "Express.js",
-      "Python",
-      "Django",
-      "RESTful APIs",
-      "MongoDB",
-      "PostgreSQL",
-      "MySQL",
-      "Redis",
-      "Git",
-      "Docker",
-      "AWS",
-      "CI/CD",
-      "Agile/Scrum",
+  // Function to extract only AI-added skills from text (not original resume skills)
+  const extractSkillsFromText = (text, sectionId, field, index = null) => {
+    // Get original text for comparison
+    let originalText = "";
+    if (sectionId === "work" && index !== null) {
+      originalText = originalResumeData.work[index]?.[field] || "";
+    } else if (sectionId === "education") {
+      originalText = originalResumeData.education[field] || "";
+    } else if (sectionId === "skills") {
+      originalText = originalResumeData.skills[field] || "";
+    } else if (sectionId === "personal") {
+      originalText = originalResumeData.personal[field] || "";
+    }
+
+    // AI-suggested skills that can be removed
+    const aiSkills = [
       "Microservices",
-      "Kubernetes",
+      "Kubernetes", 
       "GraphQL",
       "DevOps",
       "AWS Lambda",
-      "JavaScript",
-      "frameworks",
-      "applications",
-      "web applications",
-      "scalable",
-      "cross-functional",
-      "teams",
-      "features",
+      "Next.js",
+      "Terraform",
+      "CI/CD pipelines",
+      "microservices architecture",
+      "Kubernetes orchestration",
+      "serverless functions",
+      "containerization",
+      "cloud platforms",
     ];
 
-    const foundSkills = allSkills.filter((skill) =>
-      text.toLowerCase().includes(skill.toLowerCase())
-    );
+    // Only return skills that:
+    // 1. Are AI-suggested skills
+    // 2. Are present in current text but NOT in original text
+    const foundSkills = aiSkills.filter((skill) => {
+      const inCurrentText = text.toLowerCase().includes(skill.toLowerCase());
+      const inOriginalText = originalText.toLowerCase().includes(skill.toLowerCase());
+      return inCurrentText && !inOriginalText;
+    });
 
     return foundSkills;
   };
@@ -417,9 +503,30 @@ export default function AIResume() {
     // For skills section, also handle comma-separated removal
     if (sectionId === "skills") {
       // Remove skill with surrounding commas
-      newText = newText.replace(new RegExp(`\\s*,\\s*${skillToRemove.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*,?`, "gi"), "");
-      newText = newText.replace(new RegExp(`^\\s*${skillToRemove.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*,?`, "gi"), "");
-      newText = newText.replace(new RegExp(`,\\s*${skillToRemove.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*$`, "gi"), "");
+      newText = newText.replace(
+        new RegExp(
+          `\\s*,\\s*${skillToRemove.replace(
+            /[.*+?^${}()|[\]\\]/g,
+            "\\$&"
+          )}\\s*,?`,
+          "gi"
+        ),
+        ""
+      );
+      newText = newText.replace(
+        new RegExp(
+          `^\\s*${skillToRemove.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*,?`,
+          "gi"
+        ),
+        ""
+      );
+      newText = newText.replace(
+        new RegExp(
+          `,\\s*${skillToRemove.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*$`,
+          "gi"
+        ),
+        ""
+      );
     }
 
     // Clean up extra spaces and punctuation
@@ -433,6 +540,58 @@ export default function AIResume() {
 
     // Update the resume data
     updateResumeData(sectionId, field, newText, index);
+  };
+
+  // Function to rephrase section content with AI
+  const handleRephraseSection = (sectionId) => {
+    // Simulate AI rephrasing - in real app this would call an AI API
+    if (sectionId === "work") {
+      resumeData.work.forEach((workItem, index) => {
+        // Rephrase work descriptions with better grammar and flow
+        const currentDesc = workItem.description;
+        const rephrasedDesc = rephraseWithAI(currentDesc, "work-description");
+        updateResumeData("work", "description", rephrasedDesc, index);
+      });
+    } else if (sectionId === "education") {
+      const currentDegree = resumeData.education.degree;
+      const rephrasedDegree = rephraseWithAI(currentDegree, "education-degree");
+      updateResumeData("education", "degree", rephrasedDegree);
+    }
+    
+    // Show feedback
+    alert("Content rephrased with AI to improve grammar and flow!");
+  };
+
+  // AI rephrasing function (simulated)
+  const rephraseWithAI = (text, type) => {
+    // Simulate AI rephrasing based on type
+    if (type === "work-description") {
+      // Improve grammar and flow while keeping all keywords
+      if (text.includes("Microservices")) {
+        return text.replace(
+          /Designed and implemented microservices architecture\./g,
+          "Architected and deployed robust microservices solutions to enhance system scalability and maintainability."
+        );
+      }
+      if (text.includes("Kubernetes")) {
+        return text.replace(
+          /Deployed applications using Kubernetes orchestration\./g,
+          "Orchestrated containerized applications using Kubernetes for improved deployment efficiency and resource management."
+        );
+      }
+      if (text.includes("GraphQL")) {
+        return text.replace(
+          /Built efficient APIs using GraphQL\./g,
+          "Developed high-performance GraphQL APIs to optimize data fetching and improve client-server communication."
+        );
+      }
+    }
+    
+    // Default: just clean up the text
+    return text
+      .replace(/\.\s*\./g, ".")
+      .replace(/\s+/g, " ")
+      .trim();
   };
 
   // Resume Section Wrapper Component
@@ -475,10 +634,31 @@ export default function AIResume() {
         {isActive && (
           <>
             {/* Active purple border - extends to accommodate overlay */}
-            <div className="absolute inset-0 border-2 border-purple-500 rounded-lg pointer-events-none" style={{ paddingTop: '80px' }}></div>
-            {/* Active edit badge */}
-            <div className="absolute top-2 right-2 bg-purple-700 text-white px-2 py-1 text-xs rounded-full font-medium z-30">
-              Editing mode active
+            <div
+              className="absolute inset-0 border-2 border-purple-500 rounded-lg pointer-events-none"
+              style={{ paddingTop: "80px" }}
+            ></div>
+            {/* Active edit badge and rephrase button */}
+            <div className="absolute top-2 right-2 flex gap-2 z-30">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRephraseSection(sectionId);
+                }}
+                className="bg-orange-600 hover:bg-orange-700 text-white px-2 py-1 text-xs rounded-full font-medium transition-colors flex items-center gap-1"
+                title="AI Rephrase content with added keywords"
+              >
+                <span
+                  className="material-symbols-outlined"
+                  style={{ fontSize: 12 }}
+                >
+                  auto_fix_high
+                </span>
+                Rephrase
+              </button>
+              <div className="bg-purple-700 text-white px-2 py-1 text-xs rounded-full font-medium">
+                Editing mode active
+              </div>
             </div>
           </>
         )}
@@ -492,7 +672,7 @@ export default function AIResume() {
 
     if (!isActive) return null;
 
-    const skills = extractSkillsFromText(text);
+    const skills = extractSkillsFromText(text, sectionId, field, index);
 
     if (skills.length === 0) return null;
 
@@ -622,6 +802,9 @@ export default function AIResume() {
 
       if (section && field) {
         updateResumeData(section, field, newValue, index);
+        
+        // Track AI-added skill
+        setAddedAISkills(prev => [...prev, suggestion]);
       }
     };
 
@@ -951,8 +1134,12 @@ export default function AIResume() {
                       key={index}
                       onClick={() => {
                         // Add skill to appropriate category
-                        const newSkills = resumeData.skills.tools + `, ${skill}`;
+                        const newSkills =
+                          resumeData.skills.tools + `, ${skill}`;
                         updateResumeData("skills", "tools", newSkills);
+                        
+                        // Track AI-added skill
+                        setAddedAISkills(prev => [...prev, skill]);
                       }}
                       className="group px-2 py-1 bg-orange-100 hover:bg-orange-200 text-orange-800 text-xs rounded-md transition-colors flex items-center gap-1"
                       title={`Add ${skill} to your resume`}
@@ -1270,7 +1457,9 @@ export default function AIResume() {
               >
                 {/* Render sections in the order defined by sidebar */}
                 {sections.map((section) => renderResumeSection(section))}
-
+                
+                {/* Suggested Skills Section - Always visible */}
+                {renderSuggestedSkillsSection()}
               </div>
             </div>
           </div>
