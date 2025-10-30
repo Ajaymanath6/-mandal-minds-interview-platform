@@ -41,6 +41,7 @@ export default function ManageResume() {
   const [inspectMode, setInspectMode] = useState(false);
   const [inspectData, setInspectData] = useState(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [tooltipPinned, setTooltipPinned] = useState(false);
   const inspectRef = useRef(null);
   
   const navigate = useNavigate();
@@ -228,7 +229,7 @@ export default function ManageResume() {
   };
 
   const handleInspectHover = (e, componentId) => {
-    if (!inspectMode) return;
+    if (!inspectMode || tooltipPinned) return;
     
     const rect = e.currentTarget.getBoundingClientRect();
     const code = componentCodeMap[componentId];
@@ -243,8 +244,32 @@ export default function ManageResume() {
   };
 
   const handleInspectLeave = () => {
+    if (!inspectMode || tooltipPinned) return;
+    // Add a small delay before hiding to allow moving to tooltip
+    setTimeout(() => {
+      if (!tooltipPinned) {
+        setInspectData(null);
+      }
+    }, 100);
+  };
+
+  const handleInspectClick = (e, componentId) => {
     if (!inspectMode) return;
+    
+    const code = componentCodeMap[componentId];
+    if (code) {
+      setInspectData(code);
+      setTooltipPinned(true);
+      setMousePosition({
+        x: e.clientX,
+        y: e.clientY
+      });
+    }
+  };
+
+  const closeTooltip = () => {
     setInspectData(null);
+    setTooltipPinned(false);
   };
 
   const copyToClipboard = (text) => {
@@ -255,7 +280,31 @@ export default function ManageResume() {
   const toggleInspectMode = () => {
     setInspectMode(!inspectMode);
     setInspectData(null);
+    setTooltipPinned(false);
   };
+
+  // Close tooltip on Escape key or click outside
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && inspectData) {
+        closeTooltip();
+      }
+    };
+
+    const handleClickOutside = (e) => {
+      if (inspectData && tooltipPinned && !e.target.closest('.inspect-tooltip')) {
+        closeTooltip();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [inspectData, tooltipPinned]);
 
   return (
     <div className="h-screen bg-gray-50 flex">
@@ -468,9 +517,11 @@ export default function ManageResume() {
               className="text-base font-bold text-gray-900"
               onMouseEnter={(e) => handleInspectHover(e, 'page-title')}
               onMouseLeave={handleInspectLeave}
+              onClick={(e) => handleInspectClick(e, 'page-title')}
               style={{ 
                 outline: inspectMode ? '2px dashed #8b5cf6' : 'none',
-                outlineOffset: '2px'
+                outlineOffset: '2px',
+                cursor: inspectMode ? 'pointer' : 'default'
               }}
             >
               Manage Resume
@@ -498,13 +549,20 @@ export default function ManageResume() {
                 <div className="grid grid-cols-2 gap-4">
                   {/* Upload Resume Button */}
                   <button
-                    onClick={() => setIsUploadModalOpen(true)}
+                    onClick={(e) => {
+                      if (inspectMode) {
+                        handleInspectClick(e, 'upload-resume-btn');
+                      } else {
+                        setIsUploadModalOpen(true);
+                      }
+                    }}
                     onMouseEnter={(e) => handleInspectHover(e, 'upload-resume-btn')}
                     onMouseLeave={handleInspectLeave}
                     className="flex flex-col items-center p-6 bg-white rounded-xl transition-all group"
                     style={{ 
                       outline: inspectMode ? '2px dashed #8b5cf6' : 'none',
-                      outlineOffset: '2px'
+                      outlineOffset: '2px',
+                      cursor: inspectMode ? 'pointer' : 'default'
                     }}
                   >
                     <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
@@ -517,12 +575,14 @@ export default function ManageResume() {
 
                   {/* New Resume Button */}
                   <button 
+                    onClick={(e) => handleInspectClick(e, 'new-resume-btn')}
                     onMouseEnter={(e) => handleInspectHover(e, 'new-resume-btn')}
                     onMouseLeave={handleInspectLeave}
                     className="flex flex-col items-center p-6 bg-white rounded-xl transition-all group"
                     style={{ 
                       outline: inspectMode ? '2px dashed #8b5cf6' : 'none',
-                      outlineOffset: '2px'
+                      outlineOffset: '2px',
+                      cursor: inspectMode ? 'pointer' : 'default'
                     }}
                   >
                     <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
@@ -1001,7 +1061,7 @@ export default function ManageResume() {
       {/* Inspect Element Tooltip */}
       {inspectMode && inspectData && (
         <div
-          className="fixed z-[9999] bg-black text-white rounded-lg shadow-2xl border border-gray-800 max-w-2xl w-full pointer-events-none"
+          className="inspect-tooltip fixed z-[9999] bg-black text-white rounded-lg shadow-2xl border border-gray-800 max-w-2xl w-full pointer-events-auto"
           style={{
             left: mousePosition.x + 20,
             top: mousePosition.y - 10,
@@ -1019,17 +1079,24 @@ export default function ManageResume() {
             <div className="flex gap-2">
               <button
                 onClick={() => copyToClipboard(inspectData.jsx)}
-                className="px-2 py-1 text-xs bg-purple-600 hover:bg-purple-700 rounded transition-colors pointer-events-auto"
+                className="px-2 py-1 text-xs bg-purple-600 hover:bg-purple-700 rounded transition-colors"
                 title="Copy JSX"
               >
                 Copy JSX
               </button>
               <button
                 onClick={() => copyToClipboard(inspectData.css)}
-                className="px-2 py-1 text-xs bg-blue-600 hover:bg-blue-700 rounded transition-colors pointer-events-auto"
+                className="px-2 py-1 text-xs bg-blue-600 hover:bg-blue-700 rounded transition-colors"
                 title="Copy CSS"
               >
                 Copy CSS
+              </button>
+              <button
+                onClick={closeTooltip}
+                className="px-2 py-1 text-xs bg-gray-700 hover:bg-gray-600 rounded transition-colors"
+                title="Close"
+              >
+                ✕
               </button>
             </div>
           </div>
@@ -1044,7 +1111,7 @@ export default function ManageResume() {
             <button className="px-3 py-2 text-xs font-medium text-purple-400 border-b-2 border-purple-400 bg-gray-900">
               JSX
             </button>
-            <button className="px-3 py-2 text-xs font-medium text-gray-400 hover:text-white transition-colors pointer-events-auto">
+            <button className="px-3 py-2 text-xs font-medium text-gray-400 hover:text-white transition-colors">
               CSS
             </button>
           </div>
@@ -1058,7 +1125,7 @@ export default function ManageResume() {
 
           {/* Footer */}
           <div className="px-3 py-2 border-t border-gray-800 text-xs text-gray-500">
-            💡 Hover over elements in inspect mode to see their code
+            💡 {tooltipPinned ? 'Click outside or press Escape to close' : 'Click on elements to pin tooltip'}
           </div>
         </div>
       )}
