@@ -544,8 +544,8 @@ export default function ResumeEditor() {
                         <p>{exp.company}</p>
                       </div>
                     ))}
-                  </div>
                 </div>
+              </div>
 
                 {/* Technical Skills Section */}
                 <div className="p-3 bg-gray-50 rounded-lg">
@@ -855,8 +855,8 @@ export default function ResumeEditor() {
                     </button>
                   </div>
                 </div>
-              </div>
             </div>
+          </div>
         </div>
       </div>
 

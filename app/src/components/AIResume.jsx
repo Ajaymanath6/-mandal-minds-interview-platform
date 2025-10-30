@@ -519,25 +519,25 @@ export default function AIResume() {
     updateResumeData(sectionId, field, newText, index);
   };
 
-  // Function to rephrase section content with AI
-  const handleRephraseSection = (sectionId) => {
-    // Simulate AI rephrasing - in real app this would call an AI API
-    if (sectionId === "work") {
-      resumeData.work.forEach((workItem, index) => {
-        // Rephrase work descriptions with better grammar and flow
-        const currentDesc = workItem.description;
-        const rephrasedDesc = rephraseWithAI(currentDesc, "work-description");
-        updateResumeData("work", "description", rephrasedDesc, index);
-      });
-    } else if (sectionId === "education") {
-      const currentDegree = resumeData.education.degree;
-      const rephrasedDegree = rephraseWithAI(currentDegree, "education-degree");
-      updateResumeData("education", "degree", rephrasedDegree);
-    }
+  // Function to rephrase section content with AI (now handled per field)
+  // const handleRephraseSection = (sectionId) => {
+  //   // Simulate AI rephrasing - in real app this would call an AI API
+  //   if (sectionId === "work") {
+  //     resumeData.work.forEach((workItem, index) => {
+  //       // Rephrase work descriptions with better grammar and flow
+  //       const currentDesc = workItem.description;
+  //       const rephrasedDesc = rephraseWithAI(currentDesc, "work-description");
+  //       updateResumeData("work", "description", rephrasedDesc, index);
+  //     });
+  //   } else if (sectionId === "education") {
+  //     const currentDegree = resumeData.education.degree;
+  //     const rephrasedDegree = rephraseWithAI(currentDegree, "education-degree");
+  //     updateResumeData("education", "degree", rephrasedDegree);
+  //   }
 
-    // Show feedback
-    alert("Content rephrased with AI to improve grammar and flow!");
-  };
+  //   // Show feedback
+  //   alert("Content rephrased with AI to improve grammar and flow!");
+  // };
 
   // AI rephrasing function (simulated)
   const rephraseWithAI = (text, type) => {
@@ -643,27 +643,9 @@ export default function AIResume() {
               className="absolute inset-0 border-2 border-purple-500 rounded-lg pointer-events-none"
               style={{ paddingTop: "40px" }}
             ></div>
-            {/* Active edit badge and rephrase button */}
-            <div className="absolute top-2 right-2 flex gap-2 z-30">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleRephraseSection(sectionId);
-                }}
-                className="bg-orange-600 hover:bg-orange-700 text-white px-2 py-1 text-xs rounded-full font-medium transition-colors flex items-center gap-1"
-                title="AI Rephrase content with added keywords"
-              >
-                <span
-                  className="material-symbols-outlined"
-                  style={{ fontSize: 12 }}
-                >
-                  auto_fix_high
-                </span>
-                Rephrase
-              </button>
-              <div className="bg-purple-700 text-white px-2 py-1 text-xs rounded-full font-medium">
-                Editing mode active
-              </div>
+            {/* Active edit badge */}
+            <div className="absolute top-2 right-2 bg-purple-700 text-white px-2 py-1 text-xs rounded-full font-medium z-30">
+              Editing mode active
             </div>
           </>
         )}
@@ -730,7 +712,7 @@ export default function AIResume() {
     const [hoveredField, setHoveredField] = useState(null);
     const isEditing = editingFields[fieldId];
     const aiSuggestions = getAISuggestions(fieldId, value);
-    
+
     // Extract AI-added skills from the current value
     const aiAddedSkills = extractSkillsFromText(value, section, field, index);
 
@@ -802,11 +784,14 @@ export default function AIResume() {
 
       aiAddedSkills.forEach((skill) => {
         const phrases = aiPhrases[skill] || [skill];
-        
+
         phrases.forEach((phrase) => {
-          const regex = new RegExp(`\\b${phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, 'gi');
+          const regex = new RegExp(
+            `\\b${phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`,
+            "gi"
+          );
           const matches = [...processedText.matchAll(regex)];
-          
+
           matches.forEach((match) => {
             badges.push({
               skill,
@@ -825,13 +810,13 @@ export default function AIResume() {
       badges.forEach(({ skill, phrase, start, end }) => {
         const beforeText = processedText.substring(0, start);
         const afterText = processedText.substring(end);
-        
+
         const badgeHtml = `<span class="inline-badge" data-skill="${skill}" data-phrase="${phrase}">${phrase}</span>`;
         processedText = beforeText + badgeHtml + afterText;
       });
 
       return (
-        <div 
+        <div
           className="text-gray-900"
           dangerouslySetInnerHTML={{ __html: processedText }}
         />
@@ -877,10 +862,10 @@ export default function AIResume() {
           onMouseLeave={() => setHoveredField(null)}
           onClick={(e) => {
             // Handle clicks on inline badges
-            const target = e.target.closest('.inline-badge');
+            const target = e.target.closest(".inline-badge");
             if (target) {
               e.stopPropagation();
-              const skill = target.getAttribute('data-skill');
+              const skill = target.getAttribute("data-skill");
               if (skill) {
                 removeSkillFromField(skill);
               }
@@ -889,26 +874,48 @@ export default function AIResume() {
         >
           {/* Render text with inline badges */}
           {renderTextWithInlineBadges()}
-          
+
           {hoveredField === fieldId && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleFieldEdit(fieldId);
-              }}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-            >
-              <span
-                className="material-symbols-outlined"
-                style={{
-                  fontSize: "16px",
-                  fontVariationSettings:
-                    '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 16',
+            <div className="absolute bottom-2 right-2 flex gap-1">
+              {/* Rephrase badge */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // Rephrase this specific field
+                  const currentText = value;
+                  const rephrasedText = rephraseWithAI(currentText, fieldId.includes("work-description") ? "work-description" : "default");
+                  if (section && field) {
+                    updateResumeData(section, field, rephrasedText, index);
+                  }
                 }}
+                className="w-6 h-6 flex items-center justify-center bg-orange-600 hover:bg-orange-700 text-white rounded-md transition-colors"
+                title="AI Rephrase content"
               >
-                edit
-              </span>
-            </button>
+                <span
+                  className="material-symbols-outlined"
+                  style={{ fontSize: 12 }}
+                >
+                  auto_fix_high
+                </span>
+              </button>
+              
+              {/* Edit badge */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleFieldEdit(fieldId);
+                }}
+                className="w-6 h-6 flex items-center justify-center bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+                title="Edit this field"
+              >
+                <span
+                  className="material-symbols-outlined"
+                  style={{ fontSize: 12 }}
+                >
+                  edit
+                </span>
+              </button>
+            </div>
           )}
         </div>
 
@@ -933,7 +940,7 @@ export default function AIResume() {
             ))}
           </div>
         )}
-        
+
         {/* Add CSS for inline badges */}
         <style jsx>{`
           .inline-badge {
@@ -956,8 +963,8 @@ export default function AIResume() {
             position: absolute;
             top: -8px;
             right: -8px;
-            background: #ef4444;
-            color: white;
+            background: white;
+            color: #ef4444;
             border-radius: 50%;
             width: 16px;
             height: 16px;
@@ -965,6 +972,8 @@ export default function AIResume() {
             align-items: center;
             justify-content: center;
             font-size: 10px;
+            border: 1px solid #ef4444;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
           }
         `}</style>
       </div>
