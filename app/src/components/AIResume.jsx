@@ -92,7 +92,7 @@ export default function AIResume() {
       tools: "Git, Docker, AWS, CI/CD, Agile/Scrum",
     },
   });
-  
+
   // Track original resume content to only allow removal of AI-added skills
   const [originalResumeData] = useState({
     personal: {
@@ -135,7 +135,7 @@ export default function AIResume() {
       tools: "Git, Docker, AWS, CI/CD, Agile/Scrum",
     },
   });
-  
+
   // Track AI-suggested skills that have been added
   const [addedAISkills, setAddedAISkills] = useState([]);
   console.log("Added AI skills:", addedAISkills); // For debugging - remove in production
@@ -358,8 +358,14 @@ export default function AIResume() {
 
   // Render Suggested Skills section (always visible)
   const renderSuggestedSkillsSection = () => {
-    const suggestedSkills = ["Microservices", "Kubernetes", "GraphQL", "Next.js", "Terraform"];
-    
+    const suggestedSkills = [
+      "Microservices",
+      "Kubernetes",
+      "GraphQL",
+      "Next.js",
+      "Terraform",
+    ];
+
     return (
       <div className="mb-8 relative">
         <h2 className="text-xl font-bold text-gray-900 mb-3 border-b-2 border-gray-300 pb-2">
@@ -373,9 +379,9 @@ export default function AIResume() {
                 // Add skill to appropriate category in Technical Skills
                 const newSkills = resumeData.skills.tools + `, ${skill}`;
                 updateResumeData("skills", "tools", newSkills);
-                
+
                 // Track added AI skill
-                setAddedAISkills(prev => [...prev, skill]);
+                setAddedAISkills((prev) => [...prev, skill]);
               }}
               className="group px-3 py-2 bg-orange-100 hover:bg-orange-200 text-orange-800 text-sm rounded-lg transition-colors flex items-center gap-2 border border-orange-200 hover:border-orange-300 hover:shadow-sm"
               title={`Add ${skill} to your Technical Skills`}
@@ -424,7 +430,7 @@ export default function AIResume() {
     // AI-suggested skills that can be removed
     const aiSkills = [
       "Microservices",
-      "Kubernetes", 
+      "Kubernetes",
       "GraphQL",
       "DevOps",
       "AWS Lambda",
@@ -443,7 +449,9 @@ export default function AIResume() {
     // 2. Are present in current text but NOT in original text
     const foundSkills = aiSkills.filter((skill) => {
       const inCurrentText = text.toLowerCase().includes(skill.toLowerCase());
-      const inOriginalText = originalText.toLowerCase().includes(skill.toLowerCase());
+      const inOriginalText = originalText
+        .toLowerCase()
+        .includes(skill.toLowerCase());
       return inCurrentText && !inOriginalText;
     });
 
@@ -557,41 +565,69 @@ export default function AIResume() {
       const rephrasedDegree = rephraseWithAI(currentDegree, "education-degree");
       updateResumeData("education", "degree", rephrasedDegree);
     }
-    
+
     // Show feedback
     alert("Content rephrased with AI to improve grammar and flow!");
   };
 
   // AI rephrasing function (simulated)
   const rephraseWithAI = (text, type) => {
-    // Simulate AI rephrasing based on type
+    // Clean up text first - remove orphaned phrases and fix grammar
+    let cleanedText = text;
+    
+    // Remove orphaned AI-added phrases that might be left after skill removal
+    const orphanedPhrases = [
+      /Designed and implemented\s*\./gi,
+      /Deployed applications using\s*\./gi,
+      /Built efficient APIs using\s*\./gi,
+      /Implemented\s*pipelines for automated deployment\./gi,
+      /Applied\s*practices for streamlined development\./gi,
+      /Containerized applications using\s*\./gi,
+      /Developed serverless functions with\s*\./gi,
+    ];
+    
+    orphanedPhrases.forEach(phrase => {
+      cleanedText = cleanedText.replace(phrase, '');
+    });
+    
+    // Fix grammar issues after removal
+    cleanedText = cleanedText
+      .replace(/\.\s*\./g, '.') // Remove double periods
+      .replace(/\s+/g, ' ') // Remove extra spaces
+      .replace(/,\s*,/g, ',') // Remove double commas
+      .replace(/\s*,\s*\./g, '.') // Fix comma before period
+      .replace(/^\s*,\s*/, '') // Remove leading comma
+      .replace(/\s*,$/, '') // Remove trailing comma
+      .trim();
+    
     if (type === "work-description") {
-      // Improve grammar and flow while keeping all keywords
-      if (text.includes("Microservices")) {
-        return text.replace(
-          /Designed and implemented microservices architecture\./g,
-          "Architected and deployed robust microservices solutions to enhance system scalability and maintainability."
+      // Improve grammar and flow while keeping remaining keywords
+      if (cleanedText.includes("Microservices")) {
+        cleanedText = cleanedText.replace(
+          /Designed and implemented microservices architecture/gi,
+          "Architected and deployed robust microservices solutions to enhance system scalability and maintainability"
         );
       }
-      if (text.includes("Kubernetes")) {
-        return text.replace(
-          /Deployed applications using Kubernetes orchestration\./g,
-          "Orchestrated containerized applications using Kubernetes for improved deployment efficiency and resource management."
+      if (cleanedText.includes("Kubernetes")) {
+        cleanedText = cleanedText.replace(
+          /Deployed applications using Kubernetes orchestration/gi,
+          "Orchestrated containerized applications using Kubernetes for improved deployment efficiency and resource management"
         );
       }
-      if (text.includes("GraphQL")) {
-        return text.replace(
-          /Built efficient APIs using GraphQL\./g,
-          "Developed high-performance GraphQL APIs to optimize data fetching and improve client-server communication."
+      if (cleanedText.includes("GraphQL")) {
+        cleanedText = cleanedText.replace(
+          /Built efficient APIs using GraphQL/gi,
+          "Developed high-performance GraphQL APIs to optimize data fetching and improve client-server communication"
         );
+      }
+      
+      // Ensure proper sentence structure
+      if (cleanedText && !cleanedText.endsWith('.')) {
+        cleanedText += '.';
       }
     }
-    
-    // Default: just clean up the text
-    return text
-      .replace(/\.\s*\./g, ".")
-      .replace(/\s+/g, " ")
-      .trim();
+
+    return cleanedText;
   };
 
   // Resume Section Wrapper Component
@@ -636,7 +672,7 @@ export default function AIResume() {
             {/* Active purple border - extends to accommodate overlay */}
             <div
               className="absolute inset-0 border-2 border-purple-500 rounded-lg pointer-events-none"
-              style={{ paddingTop: "80px" }}
+              style={{ paddingTop: "40px" }}
             ></div>
             {/* Active edit badge and rephrase button */}
             <div className="absolute top-2 right-2 flex gap-2 z-30">
@@ -666,7 +702,7 @@ export default function AIResume() {
     );
   };
 
-  // Component to show removable skills in resume text
+  // Component to show removable skills as yellow badges directly on resume text
   const RemovableSkillsOverlay = ({ text, sectionId, field, index = null }) => {
     const isActive = activeResumeSection === sectionId;
 
@@ -677,11 +713,8 @@ export default function AIResume() {
     if (skills.length === 0) return null;
 
     return (
-      <div className="absolute top-0 left-0 right-0 bg-white bg-opacity-95 p-3 rounded-lg border-2 border-orange-300 shadow-lg z-20 min-h-[60px]">
-        <div className="flex flex-wrap gap-1 items-center">
-          <span className="text-xs text-gray-700 font-semibold mr-2">
-            Remove skills:
-          </span>
+      <div className="absolute top-0 left-0 right-0 bg-transparent p-2 z-20">
+        <div className="flex flex-wrap gap-1">
           {skills.map((skill, skillIndex) => (
             <button
               key={skillIndex}
@@ -689,7 +722,7 @@ export default function AIResume() {
                 e.stopPropagation();
                 removeSkillFromText(text, skill, sectionId, field, index);
               }}
-              className="group px-2 py-1 bg-orange-100 hover:bg-orange-200 text-orange-800 text-xs rounded-md transition-all duration-200 flex items-center gap-1 border border-orange-200 hover:border-orange-300 hover:shadow-sm"
+              className="px-2 py-1 bg-yellow-200 hover:bg-yellow-300 text-yellow-800 text-xs rounded-md transition-all duration-200 flex items-center gap-1 border border-yellow-300 hover:border-yellow-400 hover:shadow-sm"
               title={`Remove "${skill}" from this section`}
             >
               <span
@@ -802,9 +835,9 @@ export default function AIResume() {
 
       if (section && field) {
         updateResumeData(section, field, newValue, index);
-        
+
         // Track AI-added skill
-        setAddedAISkills(prev => [...prev, suggestion]);
+        setAddedAISkills((prev) => [...prev, suggestion]);
       }
     };
 
@@ -1137,9 +1170,9 @@ export default function AIResume() {
                         const newSkills =
                           resumeData.skills.tools + `, ${skill}`;
                         updateResumeData("skills", "tools", newSkills);
-                        
+
                         // Track AI-added skill
-                        setAddedAISkills(prev => [...prev, skill]);
+                        setAddedAISkills((prev) => [...prev, skill]);
                       }}
                       className="group px-2 py-1 bg-orange-100 hover:bg-orange-200 text-orange-800 text-xs rounded-md transition-colors flex items-center gap-1"
                       title={`Add ${skill} to your resume`}
@@ -1457,7 +1490,7 @@ export default function AIResume() {
               >
                 {/* Render sections in the order defined by sidebar */}
                 {sections.map((section) => renderResumeSection(section))}
-                
+
                 {/* Suggested Skills Section - Always visible */}
                 {renderSuggestedSkillsSection()}
               </div>
