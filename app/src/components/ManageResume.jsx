@@ -1050,11 +1050,12 @@ export default function ManageResume() {
       {/* Inspect Element Tooltip */}
       {inspectMode && inspectData && (
         <div
-          className="inspect-tooltip fixed z-[9999] bg-black text-white rounded-md shadow-2xl border border-gray-700 max-w-lg pointer-events-auto"
+          className="inspect-tooltip fixed z-[9999] bg-black text-white rounded-lg shadow-xl max-w-lg pointer-events-auto"
           style={{
             left: mousePosition.x + 15,
             top: mousePosition.y - 5,
-            transform: mousePosition.x > window.innerWidth - 400 ? 'translateX(-100%) translateX(-30px)' : 'none'
+            transform: mousePosition.x > window.innerWidth - 400 ? 'translateX(-100%) translateX(-30px)' : 'none',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
           }}
           onMouseLeave={() => {
             if (!tooltipPinned) {
@@ -1062,23 +1063,23 @@ export default function ManageResume() {
             }
           }}
         >
-          {/* Compact Header with Close Button */}
-          <div className="flex items-center justify-between p-2 border-b border-gray-700">
-            <span className="text-xs font-medium text-gray-300">
+          {/* Header with Badge and Close Button */}
+          <div className="flex items-center justify-between p-3">
+            <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-white text-gray-900">
               {inspectData.name}
             </span>
             <button
               onClick={closeTooltip}
-              className="px-1 py-1 text-xs bg-white hover:bg-gray-100 text-gray-800 rounded transition-colors duration-200"
+              className="flex items-center justify-center w-6 h-6 bg-gray-800 hover:bg-gray-700 text-white rounded-md transition-colors duration-200"
               title="Close"
             >
               ✕
             </button>
           </div>
 
-          {/* Compact Code Content */}
+          {/* Code Content */}
           <div 
-            className="p-2 max-h-60 overflow-y-auto cursor-pointer hover:bg-gray-900 transition-colors duration-200"
+            className="p-3 max-h-60 overflow-y-auto cursor-pointer hover:bg-gray-900 transition-colors duration-200"
             onClick={() => copyToClipboard(inspectData.jsx)}
             title="Click to copy code"
           >
