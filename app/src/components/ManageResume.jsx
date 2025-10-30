@@ -1056,11 +1056,11 @@ export default function ManageResume() {
       {/* Inspect Element Tooltip */}
       {inspectMode && inspectData && (
         <div
-          className="inspect-tooltip fixed z-[9999] bg-black text-white rounded-lg shadow-2xl border border-gray-800 max-w-2xl w-full pointer-events-auto"
+          className="inspect-tooltip fixed z-[9999] bg-black text-white rounded-md shadow-2xl border border-gray-700 max-w-lg pointer-events-auto"
           style={{
-            left: mousePosition.x + 20,
-            top: mousePosition.y - 10,
-            transform: mousePosition.x > window.innerWidth - 600 ? 'translateX(-100%) translateX(-40px)' : 'none'
+            left: mousePosition.x + 15,
+            top: mousePosition.y - 5,
+            transform: mousePosition.x > window.innerWidth - 400 ? 'translateX(-100%) translateX(-30px)' : 'none'
           }}
           onMouseLeave={() => {
             if (!tooltipPinned) {
@@ -1068,32 +1068,22 @@ export default function ManageResume() {
             }
           }}
         >
-          {/* Header */}
-          <div className="flex items-center justify-between p-3 border-b border-gray-800">
-            <div className="flex items-center gap-2">
-              <RiEyeLine size={16} className="text-purple-400" />
-              <span className="text-sm font-semibold text-purple-400">
-                {inspectData.name}
-              </span>
-            </div>
-            <div className="flex gap-2">
+          {/* Compact Header with Copy Buttons */}
+          <div className="flex items-center justify-between p-2 border-b border-gray-700">
+            <span className="text-xs font-medium text-gray-300">
+              {inspectData.name}
+            </span>
+            <div className="flex gap-1">
               <button
                 onClick={() => copyToClipboard(inspectData.jsx)}
                 className="px-2 py-1 text-xs bg-purple-600 hover:bg-purple-700 text-white rounded transition-colors duration-200"
                 title="Copy JSX"
               >
-                Copy JSX
-              </button>
-              <button
-                onClick={() => copyToClipboard(inspectData.css)}
-                className="px-2 py-1 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors duration-200"
-                title="Copy CSS"
-              >
-                Copy CSS
+                JSX
               </button>
               <button
                 onClick={closeTooltip}
-                className="px-2 py-1 text-xs bg-gray-700 hover:bg-gray-600 text-white rounded transition-colors duration-200"
+                className="px-1 py-1 text-xs bg-gray-700 hover:bg-gray-600 text-white rounded transition-colors duration-200"
                 title="Close"
               >
                 ✕
@@ -1101,28 +1091,12 @@ export default function ManageResume() {
             </div>
           </div>
 
-          {/* Description */}
-          <div className="px-3 py-2 text-xs text-gray-300 border-b border-gray-800">
-            {inspectData.description}
-          </div>
-
-          {/* Tabs */}
-          <div className="flex border-b border-gray-800">
-            <button className="px-3 py-2 text-xs font-medium text-purple-400 border-b-2 border-purple-400 bg-gray-900 transition-colors duration-200">
-              JSX
-            </button>
-            <button className="px-3 py-2 text-xs font-medium text-gray-400 hover:text-white transition-colors duration-200">
-              CSS
-            </button>
-          </div>
-
-          {/* Code Content */}
-          <div className="p-3 max-h-80 overflow-y-auto">
-            <pre className="text-xs text-gray-300 whitespace-pre-wrap font-mono leading-relaxed">
+          {/* Compact Code Content */}
+          <div className="p-2 max-h-60 overflow-y-auto">
+            <pre className="text-xs text-gray-300 whitespace-pre-wrap font-mono leading-tight">
               <code>{inspectData.jsx}</code>
             </pre>
           </div>
-
         </div>
       )}
 
