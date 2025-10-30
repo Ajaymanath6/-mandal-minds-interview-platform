@@ -274,15 +274,7 @@ export default function AIResume() {
           <div className="flex flex-col h-full">
             {/* Header */}
             <div className="p-4 border-b border-gray-200">
-              <div className="flex items-center gap-2 mb-2">
-                <RiSparklingFill size={20} className="text-purple-600" />
-                <h2 className="text-base font-semibold text-gray-900">AI Resume Optimizer</h2>
-              </div>
-              {matchedJD && (
-                <p className="text-xs text-gray-600">
-                  Optimizing for: <span className="font-medium">{matchedJD.title}</span> at <span className="font-medium">{matchedJD.company}</span>
-                </p>
-              )}
+              <h2 className="text-base font-semibold text-gray-900">Resume Sections</h2>
             </div>
 
             {/* Resume Sections */}
