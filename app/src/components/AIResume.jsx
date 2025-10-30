@@ -38,6 +38,7 @@ export default function AIResume() {
     { id: "personal", name: "Personal Information", icon: RiUserLine },
     { id: "work", name: "Work Experience", icon: RiBriefcaseLine },
     { id: "education", name: "Education", icon: RiGraduationCapLine },
+    { id: "skills", name: "Technical Skills", icon: () => <span className="material-symbols-outlined" style={{ fontSize: 16 }}>psychology</span> },
   ]);
   const [editingFields, setEditingFields] = useState({}); // Track which fields are being edited
   const [hoveredResumeSection, setHoveredResumeSection] = useState(null);
@@ -75,6 +76,12 @@ export default function AIResume() {
       startYear: "2015",
       endYear: "2019",
       gpa: "3.8/4.0",
+    },
+    skills: {
+      frontend: "React, Vue.js, TypeScript, HTML5, CSS3, Tailwind CSS",
+      backend: "Node.js, Express.js, Python, Django, RESTful APIs",
+      database: "MongoDB, PostgreSQL, MySQL, Redis",
+      tools: "Git, Docker, AWS, CI/CD, Agile/Scrum",
     },
   });
   const navigate = useNavigate();
@@ -171,7 +178,7 @@ export default function AIResume() {
                   </div>
                   <div className="relative">
                     <p className="text-gray-700">{workItem.description}</p>
-                    <RemovableSkillsOverlay 
+                    <RemovableSkillsOverlay
                       text={workItem.description}
                       sectionId="work"
                       field="description"
@@ -201,7 +208,7 @@ export default function AIResume() {
                       <h3 className="text-lg font-semibold text-gray-900">
                         {resumeData.education.degree}
                       </h3>
-                      <RemovableSkillsOverlay 
+                      <RemovableSkillsOverlay
                         text={resumeData.education.degree}
                         sectionId="education"
                         field="degree"
@@ -217,6 +224,82 @@ export default function AIResume() {
                   </p>
                 </div>
                 <p className="text-gray-700">GPA: {resumeData.education.gpa}</p>
+              </div>
+            </div>
+          </ResumeSectionWrapper>
+        );
+      case "skills":
+        return (
+          <ResumeSectionWrapper
+            key="skills"
+            sectionId="skills"
+            sectionName="Technical Skills"
+          >
+            <div className="mb-8 relative">
+              <h2 className="text-xl font-bold text-gray-900 mb-3 border-b-2 border-gray-300 pb-2">
+                TECHNICAL SKILLS
+              </h2>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="relative">
+                  <h4 className="font-semibold text-gray-900 mb-2">
+                    Frontend:
+                  </h4>
+                  <div className="relative">
+                    <p className="text-gray-700">
+                      {resumeData.skills.frontend}
+                    </p>
+                    <RemovableSkillsOverlay
+                      text={resumeData.skills.frontend}
+                      sectionId="skills"
+                      field="frontend"
+                    />
+                  </div>
+                </div>
+                <div className="relative">
+                  <h4 className="font-semibold text-gray-900 mb-2">
+                    Backend:
+                  </h4>
+                  <div className="relative">
+                    <p className="text-gray-700">
+                      {resumeData.skills.backend}
+                    </p>
+                    <RemovableSkillsOverlay
+                      text={resumeData.skills.backend}
+                      sectionId="skills"
+                      field="backend"
+                    />
+                  </div>
+                </div>
+                <div className="relative">
+                  <h4 className="font-semibold text-gray-900 mb-2">
+                    Database:
+                  </h4>
+                  <div className="relative">
+                    <p className="text-gray-700">
+                      {resumeData.skills.database}
+                    </p>
+                    <RemovableSkillsOverlay
+                      text={resumeData.skills.database}
+                      sectionId="skills"
+                      field="database"
+                    />
+                  </div>
+                </div>
+                <div className="relative">
+                  <h4 className="font-semibold text-gray-900 mb-2">
+                    Tools:
+                  </h4>
+                  <div className="relative">
+                    <p className="text-gray-700">
+                      {resumeData.skills.tools}
+                    </p>
+                    <RemovableSkillsOverlay
+                      text={resumeData.skills.tools}
+                      sectionId="skills"
+                      field="tools"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </ResumeSectionWrapper>
@@ -239,16 +322,42 @@ export default function AIResume() {
   // Function to extract skills from text
   const extractSkillsFromText = (text) => {
     const allSkills = [
-      "React", "Vue.js", "TypeScript", "HTML5", "CSS3", "Tailwind CSS",
-      "Node.js", "Express.js", "Python", "Django", "RESTful APIs",
-      "MongoDB", "PostgreSQL", "MySQL", "Redis",
-      "Git", "Docker", "AWS", "CI/CD", "Agile/Scrum",
-      "Microservices", "Kubernetes", "GraphQL", "DevOps", "AWS Lambda",
-      "JavaScript", "frameworks", "applications", "web applications",
-      "scalable", "cross-functional", "teams", "features"
+      "React",
+      "Vue.js",
+      "TypeScript",
+      "HTML5",
+      "CSS3",
+      "Tailwind CSS",
+      "Node.js",
+      "Express.js",
+      "Python",
+      "Django",
+      "RESTful APIs",
+      "MongoDB",
+      "PostgreSQL",
+      "MySQL",
+      "Redis",
+      "Git",
+      "Docker",
+      "AWS",
+      "CI/CD",
+      "Agile/Scrum",
+      "Microservices",
+      "Kubernetes",
+      "GraphQL",
+      "DevOps",
+      "AWS Lambda",
+      "JavaScript",
+      "frameworks",
+      "applications",
+      "web applications",
+      "scalable",
+      "cross-functional",
+      "teams",
+      "features",
     ];
 
-    const foundSkills = allSkills.filter(skill => 
+    const foundSkills = allSkills.filter((skill) =>
       text.toLowerCase().includes(skill.toLowerCase())
     );
 
@@ -256,30 +365,72 @@ export default function AIResume() {
   };
 
   // Function to remove skill from text
-  const removeSkillFromText = (text, skillToRemove, sectionId, field, index = null) => {
+  const removeSkillFromText = (
+    text,
+    skillToRemove,
+    sectionId,
+    field,
+    index = null
+  ) => {
     let newText = text;
-    
+
     // Remove skill-specific phrases
     const skillPhrases = {
-      "Microservices": ["Designed and implemented microservices architecture", "microservices architecture", "microservices"],
-      "Kubernetes": ["Deployed applications using Kubernetes orchestration", "Kubernetes orchestration", "Kubernetes"],
-      "GraphQL": ["Built efficient APIs using GraphQL", "GraphQL"],
-      "CI/CD": ["Implemented CI/CD pipelines for automated deployment", "CI/CD pipelines", "CI/CD"],
-      "DevOps": ["Applied DevOps practices for streamlined development", "DevOps practices", "DevOps"],
-      "Docker": ["Containerized applications using Docker", "Docker"],
-      "AWS Lambda": ["Developed serverless functions with AWS Lambda", "AWS Lambda"]
+      Microservices: [
+        "Designed and implemented microservices architecture",
+        "microservices architecture",
+        "microservices",
+      ],
+      Kubernetes: [
+        "Deployed applications using Kubernetes orchestration",
+        "Kubernetes orchestration",
+        "Kubernetes",
+      ],
+      GraphQL: ["Built efficient APIs using GraphQL", "GraphQL"],
+      "CI/CD": [
+        "Implemented CI/CD pipelines for automated deployment",
+        "CI/CD pipelines",
+        "CI/CD",
+      ],
+      DevOps: [
+        "Applied DevOps practices for streamlined development",
+        "DevOps practices",
+        "DevOps",
+      ],
+      Docker: ["Containerized applications using Docker", "Docker"],
+      "AWS Lambda": [
+        "Developed serverless functions with AWS Lambda",
+        "AWS Lambda",
+      ],
     };
 
     const phrasesToRemove = skillPhrases[skillToRemove] || [skillToRemove];
-    
-    phrasesToRemove.forEach(phrase => {
-      const regex = new RegExp(`\\b${phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
-      newText = newText.replace(regex, '');
+
+    phrasesToRemove.forEach((phrase) => {
+      const regex = new RegExp(
+        `\\b${phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`,
+        "gi"
+      );
+      newText = newText.replace(regex, "");
     });
 
+    // For skills section, also handle comma-separated removal
+    if (sectionId === "skills") {
+      // Remove skill with surrounding commas
+      newText = newText.replace(new RegExp(`\\s*,\\s*${skillToRemove.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*,?`, "gi"), "");
+      newText = newText.replace(new RegExp(`^\\s*${skillToRemove.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*,?`, "gi"), "");
+      newText = newText.replace(new RegExp(`,\\s*${skillToRemove.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*$`, "gi"), "");
+    }
+
     // Clean up extra spaces and punctuation
-    newText = newText.replace(/\.\s*\./g, '.').replace(/\s+/g, ' ').trim();
-    
+    newText = newText
+      .replace(/\.\s*\./g, ".")
+      .replace(/\s+/g, " ")
+      .replace(/,\s*,/g, ",")
+      .replace(/^,\s*/, "")
+      .replace(/\s*,$/, "")
+      .trim();
+
     // Update the resume data
     updateResumeData(sectionId, field, newText, index);
   };
@@ -311,7 +462,7 @@ export default function AIResume() {
         onClick={handleSectionClick}
       >
         {children}
-        {isHovered && (
+        {isHovered && !isActive && (
           <>
             {/* Purple border overlay - doesn't affect layout */}
             <div className="absolute inset-0 border-2 border-purple-300 rounded-lg pointer-events-none"></div>
@@ -323,10 +474,10 @@ export default function AIResume() {
         )}
         {isActive && (
           <>
-            {/* Active purple border */}
-            <div className="absolute inset-0 border-2 border-purple-500 rounded-lg pointer-events-none"></div>
+            {/* Active purple border - extends to accommodate overlay */}
+            <div className="absolute inset-0 border-2 border-purple-500 rounded-lg pointer-events-none" style={{ paddingTop: '80px' }}></div>
             {/* Active edit badge */}
-            <div className="absolute top-2 right-2 bg-purple-700 text-white px-2 py-1 text-xs rounded-full font-medium z-10">
+            <div className="absolute top-2 right-2 bg-purple-700 text-white px-2 py-1 text-xs rounded-full font-medium z-30">
               Editing mode active
             </div>
           </>
@@ -338,17 +489,19 @@ export default function AIResume() {
   // Component to show removable skills in resume text
   const RemovableSkillsOverlay = ({ text, sectionId, field, index = null }) => {
     const isActive = activeResumeSection === sectionId;
-    
+
     if (!isActive) return null;
 
     const skills = extractSkillsFromText(text);
-    
+
     if (skills.length === 0) return null;
 
     return (
-      <div className="absolute top-0 left-0 right-0 bg-white bg-opacity-90 p-2 rounded-lg border border-orange-200 z-20">
-        <div className="flex flex-wrap gap-1 mb-2">
-          <span className="text-xs text-gray-600 font-medium">Remove skills:</span>
+      <div className="absolute top-0 left-0 right-0 bg-white bg-opacity-95 p-3 rounded-lg border-2 border-orange-300 shadow-lg z-20 min-h-[60px]">
+        <div className="flex flex-wrap gap-1 items-center">
+          <span className="text-xs text-gray-700 font-semibold mr-2">
+            Remove skills:
+          </span>
           {skills.map((skill, skillIndex) => (
             <button
               key={skillIndex}
@@ -356,12 +509,12 @@ export default function AIResume() {
                 e.stopPropagation();
                 removeSkillFromText(text, skill, sectionId, field, index);
               }}
-              className="group px-2 py-1 bg-orange-100 hover:bg-orange-200 text-orange-800 text-xs rounded-md transition-colors flex items-center gap-1"
+              className="group px-2 py-1 bg-orange-100 hover:bg-orange-200 text-orange-800 text-xs rounded-md transition-all duration-200 flex items-center gap-1 border border-orange-200 hover:border-orange-300 hover:shadow-sm"
               title={`Remove "${skill}" from this section`}
             >
               <span
                 className="material-symbols-outlined"
-                style={{ fontSize: 10 }}
+                style={{ fontSize: 12 }}
               >
                 remove
               </span>
@@ -729,6 +882,98 @@ export default function AIResume() {
             </div>
           </div>
         );
+      case "skills":
+        return (
+          <div
+            id="section-skills"
+            className="mt-3 p-4 bg-white rounded-xl shadow-lg"
+          >
+            <div className="space-y-4">
+              {/* Current Resume Skills */}
+              <div>
+                <h4 className="text-sm font-medium text-gray-700 mb-2">
+                  Current Skills
+                </h4>
+                <div className="space-y-3">
+                  {/* Frontend */}
+                  <EditableField
+                    fieldId="skills-frontend"
+                    value={resumeData.skills.frontend}
+                    placeholder="Frontend Skills"
+                    section="skills"
+                    field="frontend"
+                    isHighlighted={isHighlighted}
+                  />
+                  {/* Backend */}
+                  <EditableField
+                    fieldId="skills-backend"
+                    value={resumeData.skills.backend}
+                    placeholder="Backend Skills"
+                    section="skills"
+                    field="backend"
+                    isHighlighted={isHighlighted}
+                  />
+                  {/* Database */}
+                  <EditableField
+                    fieldId="skills-database"
+                    value={resumeData.skills.database}
+                    placeholder="Database Skills"
+                    section="skills"
+                    field="database"
+                    isHighlighted={isHighlighted}
+                  />
+                  {/* Tools */}
+                  <EditableField
+                    fieldId="skills-tools"
+                    value={resumeData.skills.tools}
+                    placeholder="Tools & Technologies"
+                    section="skills"
+                    field="tools"
+                    isHighlighted={isHighlighted}
+                  />
+                </div>
+              </div>
+
+              {/* AI Recommended Skills */}
+              <div>
+                <h4 className="text-sm font-medium text-gray-700 mb-2">
+                  AI Recommendations
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    "Microservices",
+                    "Kubernetes",
+                    "GraphQL",
+                    "Next.js",
+                    "Terraform",
+                  ].map((skill, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        // Add skill to appropriate category
+                        const newSkills = resumeData.skills.tools + `, ${skill}`;
+                        updateResumeData("skills", "tools", newSkills);
+                      }}
+                      className="group px-2 py-1 bg-orange-100 hover:bg-orange-200 text-orange-800 text-xs rounded-md transition-colors flex items-center gap-1"
+                      title={`Add ${skill} to your resume`}
+                    >
+                      <span
+                        className="material-symbols-outlined"
+                        style={{ fontSize: 12 }}
+                      >
+                        add
+                      </span>
+                      {skill}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  Based on job requirements analysis
+                </p>
+              </div>
+            </div>
+          </div>
+        );
       default:
         return null;
     }
@@ -1011,126 +1256,6 @@ export default function AIResume() {
                 );
               })}
             </Reorder.Group>
-
-            {/* Technical Skills Section - Always at bottom */}
-            <div className="p-4 border-t border-gray-200">
-              <div className="mb-4">
-                <div className="flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium text-gray-900 bg-gray-50">
-                  <div className="flex items-center space-x-3">
-                    <span
-                      className="material-symbols-outlined"
-                      style={{ fontSize: 16 }}
-                    >
-                      psychology
-                    </span>
-                    <span>Technical Skills</span>
-                  </div>
-                </div>
-
-                <div className="mt-3 p-4 bg-white rounded-xl shadow-lg">
-                  <div className="space-y-4">
-                    {/* Current Resume Skills */}
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-700 mb-2">
-                        Current Skills
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {/* Frontend Skills */}
-                        {[
-                          "React",
-                          "Vue.js",
-                          "TypeScript",
-                          "HTML5",
-                          "CSS3",
-                          "Tailwind CSS",
-                        ].map((skill, index) => (
-                          <span
-                            key={index}
-                            className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-md"
-                          >
-                            {skill}
-                          </span>
-                        ))}
-                        {/* Backend Skills */}
-                        {[
-                          "Node.js",
-                          "Express.js",
-                          "Python",
-                          "Django",
-                          "RESTful APIs",
-                        ].map((skill, index) => (
-                          <span
-                            key={`backend-${index}`}
-                            className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-md"
-                          >
-                            {skill}
-                          </span>
-                        ))}
-                        {/* Database Skills */}
-                        {["MongoDB", "PostgreSQL", "MySQL", "Redis"].map(
-                          (skill, index) => (
-                            <span
-                              key={`db-${index}`}
-                              className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-md"
-                            >
-                              {skill}
-                            </span>
-                          )
-                        )}
-                        {/* Tools */}
-                        {["Git", "Docker", "AWS", "CI/CD", "Agile/Scrum"].map(
-                          (skill, index) => (
-                            <span
-                              key={`tools-${index}`}
-                              className="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-md"
-                            >
-                              {skill}
-                            </span>
-                          )
-                        )}
-                      </div>
-                    </div>
-
-                    {/* AI Recommended Skills */}
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-700 mb-2">
-                        AI Recommendations
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {[
-                          "Microservices",
-                          "Kubernetes",
-                          "GraphQL",
-                          "Next.js",
-                          "Terraform",
-                        ].map((skill, index) => (
-                          <button
-                            key={index}
-                            onClick={() => {
-                              // Add skill to resume (placeholder functionality)
-                              console.log(`Adding skill: ${skill}`);
-                            }}
-                            className="group px-2 py-1 bg-orange-100 hover:bg-orange-200 text-orange-800 text-xs rounded-md transition-colors flex items-center gap-1"
-                            title={`Add ${skill} to your resume`}
-                          >
-                            <span
-                              className="material-symbols-outlined"
-                              style={{ fontSize: 12 }}
-                            >
-                              add
-                            </span>
-                            {skill}
-                          </button>
-                        ))}
-                      </div>
-                      <p className="text-xs text-gray-500 mt-1">
-                        Based on job requirements analysis
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -1146,79 +1271,6 @@ export default function AIResume() {
                 {/* Render sections in the order defined by sidebar */}
                 {sections.map((section) => renderResumeSection(section))}
 
-                {/* Skills Section - Static for now */}
-                <ResumeSectionWrapper
-                  sectionId="skills"
-                  sectionName="Technical Skills"
-                >
-                  <div className="mb-8 relative">
-                    <h2 className="text-xl font-bold text-gray-900 mb-3 border-b-2 border-gray-300 pb-2">
-                      TECHNICAL SKILLS
-                    </h2>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="relative">
-                        <h4 className="font-semibold text-gray-900 mb-2">
-                          Frontend:
-                        </h4>
-                        <div className="relative">
-                          <p className="text-gray-700">
-                            React, Vue.js, TypeScript, HTML5, CSS3, Tailwind CSS
-                          </p>
-                          <RemovableSkillsOverlay 
-                            text="React, Vue.js, TypeScript, HTML5, CSS3, Tailwind CSS"
-                            sectionId="skills"
-                            field="frontend"
-                          />
-                        </div>
-                      </div>
-                      <div className="relative">
-                        <h4 className="font-semibold text-gray-900 mb-2">
-                          Backend:
-                        </h4>
-                        <div className="relative">
-                          <p className="text-gray-700">
-                            Node.js, Express.js, Python, Django, RESTful APIs
-                          </p>
-                          <RemovableSkillsOverlay 
-                            text="Node.js, Express.js, Python, Django, RESTful APIs"
-                            sectionId="skills"
-                            field="backend"
-                          />
-                        </div>
-                      </div>
-                      <div className="relative">
-                        <h4 className="font-semibold text-gray-900 mb-2">
-                          Database:
-                        </h4>
-                        <div className="relative">
-                          <p className="text-gray-700">
-                            MongoDB, PostgreSQL, MySQL, Redis
-                          </p>
-                          <RemovableSkillsOverlay 
-                            text="MongoDB, PostgreSQL, MySQL, Redis"
-                            sectionId="skills"
-                            field="database"
-                          />
-                        </div>
-                      </div>
-                      <div className="relative">
-                        <h4 className="font-semibold text-gray-900 mb-2">
-                          Tools:
-                        </h4>
-                        <div className="relative">
-                          <p className="text-gray-700">
-                            Git, Docker, AWS, CI/CD, Agile/Scrum
-                          </p>
-                          <RemovableSkillsOverlay 
-                            text="Git, Docker, AWS, CI/CD, Agile/Scrum"
-                            sectionId="skills"
-                            field="tools"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </ResumeSectionWrapper>
               </div>
             </div>
           </div>
