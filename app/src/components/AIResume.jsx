@@ -671,7 +671,6 @@ export default function AIResume() {
     );
   };
 
-
   // AI Skill Suggestions based on field content
   const getAISuggestions = (fieldId, currentValue) => {
     // Simulate AI analysis based on JD requirements
@@ -716,7 +715,7 @@ export default function AIResume() {
     return missingSkills.slice(0, 3); // Return top 3 suggestions
   };
 
-  // Enhanced Editable Field Component with removable skill badges
+  // Enhanced Editable Field Component with inline text badges
   const EditableFieldWithBadges = ({
     fieldId,
     value,
@@ -781,6 +780,64 @@ export default function AIResume() {
       removeSkillFromText(value, skillToRemove, section, field, index);
     };
 
+    // Function to render text with AI-added portions as badges
+    const renderTextWithInlineBadges = () => {
+      if (!value || aiAddedSkills.length === 0) {
+        return <span className="text-gray-900">{value}</span>;
+      }
+
+      let processedText = value;
+      const badges = [];
+
+      // Find AI-added phrases and their positions
+      const aiPhrases = {
+        Microservices: ["microservices architecture", "Microservices"],
+        Kubernetes: ["Kubernetes orchestration", "Kubernetes"],
+        GraphQL: ["GraphQL", "Built efficient APIs using GraphQL"],
+        "CI/CD": ["CI/CD pipelines", "CI/CD"],
+        DevOps: ["DevOps practices", "DevOps"],
+        Docker: ["Docker", "Containerized applications using Docker"],
+        "AWS Lambda": ["AWS Lambda", "serverless functions with AWS Lambda"],
+      };
+
+      aiAddedSkills.forEach((skill) => {
+        const phrases = aiPhrases[skill] || [skill];
+        
+        phrases.forEach((phrase) => {
+          const regex = new RegExp(`\\b${phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, 'gi');
+          const matches = [...processedText.matchAll(regex)];
+          
+          matches.forEach((match) => {
+            badges.push({
+              skill,
+              phrase: match[0],
+              start: match.index,
+              end: match.index + match[0].length,
+            });
+          });
+        });
+      });
+
+      // Sort badges by position (reverse order for replacement)
+      badges.sort((a, b) => b.start - a.start);
+
+      // Replace text with badge elements
+      badges.forEach(({ skill, phrase, start, end }) => {
+        const beforeText = processedText.substring(0, start);
+        const afterText = processedText.substring(end);
+        
+        const badgeHtml = `<span class="inline-badge" data-skill="${skill}" data-phrase="${phrase}">${phrase}</span>`;
+        processedText = beforeText + badgeHtml + afterText;
+      });
+
+      return (
+        <div 
+          className="text-gray-900"
+          dangerouslySetInnerHTML={{ __html: processedText }}
+        />
+      );
+    };
+
     if (isEditing) {
       if (type === "textarea") {
         return (
@@ -818,36 +875,27 @@ export default function AIResume() {
           }`}
           onMouseEnter={() => setHoveredField(fieldId)}
           onMouseLeave={() => setHoveredField(null)}
+          onClick={(e) => {
+            // Handle clicks on inline badges
+            const target = e.target.closest('.inline-badge');
+            if (target) {
+              e.stopPropagation();
+              const skill = target.getAttribute('data-skill');
+              if (skill) {
+                removeSkillFromField(skill);
+              }
+            }
+          }}
         >
-          <div className="flex flex-wrap items-center gap-1">
-            {/* Show AI-added skills as removable badges inside the field */}
-            {aiAddedSkills.map((skill, skillIndex) => (
-              <button
-                key={skillIndex}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  removeSkillFromField(skill);
-                }}
-                className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-200 hover:bg-yellow-300 text-yellow-800 text-xs rounded-md transition-colors border border-yellow-300 hover:border-yellow-400"
-                title={`Remove "${skill}" from this field`}
-              >
-                <span
-                  className="material-symbols-outlined"
-                  style={{ fontSize: 10 }}
-                >
-                  remove
-                </span>
-                {skill}
-              </button>
-            ))}
-            
-            {/* Show the text content */}
-            <span className="text-gray-900 flex-1">{value}</span>
-          </div>
+          {/* Render text with inline badges */}
+          {renderTextWithInlineBadges()}
           
           {hoveredField === fieldId && (
             <button
-              onClick={() => toggleFieldEdit(fieldId)}
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleFieldEdit(fieldId);
+              }}
               className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
             >
               <span
@@ -885,6 +933,40 @@ export default function AIResume() {
             ))}
           </div>
         )}
+        
+        {/* Add CSS for inline badges */}
+        <style jsx>{`
+          .inline-badge {
+            background-color: #fef3c7;
+            color: #92400e;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid #fbbf24;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+          }
+          .inline-badge:hover {
+            background-color: #fde68a;
+            border-color: #f59e0b;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+          }
+          .inline-badge:hover::after {
+            content: "🗑️";
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+          }
+        `}</style>
       </div>
     );
   };
