@@ -1,15 +1,29 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Reorder, useDragControls } from "framer-motion";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
-  RiBriefcaseLine,
-  RiGraduationCapLine,
-  RiUserLine,
+  RiNotification3Line,
+  RiUser3Fill,
+  RiMenuLine,
+  RiFileTextLine,
+  RiUploadLine,
+  RiFileCopyLine,
+  RiFileList3Line,
+  RiBookmarkLine,
+  RiAddLine,
+  RiCloseLine,
+  RiLogoutBoxLine,
+  RiArrowDownSLine,
+  RiMoreLine,
+  RiBarChartBoxLine,
+  RiEyeLine,
   RiDeleteBinLine,
-  RiQuestionLine,
-  RiArrowUpSLine,
+  RiCheckboxMultipleLine,
+  RiArrowLeftLine,
+  RiStarLine,
+  RiRobotLine,
   RiEditLine,
-  RiArrowUpDownFill,
+  RiSparklingFill,
+  RiArrowRightLine,
 } from "@remixicon/react";
 import logoSvg from "../assets/logo.svg";
 import "material-symbols/outlined.css";
@@ -26,510 +40,166 @@ if (!document.head.querySelector('link[href*="material+symbols"]')) {
 export default function EditResume() {
   const [firstSidebarOpen, setFirstSidebarOpen] = useState(true);
   const [isLogoHovered, setIsLogoHovered] = useState(false);
-  const [activeSections, setActiveSections] = useState([
-    "personal",
-    "work",
-    "education",
-  ]); // All sections open by default
-  const [logoModalOpen, setLogoModalOpen] = useState(false);
-  const [sections, setSections] = useState([
-    { id: "personal", name: "Personal Information", icon: RiUserLine },
-    { id: "work", name: "Work Experience", icon: RiBriefcaseLine },
-    { id: "education", name: "Education", icon: RiGraduationCapLine },
-  ]);
-  const [editingFields, setEditingFields] = useState({}); // Track which fields are being edited
-  const [hoveredResumeSection, setHoveredResumeSection] = useState(null);
-  const [activeResumeSection, setActiveResumeSection] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Resume form data
   const [resumeData, setResumeData] = useState({
-    personal: {
-      name: "John Doe",
+    personalInfo: {
+      fullName: "John Doe",
       email: "john.doe@example.com",
       phone: "+1 (555) 123-4567",
       location: "San Francisco, CA",
+      linkedin: "",
+      portfolio: ""
     },
-    work: [
+    summary: "Experienced full-stack developer with 5+ years of experience in building scalable web applications.",
+    experience: [
       {
         id: 1,
-        title: "Senior Full-Stack Developer",
+        jobTitle: "Senior Full-Stack Developer",
         company: "Mandal Minds",
         startDate: "2021-01",
-        endDate: "Present",
-        description:
-          "Led development of scalable web applications using React and Node.js. Collaborated with cross-functional teams to deliver high-quality features.",
-      },
-      {
-        id: 2,
-        title: "Full-Stack Developer",
-        company: "TechCorp Inc",
-        startDate: "2019-06",
-        endDate: "2020-12",
-        description:
-          "Developed and maintained web applications using modern JavaScript frameworks. Implemented RESTful APIs and integrated third-party services.",
-      },
+        endDate: "",
+        current: true,
+        description: "Developed and maintained web applications using modern JavaScript frameworks. Implemented RESTful APIs and integrated third-party services."
+      }
     ],
-    education: {
-      degree: "Bachelor of Science in Computer Science",
-      institution: "Stanford University",
-      startYear: "2015",
-      endYear: "2019",
-      gpa: "3.8/4.0",
+    education: [
+      {
+        id: 1,
+        degree: "Bachelor of Computer Science",
+        school: "University of California",
+        graduationYear: "2019",
+        gpa: "3.8"
+      }
+    ],
+    skills: {
+      technical: ["React", "Node.js", "JavaScript", "Python", "MongoDB"],
+      soft: ["Leadership", "Communication", "Problem Solving"]
     },
+    projects: [
+      {
+        id: 1,
+        name: "E-commerce Platform",
+        description: "Built a full-stack e-commerce platform with React and Node.js",
+        technologies: ["React", "Node.js", "MongoDB"],
+        link: "https://github.com/johndoe/ecommerce"
+      }
+    ]
   });
-  const navigate = useNavigate();
+  
+  const [matchedJD, setMatchedJD] = useState(null);
+  const [activeSection, setActiveSection] = useState("personalInfo");
 
-  // Removed toggleSection - all sections stay open
+  useEffect(() => {
+    // Check if we have resume data from navigation
+    if (location.state?.resumeData) {
+      const { resumeData: navResumeData } = location.state;
+      setMatchedJD(navResumeData.matchedJD);
+    }
+  }, [location.state]);
 
-  const toggleFieldEdit = (fieldId) => {
-    setEditingFields((prev) => ({
+  // AI Analysis for missing skills/keywords
+  const getAIRecommendations = (currentText, fieldType) => {
+    if (!matchedJD) return [];
+
+    // Sample JD requirements based on field type
+    const jdRequirements = {
+      experience: ["microservices", "Docker", "Kubernetes", "CI/CD", "AWS", "GraphQL", "TypeScript"],
+      technical: ["TypeScript", "AWS", "Docker", "GraphQL", "PostgreSQL", "Redis", "Kubernetes"],
+      summary: ["leadership", "team collaboration", "agile methodology", "project management"]
+    };
+
+    const requirements = jdRequirements[fieldType] || [];
+    const currentTextLower = currentText.toLowerCase();
+    
+    return requirements.filter(skill => 
+      !currentTextLower.includes(skill.toLowerCase())
+    ).slice(0, 4); // Show top 4 missing skills
+  };
+
+  // AI Badge Component
+  const AIBadge = ({ skill, onAdd, tooltip }) => {
+    const [showTooltip, setShowTooltip] = useState(false);
+
+    return (
+      <div className="relative inline-block">
+        <button
+          onClick={() => onAdd(skill)}
+          onMouseEnter={() => setShowTooltip(true)}
+          onMouseLeave={() => setShowTooltip(false)}
+          className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 hover:bg-blue-200 text-blue-800 text-xs rounded-md transition-colors border border-blue-200"
+        >
+          <span className="text-blue-600">+</span>
+          <span>{skill}</span>
+        </button>
+        
+        {showTooltip && (
+          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap z-10">
+            {tooltip}
+            <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // Add skill to experience description
+  const addSkillToExperience = (experienceId, skill) => {
+    setResumeData(prev => ({
       ...prev,
-      [fieldId]: !prev[fieldId],
+      experience: prev.experience.map(exp => 
+        exp.id === experienceId 
+          ? { ...exp, description: `${exp.description} Utilized ${skill} for enhanced performance and scalability.` }
+          : exp
+      )
     }));
   };
 
-  const updateResumeData = (section, field, value, index = null) => {
-    setResumeData((prev) => {
-      if (Array.isArray(prev[section]) && index !== null) {
-        // Handle array sections like work experience
-        const updatedArray = [...prev[section]];
-        updatedArray[index] = {
-          ...updatedArray[index],
-          [field]: value,
-        };
-        return {
-          ...prev,
-          [section]: updatedArray,
-        };
-      } else {
-        // Handle regular object sections
-        return {
-          ...prev,
-          [section]: {
-            ...prev[section],
-            [field]: value,
-          },
-        };
+  // Add skill to technical skills
+  const addTechnicalSkill = (skill) => {
+    setResumeData(prev => ({
+      ...prev,
+      skills: {
+        ...prev.skills,
+        technical: [...prev.skills.technical, skill]
       }
-    });
+    }));
   };
 
-  // Render sections in order based on sidebar arrangement
-  const renderResumeSection = (section) => {
-    switch (section.id) {
-      case "personal":
-        return (
-          <ResumeSectionWrapper
-            key="personal"
-            sectionId="personal"
-            sectionName="Personal Information"
-          >
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                {resumeData.personal.name}
-              </h1>
-              <p className="text-gray-600">
-                {resumeData.personal.email} | {resumeData.personal.phone} |{" "}
-                {resumeData.personal.location}
-              </p>
-            </div>
-          </ResumeSectionWrapper>
-        );
-      case "work":
-        return (
-          <ResumeSectionWrapper
-            key="work"
-            sectionId="work"
-            sectionName="Work Experience"
-          >
-            <div className="mb-8">
-              <h2 className="text-xl font-bold text-gray-900 mb-3 border-b-2 border-gray-300 pb-2">
-                WORK EXPERIENCE
-              </h2>
-              {resumeData.work.map((workItem, index) => (
-                <div key={workItem.id} className="mb-6">
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900">
-                        {workItem.title}
-                      </h3>
-                      <p className="text-gray-700">{workItem.company}</p>
-                    </div>
-                    <p className="text-gray-600">
-                      {workItem.startDate} - {workItem.endDate}
-                    </p>
-                  </div>
-                  <p className="text-gray-700">{workItem.description}</p>
-                </div>
-              ))}
-            </div>
-          </ResumeSectionWrapper>
-        );
-      case "education":
-        return (
-          <ResumeSectionWrapper
-            key="education"
-            sectionId="education"
-            sectionName="Education"
-          >
-            <div className="mb-8">
-              <h2 className="text-xl font-bold text-gray-900 mb-3 border-b-2 border-gray-300 pb-2">
-                EDUCATION
-              </h2>
-              <div className="mb-4">
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      {resumeData.education.degree}
-                    </h3>
-                    <p className="text-gray-700">
-                      {resumeData.education.institution}
-                    </p>
-                  </div>
-                  <p className="text-gray-600">
-                    {resumeData.education.startYear} -{" "}
-                    {resumeData.education.endYear}
-                  </p>
-                </div>
-                <p className="text-gray-700">GPA: {resumeData.education.gpa}</p>
-              </div>
-            </div>
-          </ResumeSectionWrapper>
-        );
-      default:
-        return null;
-    }
+  // Add keyword to summary
+  const addToSummary = (keyword) => {
+    setResumeData(prev => ({
+      ...prev,
+      summary: `${prev.summary} Experienced in ${keyword} and modern development practices.`
+    }));
   };
 
-  // Clear active section highlighting after 3 seconds
-  useEffect(() => {
-    if (activeResumeSection) {
-      const timer = setTimeout(() => {
-        setActiveResumeSection(null);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [activeResumeSection]);
-
-  // Resume Section Wrapper Component
-  const ResumeSectionWrapper = ({ sectionId, sectionName, children }) => {
-    const isHovered = hoveredResumeSection === sectionId;
-
-    const handleSectionClick = () => {
-      setActiveResumeSection(sectionId);
-      // Scroll to section in sidebar
-      setTimeout(() => {
-        const sectionElement = document.getElementById(`section-${sectionId}`);
-        if (sectionElement) {
-          sectionElement.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-        }
-      }, 100);
-    };
-
-    return (
-      <div
-        className="relative cursor-pointer"
-        onMouseEnter={() => setHoveredResumeSection(sectionId)}
-        onMouseLeave={() => setHoveredResumeSection(null)}
-        onClick={handleSectionClick}
-      >
-        {children}
-        {isHovered && (
-          <>
-            {/* Purple border overlay - doesn't affect layout */}
-            <div className="absolute inset-0 border-2 border-purple-300 rounded-lg pointer-events-none"></div>
-            {/* Edit badge */}
-            <div className="absolute top-2 right-2 bg-purple-600 text-white px-2 py-1 text-xs rounded-full font-medium z-10">
-              Click to edit this section
-            </div>
-          </>
-        )}
-      </div>
-    );
-  };
-
-  // Editable Field Component
-  const EditableField = ({
-    fieldId,
-    value,
-    placeholder,
-    type = "text",
-    rows = 1,
-    section,
-    field,
-    index = null,
-    isHighlighted = false,
-  }) => {
-    const [hoveredField, setHoveredField] = useState(null);
-    const isEditing = editingFields[fieldId];
-
-    const handleValueChange = (newValue) => {
-      if (section && field) {
-        updateResumeData(section, field, newValue, index);
-      }
-      toggleFieldEdit(fieldId);
-    };
-
-    if (isEditing) {
-      if (type === "textarea") {
-        return (
-          <textarea
-            rows={rows}
-            defaultValue={value}
-            placeholder={placeholder}
-            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black"
-            autoFocus
-            onBlur={(e) => handleValueChange(e.target.value)}
-          />
-        );
-      }
-      return (
-        <input
-          type={type}
-          defaultValue={value}
-          placeholder={placeholder}
-          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black"
-          autoFocus
-          onBlur={(e) => handleValueChange(e.target.value)}
-        />
-      );
-    }
-
-    return (
-      <div
-        className={`relative w-full px-3 py-2 text-sm border rounded-lg cursor-pointer transition-colors ${
-          isHighlighted
-            ? "border-purple-300 bg-purple-50"
-            : hoveredField === fieldId
-            ? "border-gray-300 bg-gray-50"
-            : "border-gray-300 bg-white"
-        }`}
-        onMouseEnter={() => setHoveredField(fieldId)}
-        onMouseLeave={() => setHoveredField(null)}
-      >
-        <span className="text-gray-900">{value}</span>
-        {hoveredField === fieldId && (
-          <button
-            onClick={() => toggleFieldEdit(fieldId)}
-            className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-          >
-            <span
-              className="material-symbols-outlined"
-              style={{
-                fontSize: "16px",
-                fontVariationSettings:
-                  '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 16',
-              }}
-            >
-              edit
-            </span>
-          </button>
-        )}
-      </div>
-    );
-  };
-
-  const renderSectionForm = (sectionId) => {
-    const isHighlighted = activeResumeSection === sectionId;
-
-    switch (sectionId) {
-      case "personal":
-        return (
-          <div
-            id="section-personal"
-            className="mt-3 p-4 bg-white rounded-xl shadow-lg"
-          >
-            <div className="space-y-3">
-              <EditableField
-                fieldId="personal-name"
-                value={resumeData.personal.name}
-                placeholder="Full Name"
-                section="personal"
-                field="name"
-                isHighlighted={isHighlighted}
-              />
-              <EditableField
-                fieldId="personal-email"
-                value={resumeData.personal.email}
-                placeholder="Email"
-                type="email"
-                section="personal"
-                field="email"
-                isHighlighted={isHighlighted}
-              />
-              <EditableField
-                fieldId="personal-phone"
-                value={resumeData.personal.phone}
-                placeholder="Phone"
-                type="tel"
-                section="personal"
-                field="phone"
-                isHighlighted={isHighlighted}
-              />
-              <EditableField
-                fieldId="personal-location"
-                value={resumeData.personal.location}
-                placeholder="Location"
-                section="personal"
-                field="location"
-                isHighlighted={isHighlighted}
-              />
-            </div>
-          </div>
-        );
-      case "work":
-        return (
-          <div id="section-work" className="mt-3 space-y-4">
-            {resumeData.work.map((workItem, workIndex) => (
-              <div
-                key={workItem.id}
-                className="p-4 bg-white rounded-xl shadow-lg"
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-medium text-gray-900">
-                    Work Experience {workIndex + 1}
-                  </h4>
-                  <div className="text-gray-400">
-                    <RiArrowUpDownFill size={16} />
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <EditableField
-                    fieldId={`work-title-${workIndex}`}
-                    value={workItem.title}
-                    placeholder="Job Title"
-                    section="work"
-                    field="title"
-                    index={workIndex}
-                    isHighlighted={isHighlighted}
-                  />
-                  <EditableField
-                    fieldId={`work-company-${workIndex}`}
-                    value={workItem.company}
-                    placeholder="Company"
-                    section="work"
-                    field="company"
-                    index={workIndex}
-                    isHighlighted={isHighlighted}
-                  />
-                  <div className="grid grid-cols-2 gap-2">
-                    <EditableField
-                      fieldId={`work-start-${workIndex}`}
-                      value={workItem.startDate}
-                      placeholder="Start Date"
-                      type="month"
-                      section="work"
-                      field="startDate"
-                      index={workIndex}
-                      isHighlighted={isHighlighted}
-                    />
-                    <EditableField
-                      fieldId={`work-end-${workIndex}`}
-                      value={workItem.endDate}
-                      placeholder="End Date"
-                      section="work"
-                      field="endDate"
-                      index={workIndex}
-                      isHighlighted={isHighlighted}
-                    />
-                  </div>
-                  <EditableField
-                    fieldId={`work-description-${workIndex}`}
-                    value={workItem.description}
-                    placeholder="Description"
-                    type="textarea"
-                    rows={3}
-                    section="work"
-                    field="description"
-                    index={workIndex}
-                    isHighlighted={isHighlighted}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        );
-      case "education":
-        return (
-          <div
-            id="section-education"
-            className="mt-3 p-4 bg-white rounded-xl shadow-lg"
-          >
-            <div className="space-y-3">
-              <EditableField
-                fieldId="edu-degree"
-                value={resumeData.education.degree}
-                placeholder="Degree"
-                section="education"
-                field="degree"
-                isHighlighted={isHighlighted}
-              />
-              <EditableField
-                fieldId="edu-institution"
-                value={resumeData.education.institution}
-                placeholder="Institution"
-                section="education"
-                field="institution"
-                isHighlighted={isHighlighted}
-              />
-              <div className="grid grid-cols-2 gap-2">
-                <EditableField
-                  fieldId="edu-start"
-                  value={resumeData.education.startYear}
-                  placeholder="Start Year"
-                  type="number"
-                  section="education"
-                  field="startYear"
-                  isHighlighted={isHighlighted}
-                />
-                <EditableField
-                  fieldId="edu-end"
-                  value={resumeData.education.endYear}
-                  placeholder="End Year"
-                  type="number"
-                  section="education"
-                  field="endYear"
-                  isHighlighted={isHighlighted}
-                />
-              </div>
-              <EditableField
-                fieldId="edu-gpa"
-                value={resumeData.education.gpa}
-                placeholder="GPA (Optional)"
-                section="education"
-                field="gpa"
-                isHighlighted={isHighlighted}
-              />
-            </div>
-          </div>
-        );
-      default:
-        return null;
-    }
-  };
+  const sections = [
+    { id: "personalInfo", name: "Personal Information", icon: "person" },
+    { id: "summary", name: "Professional Summary", icon: "description" },
+    { id: "experience", name: "Work Experience", icon: "work" },
+    { id: "skills", name: "Skills", icon: "psychology" },
+    { id: "education", name: "Education", icon: "school" },
+    { id: "projects", name: "Projects", icon: "code" },
+  ];
 
   return (
     <div className="h-screen bg-gray-50 flex">
-      <div
-        className="flex flex-col md:flex-row w-full"
-        style={{ height: "100vh" }}
-      >
+      <div className="flex w-full" style={{ height: "100vh" }}>
         {/* First Sidebar - Navigation */}
         <div
           className={`${
             firstSidebarOpen ? "w-52" : "w-16"
-          } bg-white transition-all duration-300 flex-shrink-0 h-auto md:h-full hidden md:flex`}
+          } bg-white transition-all duration-300 flex-shrink-0 h-full`}
         >
           <div className="flex flex-col h-full">
             {/* Logo and Toggle */}
             <div className="p-4 border-b border-gray-200">
               <div className="flex items-center justify-between">
                 {firstSidebarOpen && (
-                  <div
-                    className="flex items-center space-x-2 cursor-pointer"
-                    onClick={() => setLogoModalOpen(true)}
-                  >
+                  <div className="flex items-center space-x-2">
                     <img
                       src={logoSvg}
                       alt="Mandal Minds Logo"
@@ -629,7 +299,7 @@ export default function EditResume() {
                 onClick={() => navigate("/manage-resume")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-purple-600 bg-gray-50 rounded-md w-full transition-colors`}
+                } py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full transition-colors`}
               >
                 <span
                   className="material-symbols-outlined"
@@ -646,11 +316,11 @@ export default function EditResume() {
                 )}
               </button>
 
-              <button
-                onClick={() => navigate("/manage-jds")}
+              <a
+                href="#"
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full transition-colors`}
+                } py-2 text-purple-600 bg-gray-50 rounded-md transition-colors`}
               >
                 <span
                   className="material-symbols-outlined"
@@ -665,7 +335,7 @@ export default function EditResume() {
                 {firstSidebarOpen && (
                   <span className="text-sm">Manage JDs</span>
                 )}
-              </button>
+              </a>
             </nav>
 
             {/* User Profile - Bottom */}
@@ -715,262 +385,375 @@ export default function EditResume() {
           </div>
         </div>
 
-        {/* Second Sidebar - Resume Sections */}
-        <div className="w-full md:w-1/5 lg:w-[30%] bg-white border-t md:border-t-0 md:border-l border-gray-200 flex-shrink-0 h-1/2 md:h-full">
+        {/* Second Sidebar - Resume Sections & AI Recommendations */}
+        <div className="w-80 bg-white border-l border-gray-200 flex-shrink-0 h-full">
           <div className="flex flex-col h-full">
             {/* Header */}
-            <div
-              className="px-4 border-b border-gray-200 flex items-center justify-between"
-              style={{ height: "65px" }}
-            >
-              <h2 className="text-base font-bold text-gray-900">Edit Resume</h2>
-              <button
-                onClick={() => navigate("/manage-resume")}
-                className="flex items-center justify-center p-2 text-gray-900 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-                title="Back to Resume List"
-              >
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: "20px",
-                    fontVariationSettings:
-                      '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 20',
-                  }}
-                >
-                  arrow_back
-                </span>
-              </button>
+            <div className="p-4 border-b border-gray-200">
+              <div className="flex items-center gap-2 mb-2">
+                <RiSparklingFill size={20} className="text-purple-600" />
+                <h2 className="text-base font-semibold text-gray-900">
+                  AI-Enhanced Resume
+                </h2>
+              </div>
+              {matchedJD && (
+                <p className="text-xs text-gray-600">
+                  Optimizing for: <span className="font-medium">{matchedJD.title}</span> at <span className="font-medium">{matchedJD.company}</span>
+                </p>
+              )}
             </div>
 
-            {/* Sections */}
-            <Reorder.Group
-              axis="y"
-              values={sections}
-              onReorder={setSections}
-              className="flex-1 p-4 space-y-4 overflow-y-auto"
-            >
-              {sections.map((section) => {
-                const Icon = section.icon;
-                const dragControls = useDragControls();
-
-                return (
-                  <Reorder.Item
-                    key={section.id}
-                    value={section}
-                    className="mb-4"
-                    dragListener={false}
-                    dragControls={dragControls}
-                  >
-                    {/* Header Section - Always Active */}
-                    <div className="flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium text-gray-900 bg-gray-50">
-                      <div className="flex items-center space-x-3">
-                        <Icon size={16} />
-                        <span>{section.name}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <button className="text-gray-500 hover:text-gray-700 hover:bg-white p-1 rounded">
-                          <RiQuestionLine size={16} />
-                        </button>
-                        <button
-                          className="text-gray-500 hover:text-gray-700 hover:bg-white p-1 rounded cursor-move"
-                          onPointerDown={(e) => dragControls.start(e)}
+            {/* Resume Sections */}
+            <div className="flex-1 overflow-y-auto p-4">
+              <div className="space-y-6">
+                {/* Section Navigation */}
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-800 mb-3">Resume Sections</h3>
+                  <div className="space-y-1">
+                    {sections.map((section) => (
+                      <button
+                        key={section.id}
+                        onClick={() => setActiveSection(section.id)}
+                        className={`w-full flex items-center gap-3 px-3 py-2 text-left rounded-md transition-colors ${
+                          activeSection === section.id
+                            ? "bg-purple-100 text-purple-800"
+                            : "text-gray-700 hover:bg-gray-100"
+                        }`}
+                      >
+                        <span
+                          className="material-symbols-outlined"
+                          style={{ fontSize: 18 }}
                         >
-                          <RiArrowUpDownFill size={16} />
-                        </button>
-                        <button className="text-gray-500 hover:text-red-600 hover:bg-white p-1 rounded">
-                          <RiDeleteBinLine size={16} />
-                        </button>
+                          {section.icon}
+                        </span>
+                        <span className="text-sm">{section.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Technical Skills Recommendations */}
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-800 mb-3">Technical Skills</h3>
+                  
+                  {/* Current Skills */}
+                  <div className="mb-3">
+                    <p className="text-xs text-gray-600 mb-2">Current Skills:</p>
+                    <div className="flex flex-wrap gap-1">
+                      {resumeData.skills.technical.map((skill, index) => (
+                        <span
+                          key={index}
+                          className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-md"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* AI Recommended Skills */}
+                  <div>
+                    <p className="text-xs text-gray-600 mb-2">AI Recommendations:</p>
+                    <div className="flex flex-wrap gap-1">
+                      {getAIRecommendations(resumeData.skills.technical.join(" "), "technical").map((skill, index) => (
+                        <AIBadge
+                          key={index}
+                          skill={skill}
+                          onAdd={addTechnicalSkill}
+                          tooltip="Add to technical skills"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Experience Recommendations */}
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-800 mb-3">Experience Enhancement</h3>
+                  {resumeData.experience.map((exp, index) => (
+                    <div key={exp.id} className="mb-4 p-3 bg-gray-50 rounded-lg">
+                      <p className="text-xs font-medium text-gray-800 mb-2">{exp.jobTitle}</p>
+                      <p className="text-xs text-gray-600 mb-2">Missing keywords:</p>
+                      <div className="flex flex-wrap gap-1">
+                        {getAIRecommendations(exp.description, "experience").map((skill, skillIndex) => (
+                          <AIBadge
+                            key={skillIndex}
+                            skill={skill}
+                            onAdd={(skill) => addSkillToExperience(exp.id, skill)}
+                            tooltip="Add to experience description"
+                          />
+                        ))}
                       </div>
                     </div>
+                  ))}
+                </div>
 
-                    {/* Form Section - Always Visible */}
-                    {renderSectionForm(section.id)}
-                  </Reorder.Item>
-                );
-              })}
-            </Reorder.Group>
+                {/* Summary Recommendations */}
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-800 mb-3">Summary Enhancement</h3>
+                  <div className="flex flex-wrap gap-1">
+                    {getAIRecommendations(resumeData.summary, "summary").map((keyword, index) => (
+                      <AIBadge
+                        key={index}
+                        skill={keyword}
+                        onAdd={addToSummary}
+                        tooltip="Add to professional summary"
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Main Content - Resume Display */}
-        <div className="flex-1 w-full md:w-4/5 lg:w-[70%] flex flex-col overflow-hidden h-1/2 md:h-full">
-          <div className="flex-1 overflow-y-auto p-8">
-            <div className="max-w-4xl mx-auto">
-              {/* Plain Resume Box */}
-              <div
-                className="bg-white rounded-lg p-12 min-h-[11in] shadow-sm"
-                style={{ width: "8.5in" }}
+        {/* Main Content - Resume Form */}
+        <div className="flex-1 flex flex-col overflow-hidden px-6 py-6">
+          {/* Page Title */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between">
+              <h1 className="text-base font-bold text-gray-900">Edit Resume</h1>
+              <button
+                onClick={() => navigate("/manage-jds")}
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors text-sm"
               >
-                {/* Render sections in the order defined by sidebar */}
-                {sections.map((section) => renderResumeSection(section))}
+                <RiArrowLeftLine size={16} />
+                <span>Back to JDs</span>
+              </button>
+            </div>
+          </div>
 
-                {/* Skills Section - Static for now */}
-                <ResumeSectionWrapper
-                  sectionId="skills"
-                  sectionName="Technical Skills"
-                >
-                  <div className="mb-8">
-                    <h2 className="text-xl font-bold text-gray-900 mb-3 border-b-2 border-gray-300 pb-2">
-                      TECHNICAL SKILLS
-                    </h2>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">
-                          Frontend:
-                        </h4>
-                        <p className="text-gray-700">
-                          React, Vue.js, TypeScript, HTML5, CSS3, Tailwind CSS
-                        </p>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">
-                          Backend:
-                        </h4>
-                        <p className="text-gray-700">
-                          Node.js, Express.js, Python, Django, RESTful APIs
-                        </p>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">
-                          Database:
-                        </h4>
-                        <p className="text-gray-700">
-                          MongoDB, PostgreSQL, MySQL, Redis
-                        </p>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">
-                          Tools:
-                        </h4>
-                        <p className="text-gray-700">
-                          Git, Docker, AWS, CI/CD, Agile/Scrum
-                        </p>
-                      </div>
+          {/* Resume Form */}
+          <div className="flex-1 overflow-y-auto">
+            <div className="max-w-4xl mx-auto">
+              {activeSection === "personalInfo" && (
+                <div className="bg-white rounded-lg p-6">
+                  <h2 className="text-lg font-semibold text-gray-900 mb-4">Personal Information</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                      <input
+                        type="text"
+                        value={resumeData.personalInfo.fullName}
+                        onChange={(e) => setResumeData(prev => ({
+                          ...prev,
+                          personalInfo: { ...prev.personalInfo, fullName: e.target.value }
+                        }))}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                      <input
+                        type="email"
+                        value={resumeData.personalInfo.email}
+                        onChange={(e) => setResumeData(prev => ({
+                          ...prev,
+                          personalInfo: { ...prev.personalInfo, email: e.target.value }
+                        }))}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                      <input
+                        type="tel"
+                        value={resumeData.personalInfo.phone}
+                        onChange={(e) => setResumeData(prev => ({
+                          ...prev,
+                          personalInfo: { ...prev.personalInfo, phone: e.target.value }
+                        }))}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                      <input
+                        type="text"
+                        value={resumeData.personalInfo.location}
+                        onChange={(e) => setResumeData(prev => ({
+                          ...prev,
+                          personalInfo: { ...prev.personalInfo, location: e.target.value }
+                        }))}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      />
                     </div>
                   </div>
-                </ResumeSectionWrapper>
+                </div>
+              )}
+
+              {activeSection === "summary" && (
+                <div className="bg-white rounded-lg p-6">
+                  <h2 className="text-lg font-semibold text-gray-900 mb-4">Professional Summary</h2>
+                  <textarea
+                    rows={6}
+                    value={resumeData.summary}
+                    onChange={(e) => setResumeData(prev => ({ ...prev, summary: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    placeholder="Write a compelling summary of your professional background..."
+                  />
+                  
+                  {/* AI Recommendations for Summary */}
+                  <div className="mt-4">
+                    <p className="text-sm font-medium text-gray-700 mb-2">AI Suggestions:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {getAIRecommendations(resumeData.summary, "summary").map((keyword, index) => (
+                        <AIBadge
+                          key={index}
+                          skill={keyword}
+                          onAdd={addToSummary}
+                          tooltip="Click to add to summary"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeSection === "experience" && (
+                <div className="bg-white rounded-lg p-6">
+                  <h2 className="text-lg font-semibold text-gray-900 mb-4">Work Experience</h2>
+                  {resumeData.experience.map((exp, index) => (
+                    <div key={exp.id} className="space-y-4 pb-6 border-b border-gray-200 last:border-b-0">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Job Title</label>
+                          <input
+                            type="text"
+                            value={exp.jobTitle}
+                            onChange={(e) => {
+                              const newExp = [...resumeData.experience];
+                              newExp[index].jobTitle = e.target.value;
+                              setResumeData(prev => ({ ...prev, experience: newExp }));
+                            }}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Company</label>
+                          <input
+                            type="text"
+                            value={exp.company}
+                            onChange={(e) => {
+                              const newExp = [...resumeData.experience];
+                              newExp[index].company = e.target.value;
+                              setResumeData(prev => ({ ...prev, experience: newExp }));
+                            }}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <textarea
+                          rows={4}
+                          value={exp.description}
+                          onChange={(e) => {
+                            const newExp = [...resumeData.experience];
+                            newExp[index].description = e.target.value;
+                            setResumeData(prev => ({ ...prev, experience: newExp }));
+                          }}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                          placeholder="Describe your responsibilities and achievements..."
+                        />
+                        
+                        {/* AI Recommendations for this experience */}
+                        <div className="mt-3">
+                          <p className="text-sm font-medium text-gray-700 mb-2">AI Suggestions:</p>
+                          <div className="flex flex-wrap gap-2">
+                            {getAIRecommendations(exp.description, "experience").map((skill, skillIndex) => (
+                              <AIBadge
+                                key={skillIndex}
+                                skill={skill}
+                                onAdd={(skill) => addSkillToExperience(exp.id, skill)}
+                                tooltip="Click to add to description"
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {activeSection === "skills" && (
+                <div className="bg-white rounded-lg p-6">
+                  <h2 className="text-lg font-semibold text-gray-900 mb-4">Technical Skills</h2>
+                  <div className="space-y-4">
+                    <div className="flex flex-wrap gap-2">
+                      {resumeData.skills.technical.map((skill, index) => (
+                        <span
+                          key={index}
+                          className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm flex items-center gap-1"
+                        >
+                          {skill}
+                          <button
+                            onClick={() => {
+                              setResumeData(prev => ({
+                                ...prev,
+                                skills: {
+                                  ...prev.skills,
+                                  technical: prev.skills.technical.filter((_, i) => i !== index)
+                                }
+                              }));
+                            }}
+                            className="text-purple-600 hover:text-purple-800"
+                          >
+                            ×
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                    
+                    {/* AI Recommendations */}
+                    <div>
+                      <p className="text-sm font-medium text-gray-700 mb-2">AI Recommendations:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {getAIRecommendations(resumeData.skills.technical.join(" "), "technical").map((skill, index) => (
+                          <AIBadge
+                            key={index}
+                            skill={skill}
+                            onAdd={addTechnicalSkill}
+                            tooltip="Click to add skill"
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <input
+                      type="text"
+                      placeholder="Add a technical skill (press Enter)"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter' && e.target.value.trim()) {
+                          addTechnicalSkill(e.target.value.trim());
+                          e.target.value = '';
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Save Button */}
+              <div className="mt-8 bg-white rounded-lg p-6">
+                <div className="flex gap-3">
+                  <button className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors font-medium">
+                    Save Resume
+                  </button>
+                  <button 
+                    onClick={() => navigate("/manage-jds")}
+                    className="px-6 py-3 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                  >
+                    Back to JDs
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Logo Modal - Navigation */}
-      {logoModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Navigate To
-              </h3>
-              <button
-                onClick={() => setLogoModalOpen(false)}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: "24px",
-                    fontVariationSettings:
-                      '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24',
-                  }}
-                >
-                  close
-                </span>
-              </button>
-            </div>
-
-            <div className="space-y-2">
-              <button
-                onClick={() => {
-                  navigate("/");
-                  setLogoModalOpen(false);
-                }}
-                className="w-full flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-left"
-              >
-                <span className="text-gray-900 font-medium">Landing Page</span>
-              </button>
-              <button
-                onClick={() => {
-                  navigate("/resume");
-                  setLogoModalOpen(false);
-                }}
-                className="w-full flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-left"
-              >
-                <span
-                  className="material-symbols-outlined text-purple-600"
-                  style={{
-                    fontSize: "20px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20',
-                  }}
-                >
-                  auto_awesome
-                </span>
-                <span className="text-gray-900 font-medium">AI Interview</span>
-              </button>
-              <button
-                onClick={() => {
-                  navigate("/manage-jds");
-                  setLogoModalOpen(false);
-                }}
-                className="w-full flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-left"
-              >
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: "20px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20',
-                  }}
-                >
-                  description
-                </span>
-                <span className="text-gray-900 font-medium">Manage JDs</span>
-              </button>
-              <button
-                onClick={() => {
-                  navigate("/manage-resume");
-                  setLogoModalOpen(false);
-                }}
-                className="w-full flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-left"
-              >
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: "20px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20',
-                  }}
-                >
-                  content_copy
-                </span>
-                <span className="text-gray-900 font-medium">Manage Resume</span>
-              </button>
-              <button
-                onClick={() => {
-                  setLogoModalOpen(false);
-                }}
-                className="w-full flex items-center gap-3 p-3 border border-gray-300 rounded-lg bg-purple-50 text-left"
-              >
-                <span
-                  className="material-symbols-outlined text-purple-600"
-                  style={{
-                    fontSize: "20px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20',
-                  }}
-                >
-                  edit_document
-                </span>
-                <span className="text-gray-900 font-medium">
-                  Edit Resume (Current)
-                </span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
