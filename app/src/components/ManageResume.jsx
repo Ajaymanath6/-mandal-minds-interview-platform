@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   RiUser3Fill,
@@ -14,6 +14,8 @@ import {
   RiFolder6Fill,
   RiLinkM,
   RiCheckboxMultipleLine,
+  RiCodeSSlashLine,
+  RiEyeLine,
 } from "@remixicon/react";
 import logoSvg from "../assets/logo.svg";
 import "material-symbols/outlined.css";
@@ -34,6 +36,13 @@ export default function ManageResume() {
   const [selectedResumeForAnalysis, setSelectedResumeForAnalysis] =
     useState(null);
   const [logoModalOpen, setLogoModalOpen] = useState(false);
+  
+  // Inspect Element Feature
+  const [inspectMode, setInspectMode] = useState(false);
+  const [inspectData, setInspectData] = useState(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const inspectRef = useRef(null);
+  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -168,6 +177,84 @@ export default function ManageResume() {
       day: "numeric",
       year: "numeric",
     });
+  };
+
+  // Inspect Element Functions
+  const componentCodeMap = {
+    'upload-resume-btn': {
+      name: 'Upload Resume Button',
+      jsx: `<button
+  onClick={() => setIsUploadModalOpen(true)}
+  className="flex flex-col items-center p-6 bg-white rounded-xl transition-all group"
+>
+  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+    <RiUploadLine size={28} className="text-blue-600" />
+  </div>
+  <span className="text-sm font-medium text-gray-900">
+    Upload Resume
+  </span>
+</button>`,
+      css: `.upload-btn {
+  @apply flex flex-col items-center p-6 bg-white rounded-xl transition-all;
+}
+.upload-btn:hover .icon-container {
+  @apply scale-110;
+}`,
+      description: 'Interactive upload button with hover animation and icon'
+    },
+    'new-resume-btn': {
+      name: 'New Resume Button',
+      jsx: `<button className="flex flex-col items-center p-6 bg-white rounded-xl transition-all group">
+  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+    <RiAddLine size={28} className="text-green-600" />
+  </div>
+  <span className="text-sm font-medium text-gray-900">
+    New Resume
+  </span>
+</button>`,
+      css: `.new-resume-btn {
+  @apply flex flex-col items-center p-6 bg-white rounded-xl transition-all;
+}`,
+      description: 'Button to create a new resume with green accent'
+    },
+    'page-title': {
+      name: 'Page Title',
+      jsx: `<h1 className="text-base font-bold text-gray-900">Manage Resume</h1>`,
+      css: `.page-title {
+  @apply text-base font-bold text-gray-900;
+}`,
+      description: 'Main page heading'
+    }
+  };
+
+  const handleInspectHover = (e, componentId) => {
+    if (!inspectMode) return;
+    
+    const rect = e.currentTarget.getBoundingClientRect();
+    const code = componentCodeMap[componentId];
+    
+    if (code) {
+      setInspectData(code);
+      setMousePosition({
+        x: e.clientX,
+        y: e.clientY
+      });
+    }
+  };
+
+  const handleInspectLeave = () => {
+    if (!inspectMode) return;
+    setInspectData(null);
+  };
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    // You could add a toast notification here
+  };
+
+  const toggleInspectMode = () => {
+    setInspectMode(!inspectMode);
+    setInspectData(null);
   };
 
   return (
@@ -376,8 +463,31 @@ export default function ManageResume() {
         {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden px-6 py-6">
           {/* Page Title */}
-          <div className="mb-6">
-            <h1 className="text-base font-bold text-gray-900">Manage Resume</h1>
+          <div className="mb-6 flex items-center justify-between">
+            <h1 
+              className="text-base font-bold text-gray-900"
+              onMouseEnter={(e) => handleInspectHover(e, 'page-title')}
+              onMouseLeave={handleInspectLeave}
+              style={{ 
+                outline: inspectMode ? '2px dashed #8b5cf6' : 'none',
+                outlineOffset: '2px'
+              }}
+            >
+              Manage Resume
+            </h1>
+            
+            {/* Inspect Mode Toggle */}
+            <button
+              onClick={toggleInspectMode}
+              className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors ${
+                inspectMode 
+                  ? 'bg-purple-100 text-purple-700 border border-purple-300' 
+                  : 'bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200'
+              }`}
+              title={inspectMode ? 'Exit Inspect Mode' : 'Toggle Inspect Mode'}
+            >
+              <RiCodeSSlashLine size={18} />
+            </button>
           </div>
 
           {/* Scrollable Content Area */}
@@ -389,7 +499,13 @@ export default function ManageResume() {
                   {/* Upload Resume Button */}
                   <button
                     onClick={() => setIsUploadModalOpen(true)}
+                    onMouseEnter={(e) => handleInspectHover(e, 'upload-resume-btn')}
+                    onMouseLeave={handleInspectLeave}
                     className="flex flex-col items-center p-6 bg-white rounded-xl transition-all group"
+                    style={{ 
+                      outline: inspectMode ? '2px dashed #8b5cf6' : 'none',
+                      outlineOffset: '2px'
+                    }}
                   >
                     <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                       <RiUploadLine size={28} className="text-blue-600" />
@@ -400,7 +516,15 @@ export default function ManageResume() {
                   </button>
 
                   {/* New Resume Button */}
-                  <button className="flex flex-col items-center p-6 bg-white rounded-xl transition-all group">
+                  <button 
+                    onMouseEnter={(e) => handleInspectHover(e, 'new-resume-btn')}
+                    onMouseLeave={handleInspectLeave}
+                    className="flex flex-col items-center p-6 bg-white rounded-xl transition-all group"
+                    style={{ 
+                      outline: inspectMode ? '2px dashed #8b5cf6' : 'none',
+                      outlineOffset: '2px'
+                    }}
+                  >
                     <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                       <RiAddLine size={28} className="text-green-600" />
                     </div>
@@ -871,6 +995,78 @@ export default function ManageResume() {
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Inspect Element Tooltip */}
+      {inspectMode && inspectData && (
+        <div
+          className="fixed z-[9999] bg-black text-white rounded-lg shadow-2xl border border-gray-800 max-w-2xl w-full pointer-events-none"
+          style={{
+            left: mousePosition.x + 20,
+            top: mousePosition.y - 10,
+            transform: mousePosition.x > window.innerWidth - 600 ? 'translateX(-100%) translateX(-40px)' : 'none'
+          }}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between p-3 border-b border-gray-800">
+            <div className="flex items-center gap-2">
+              <RiEyeLine size={16} className="text-purple-400" />
+              <span className="text-sm font-semibold text-purple-400">
+                {inspectData.name}
+              </span>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => copyToClipboard(inspectData.jsx)}
+                className="px-2 py-1 text-xs bg-purple-600 hover:bg-purple-700 rounded transition-colors pointer-events-auto"
+                title="Copy JSX"
+              >
+                Copy JSX
+              </button>
+              <button
+                onClick={() => copyToClipboard(inspectData.css)}
+                className="px-2 py-1 text-xs bg-blue-600 hover:bg-blue-700 rounded transition-colors pointer-events-auto"
+                title="Copy CSS"
+              >
+                Copy CSS
+              </button>
+            </div>
+          </div>
+
+          {/* Description */}
+          <div className="px-3 py-2 text-xs text-gray-300 border-b border-gray-800">
+            {inspectData.description}
+          </div>
+
+          {/* Tabs */}
+          <div className="flex border-b border-gray-800">
+            <button className="px-3 py-2 text-xs font-medium text-purple-400 border-b-2 border-purple-400 bg-gray-900">
+              JSX
+            </button>
+            <button className="px-3 py-2 text-xs font-medium text-gray-400 hover:text-white transition-colors pointer-events-auto">
+              CSS
+            </button>
+          </div>
+
+          {/* Code Content */}
+          <div className="p-3 max-h-80 overflow-y-auto">
+            <pre className="text-xs text-gray-300 whitespace-pre-wrap font-mono leading-relaxed">
+              <code>{inspectData.jsx}</code>
+            </pre>
+          </div>
+
+          {/* Footer */}
+          <div className="px-3 py-2 border-t border-gray-800 text-xs text-gray-500">
+            💡 Hover over elements in inspect mode to see their code
+          </div>
+        </div>
+      )}
+
+      {/* Inspect Mode Overlay */}
+      {inspectMode && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-[9998] bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg">
+          🔍 Inspect Mode Active - Hover over elements to see code
         </div>
       )}
     </div>

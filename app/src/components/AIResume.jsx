@@ -325,7 +325,6 @@ export default function AIResume() {
     }
   };
 
-
   // Clear active section highlighting after 3 seconds
   useEffect(() => {
     if (activeResumeSection) {
