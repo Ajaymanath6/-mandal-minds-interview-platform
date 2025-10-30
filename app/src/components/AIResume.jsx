@@ -1,29 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
-  RiNotification3Line,
-  RiUser3Fill,
-  RiMenuLine,
-  RiFileTextLine,
-  RiUploadLine,
-  RiFileCopyLine,
-  RiFileList3Line,
-  RiBookmarkLine,
-  RiAddLine,
-  RiCloseLine,
-  RiLogoutBoxLine,
-  RiArrowDownSLine,
-  RiMoreLine,
-  RiBarChartBoxLine,
-  RiEyeLine,
-  RiDeleteBinLine,
-  RiCheckboxMultipleLine,
-  RiArrowLeftLine,
-  RiStarLine,
-  RiRobotLine,
-  RiEditLine,
   RiSparklingFill,
-  RiArrowRightLine,
+  RiArrowLeftLine,
 } from "@remixicon/react";
 import logoSvg from "../assets/logo.svg";
 import "material-symbols/outlined.css";
@@ -77,16 +56,7 @@ export default function AIResume() {
     skills: {
       technical: ["React", "Node.js", "JavaScript", "Python", "MongoDB"],
       soft: ["Leadership", "Communication", "Problem Solving"]
-    },
-    projects: [
-      {
-        id: 1,
-        name: "E-commerce Platform",
-        description: "Built a full-stack e-commerce platform with React and Node.js",
-        technologies: ["React", "Node.js", "MongoDB"],
-        link: "https://github.com/johndoe/ecommerce"
-      }
-    ]
+    }
   });
   
   const [matchedJD, setMatchedJD] = useState(null);
@@ -98,106 +68,6 @@ export default function AIResume() {
       setMatchedJD(navResumeData.matchedJD);
     }
   }, [location.state]);
-
-  // Skill analysis based on JD requirements
-  const analyzeSkillGaps = (currentSkills, fieldType) => {
-    if (!matchedJD) return { missing: [], suggestions: [], warnings: [] };
-
-    // Sample JD requirements (in real app, this would come from AI analysis)
-    const jdRequirements = {
-      technical: ["React", "Node.js", "TypeScript", "AWS", "Docker", "GraphQL", "PostgreSQL", "Redis"],
-      soft: ["Leadership", "Communication", "Problem Solving", "Team Collaboration", "Project Management"],
-      experience: ["Full-stack development", "Microservices", "CI/CD", "Agile methodology"]
-    };
-
-    const userSkills = currentSkills.map(skill => skill.toLowerCase());
-    const requiredSkills = jdRequirements[fieldType] || [];
-    
-    const missing = requiredSkills.filter(skill => 
-      !userSkills.some(userSkill => userSkill.includes(skill.toLowerCase()))
-    );
-
-    const suggestions = missing.slice(0, 3); // Top 3 missing skills
-    const warnings = missing.length > 3 ? missing.slice(3) : [];
-
-    return { missing, suggestions, warnings };
-  };
-
-  const SkillAnalysisCard = ({ fieldName, currentSkills, fieldType }) => {
-    const analysis = analyzeSkillGaps(currentSkills, fieldType);
-    
-    if (analysis.suggestions.length === 0 && analysis.warnings.length === 0) {
-      return (
-        <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
-          <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-green-600" style={{ fontSize: 16 }}>
-              check_circle
-            </span>
-            <span className="text-sm font-medium text-green-800">Great! Your {fieldName} aligns well with the JD</span>
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div className="mt-3 space-y-2">
-        {analysis.suggestions.length > 0 && (
-          <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-            <div className="flex items-start gap-2 mb-2">
-              <span className="material-symbols-outlined text-blue-600" style={{ fontSize: 16 }}>
-                lightbulb
-              </span>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-blue-800 mb-1">AI Suggestions for {fieldName}</p>
-                <p className="text-xs text-blue-700 mb-2">Based on the JD for {matchedJD?.title} at {matchedJD?.company}</p>
-                <div className="flex flex-wrap gap-1">
-                  {analysis.suggestions.map((skill, index) => (
-                    <button
-                      key={index}
-                      onClick={() => {
-                        // Add skill to resume
-                        if (fieldType === 'technical') {
-                          setResumeData(prev => ({
-                            ...prev,
-                            skills: {
-                              ...prev.skills,
-                              technical: [...prev.skills.technical, skill]
-                            }
-                          }));
-                        }
-                      }}
-                      className="px-2 py-1 bg-blue-100 hover:bg-blue-200 text-blue-800 text-xs rounded-md transition-colors"
-                    >
-                      + {skill}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-        
-        {analysis.warnings.length > 0 && (
-          <div className="p-3 bg-amber-50 rounded-lg border border-amber-200">
-            <div className="flex items-start gap-2">
-              <span className="material-symbols-outlined text-amber-600" style={{ fontSize: 16 }}>
-                warning
-              </span>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-amber-800 mb-1">Skills Gap Warning</p>
-                <p className="text-xs text-amber-700 mb-2">
-                  Consider learning these skills before applying: {analysis.warnings.join(", ")}
-                </p>
-                <button className="text-xs text-amber-800 underline hover:no-underline">
-                  View learning resources →
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  };
 
   return (
     <div className="h-screen bg-gray-50 flex">
@@ -330,11 +200,11 @@ export default function AIResume() {
                 )}
               </button>
 
-              <a
-                href="#"
+              <button
+                onClick={() => navigate("/manage-jds")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-purple-600 bg-gray-50 rounded-md transition-colors`}
+                } py-2 text-purple-600 bg-gray-50 rounded-md w-full transition-colors`}
               >
                 <span
                   className="material-symbols-outlined"
@@ -349,7 +219,7 @@ export default function AIResume() {
                 {firstSidebarOpen && (
                   <span className="text-sm">Manage JDs</span>
                 )}
-              </a>
+              </button>
             </nav>
 
             {/* User Profile - Bottom */}
@@ -504,7 +374,7 @@ export default function AIResume() {
             </div>
           </div>
 
-          {/* Resume Form - Always Show */}
+          {/* Resume Form */}
           <div className="flex-1 overflow-y-auto">
             <div className="max-w-4xl mx-auto space-y-8">
               {/* Personal Information */}
@@ -572,11 +442,6 @@ export default function AIResume() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                   placeholder="Write a compelling summary of your professional background..."
                 />
-                <SkillAnalysisCard 
-                  fieldName="Professional Summary" 
-                  currentSkills={resumeData.summary.split(' ').filter(word => word.length > 3)} 
-                  fieldType="experience" 
-                />
               </div>
 
               {/* Technical Skills */}
@@ -625,11 +490,6 @@ export default function AIResume() {
                     }}
                   />
                 </div>
-                <SkillAnalysisCard 
-                  fieldName="Technical Skills" 
-                  currentSkills={resumeData.skills.technical} 
-                  fieldType="technical" 
-                />
               </div>
 
               {/* Work Experience */}
@@ -677,46 +537,6 @@ export default function AIResume() {
                         }}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                         placeholder="Describe your responsibilities and achievements..."
-                      />
-                    </div>
-                    <SkillAnalysisCard 
-                      fieldName="Work Experience" 
-                      currentSkills={exp.description.split(' ').filter(word => word.length > 3)} 
-                      fieldType="experience" 
-                    />
-                  </div>
-                ))}
-              </div>
-
-              {/* Education */}
-              <div className="bg-white rounded-lg p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Education</h2>
-                {resumeData.education.map((edu, index) => (
-                  <div key={edu.id} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Degree</label>
-                      <input
-                        type="text"
-                        value={edu.degree}
-                        onChange={(e) => {
-                          const newEdu = [...resumeData.education];
-                          newEdu[index].degree = e.target.value;
-                          setResumeData(prev => ({ ...prev, education: newEdu }));
-                        }}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">School</label>
-                      <input
-                        type="text"
-                        value={edu.school}
-                        onChange={(e) => {
-                          const newEdu = [...resumeData.education];
-                          newEdu[index].school = e.target.value;
-                          setResumeData(prev => ({ ...prev, education: newEdu }));
-                        }}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                       />
                     </div>
                   </div>
