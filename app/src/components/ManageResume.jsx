@@ -245,12 +245,7 @@ export default function ManageResume() {
 
   const handleInspectLeave = () => {
     if (!inspectMode || tooltipPinned) return;
-    // Add a small delay before hiding to allow moving to tooltip
-    setTimeout(() => {
-      if (!tooltipPinned) {
-        setInspectData(null);
-      }
-    }, 100);
+    // Don't hide immediately - let user move to tooltip
   };
 
   const handleInspectClick = (e, componentId) => {
@@ -530,14 +525,14 @@ export default function ManageResume() {
             {/* Inspect Mode Toggle */}
             <button
               onClick={toggleInspectMode}
-              className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors ${
+              className={`flex items-center justify-center w-6 h-6 rounded transition-colors ${
                 inspectMode 
-                  ? 'bg-purple-100 text-purple-700 border border-purple-300' 
-                  : 'bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200'
+                  ? 'bg-purple-100 text-purple-700' 
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
               title={inspectMode ? 'Exit Inspect Mode' : 'Toggle Inspect Mode'}
             >
-              <RiCodeSSlashLine size={18} />
+              <RiCodeSSlashLine size={14} />
             </button>
           </div>
 
@@ -1067,6 +1062,11 @@ export default function ManageResume() {
             top: mousePosition.y - 10,
             transform: mousePosition.x > window.innerWidth - 600 ? 'translateX(-100%) translateX(-40px)' : 'none'
           }}
+          onMouseLeave={() => {
+            if (!tooltipPinned) {
+              setInspectData(null);
+            }
+          }}
         >
           {/* Header */}
           <div className="flex items-center justify-between p-3 border-b border-gray-800">
@@ -1079,21 +1079,21 @@ export default function ManageResume() {
             <div className="flex gap-2">
               <button
                 onClick={() => copyToClipboard(inspectData.jsx)}
-                className="px-2 py-1 text-xs bg-purple-600 hover:bg-purple-700 rounded transition-colors"
+                className="px-2 py-1 text-xs bg-purple-600 hover:bg-purple-700 text-white rounded transition-colors duration-200"
                 title="Copy JSX"
               >
                 Copy JSX
               </button>
               <button
                 onClick={() => copyToClipboard(inspectData.css)}
-                className="px-2 py-1 text-xs bg-blue-600 hover:bg-blue-700 rounded transition-colors"
+                className="px-2 py-1 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors duration-200"
                 title="Copy CSS"
               >
                 Copy CSS
               </button>
               <button
                 onClick={closeTooltip}
-                className="px-2 py-1 text-xs bg-gray-700 hover:bg-gray-600 rounded transition-colors"
+                className="px-2 py-1 text-xs bg-gray-700 hover:bg-gray-600 text-white rounded transition-colors duration-200"
                 title="Close"
               >
                 ✕
@@ -1108,10 +1108,10 @@ export default function ManageResume() {
 
           {/* Tabs */}
           <div className="flex border-b border-gray-800">
-            <button className="px-3 py-2 text-xs font-medium text-purple-400 border-b-2 border-purple-400 bg-gray-900">
+            <button className="px-3 py-2 text-xs font-medium text-purple-400 border-b-2 border-purple-400 bg-gray-900 transition-colors duration-200">
               JSX
             </button>
-            <button className="px-3 py-2 text-xs font-medium text-gray-400 hover:text-white transition-colors">
+            <button className="px-3 py-2 text-xs font-medium text-gray-400 hover:text-white transition-colors duration-200">
               CSS
             </button>
           </div>
@@ -1123,19 +1123,9 @@ export default function ManageResume() {
             </pre>
           </div>
 
-          {/* Footer */}
-          <div className="px-3 py-2 border-t border-gray-800 text-xs text-gray-500">
-            💡 {tooltipPinned ? 'Click outside or press Escape to close' : 'Click on elements to pin tooltip'}
-          </div>
         </div>
       )}
 
-      {/* Inspect Mode Overlay */}
-      {inspectMode && (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-[9998] bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg">
-          🔍 Inspect Mode Active - Hover over elements to see code
-        </div>
-      )}
     </div>
   );
 }
