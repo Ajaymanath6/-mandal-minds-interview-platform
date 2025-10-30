@@ -589,9 +589,7 @@ export default function ResumeEditor() {
             </div>
           </div>
 
-          {/* Always show resume form */}
-          {true && (
-            /* Resume Form */
+          {/* Resume Form - Always Show */}
             <div className="flex-1 overflow-y-auto">
               <div className="max-w-4xl mx-auto space-y-8">
                 {/* Personal Information */}
@@ -859,28 +857,6 @@ export default function ResumeEditor() {
                 </div>
               </div>
             </div>
-          ) : (
-            /* Empty State */
-            <div className="flex-1 flex items-center justify-center">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4 mx-auto">
-                  <RiEditLine size={32} className="text-purple-600" />
-                </div>
-                <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                  Resume Editor
-                </h2>
-                <p className="text-gray-600 mb-6">
-                  Create and organize your resume outlines in folders.
-                </p>
-                <button
-                  onClick={() => setShowResumeForm(true)}
-                  className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
-                >
-                  Get Started
-                </button>
-              </div>
-            </div>
-          )}
         </div>
       </div>
 
