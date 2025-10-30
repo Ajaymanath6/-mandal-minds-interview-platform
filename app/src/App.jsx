@@ -11,6 +11,7 @@ import ManageResume from "./components/ManageResume";
 import AnalyzeResume from "./components/AnalyzeResume";
 import EditResume from "./components/EditResume";
 import ResumeEditor from "./components/ResumeEditor";
+import AIResume from "./components/AIResume";
 
 function App() {
   const isProd = process.env.NODE_ENV === "production";
@@ -29,6 +30,7 @@ function App() {
         <Route path="/analyze-resume" element={<AnalyzeResume />} />
         <Route path="/edit-resume" element={<EditResume />} />
         <Route path="/resume-editor" element={<ResumeEditor />} />
+        <Route path="/ai-resume" element={<AIResume />} />
       </Routes>
     </RouterComponent>
   );

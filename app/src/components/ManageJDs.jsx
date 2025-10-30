@@ -957,8 +957,8 @@ export default function ManageJDs() {
 
                           <button
                             onClick={() => {
-                              // Navigate to enhanced resume editor with this resume data
-                              navigate("/edit-resume", {
+                              // Navigate to AI resume optimizer with this resume data
+                              navigate("/ai-resume", {
                                 state: {
                                   resumeData: {
                                     id: suggestedMatch?.id,

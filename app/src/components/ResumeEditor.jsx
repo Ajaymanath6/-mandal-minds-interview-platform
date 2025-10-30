@@ -490,66 +490,82 @@ export default function ResumeEditor() {
           </div>
         </div>
 
-        {/* Second Sidebar - Resume Organization */}
-        <div className="w-64 bg-white border-l border-gray-200 flex-shrink-0 h-full">
+        {/* Second Sidebar - Resume Sections */}
+        <div className="w-80 bg-white border-l border-gray-200 flex-shrink-0 h-full">
           <div className="flex flex-col h-full">
-            {/* Header with Add Resume Button */}
-            <div className="p-4">
-              <button className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-white border border-gray-700 text-gray-800 hover:bg-gray-50 rounded-lg transition-colors font-medium">
-                <RiAddLine size={20} className="text-gray-700" />
-                <span className="text-gray-800">Add Resume</span>
-              </button>
+            {/* Header */}
+            <div className="p-4 border-b border-gray-200">
+              <h2 className="text-base font-semibold text-gray-900">Resume Sections</h2>
             </div>
 
-            {/* All Resumes Section */}
-            <div className="flex-1 px-4 pb-4">
-              <div className="mb-3">
-                <div className="flex items-center justify-between px-2 py-1.5 bg-gray-50 rounded-md">
-                  <div className="flex items-center space-x-2">
-                    <span
-                      className="material-symbols-outlined text-gray-700"
-                      style={{
-                        fontSize: "20px",
-                        fontVariationSettings:
-                          '"FILL" 0, "wght" 300, "GRAD" 0, "opsz" 20',
-                      }}
-                    >
-                      folder
+            {/* Resume Sections */}
+            <div className="flex-1 overflow-y-auto p-4">
+              <div className="space-y-4">
+                {/* Personal Information Section */}
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="material-symbols-outlined text-gray-600" style={{ fontSize: 18 }}>
+                      person
                     </span>
-                    <span className="text-sm font-medium text-gray-800">
-                      All Resumes
-                    </span>
+                    <h3 className="text-sm font-semibold text-gray-800">Personal Information</h3>
                   </div>
-                  <button
-                    onClick={() => setCreateFolderModal(true)}
-                    className="w-7 h-7 flex items-center justify-center text-gray-600 hover:text-gray-800 hover:bg-white rounded transition-colors"
-                    title="Create Folder"
-                  >
-                    <RiAddLine size={16} className="text-gray-700" />
-                  </button>
+                  <div className="text-xs text-gray-600">
+                    <p>Name: {resumeData.personalInfo.fullName}</p>
+                    <p>Email: {resumeData.personalInfo.email}</p>
+                    <p>Phone: {resumeData.personalInfo.phone}</p>
+                  </div>
                 </div>
-              </div>
 
-              {/* Folder List */}
-              <div className="space-y-1.5">
-                {folders.map((folder) => (
-                  <div
-                    key={folder.id}
-                    className="flex items-center space-x-2 px-2 py-1.5 text-gray-900 hover:bg-gray-50 rounded-md cursor-pointer transition-colors ml-5"
-                  >
-                    <span
-                      className="material-symbols-outlined text-gray-600"
-                      style={{
-                        fontSize: "18px",
-                        fontVariationSettings:
-                          '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 18',
-                      }}
-                    >
-                      folder
+                {/* Professional Summary Section */}
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="material-symbols-outlined text-gray-600" style={{ fontSize: 18 }}>
+                      description
                     </span>
-                    <span className="text-sm text-gray-800">{folder.name}</span>
+                    <h3 className="text-sm font-semibold text-gray-800">Professional Summary</h3>
                   </div>
-                ))}
+                  <div className="text-xs text-gray-600">
+                    <p className="line-clamp-3">{resumeData.summary}</p>
+                  </div>
+                </div>
+
+                {/* Work Experience Section */}
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="material-symbols-outlined text-gray-600" style={{ fontSize: 18 }}>
+                      work
+                    </span>
+                    <h3 className="text-sm font-semibold text-gray-800">Work Experience</h3>
+                  </div>
+                  <div className="space-y-2">
+                    {resumeData.experience.map((exp) => (
+                      <div key={exp.id} className="text-xs text-gray-600">
+                        <p className="font-medium">{exp.jobTitle}</p>
+                        <p>{exp.company}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Technical Skills Section */}
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="material-symbols-outlined text-gray-600" style={{ fontSize: 18 }}>
+                      psychology
+                    </span>
+                    <h3 className="text-sm font-semibold text-gray-800">Technical Skills</h3>
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    {resumeData.skills.technical.map((skill, index) => (
+                      <span
+                        key={index}
+                        className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-md"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -573,7 +589,8 @@ export default function ResumeEditor() {
             </div>
           </div>
 
-          {showResumeForm ? (
+          {/* Always show resume form */}
+          {true && (
             /* Resume Form */
             <div className="flex-1 overflow-y-auto">
               <div className="max-w-4xl mx-auto space-y-8">
