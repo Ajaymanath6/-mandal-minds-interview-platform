@@ -325,52 +325,6 @@ export default function AIResume() {
     }
   };
 
-  // Render Suggested Skills section (always visible)
-  const renderSuggestedSkillsSection = () => {
-    const suggestedSkills = [
-      "Microservices",
-      "Kubernetes",
-      "GraphQL",
-      "Next.js",
-      "Terraform",
-    ];
-
-    return (
-      <div className="mb-8 relative">
-        <h2 className="text-xl font-bold text-gray-900 mb-3 border-b-2 border-gray-300 pb-2">
-          SUGGESTED SKILLS
-        </h2>
-        <div className="flex flex-wrap gap-2">
-          {suggestedSkills.map((skill, index) => (
-            <button
-              key={index}
-              onClick={() => {
-                // Add skill to appropriate category in Technical Skills
-                const newSkills = resumeData.skills.tools + `, ${skill}`;
-                updateResumeData("skills", "tools", newSkills);
-
-                // Track added AI skill
-                setAddedAISkills((prev) => [...prev, skill]);
-              }}
-              className="group px-3 py-2 bg-orange-100 hover:bg-orange-200 text-orange-800 text-sm rounded-lg transition-colors flex items-center gap-2 border border-orange-200 hover:border-orange-300 hover:shadow-sm"
-              title={`Add ${skill} to your Technical Skills`}
-            >
-              <span
-                className="material-symbols-outlined"
-                style={{ fontSize: 16 }}
-              >
-                add
-              </span>
-              {skill}
-            </button>
-          ))}
-        </div>
-        <p className="text-sm text-gray-500 mt-2">
-          AI-recommended skills based on job requirements analysis
-        </p>
-      </div>
-    );
-  };
 
   // Clear active section highlighting after 3 seconds
   useEffect(() => {
@@ -883,7 +837,12 @@ export default function AIResume() {
                   e.stopPropagation();
                   // Rephrase this specific field
                   const currentText = value;
-                  const rephrasedText = rephraseWithAI(currentText, fieldId.includes("work-description") ? "work-description" : "default");
+                  const rephrasedText = rephraseWithAI(
+                    currentText,
+                    fieldId.includes("work-description")
+                      ? "work-description"
+                      : "default"
+                  );
                   if (section && field) {
                     updateResumeData(section, field, rephrasedText, index);
                   }
@@ -898,7 +857,7 @@ export default function AIResume() {
                   auto_fix_high
                 </span>
               </button>
-              
+
               {/* Edit badge */}
               <button
                 onClick={(e) => {
@@ -959,21 +918,23 @@ export default function AIResume() {
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
           }
           .inline-badge:hover::after {
-            content: "🗑️";
+            content: "delete";
+            font-family: "Material Symbols Outlined";
             position: absolute;
-            top: -8px;
-            right: -8px;
+            top: -10px;
+            right: -10px;
             background: white;
             color: #ef4444;
             border-radius: 50%;
-            width: 16px;
-            height: 16px;
+            width: 20px;
+            height: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
-            border: 1px solid #ef4444;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-size: 12px;
+            border: 2px solid #ef4444;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20;
           }
         `}</style>
       </div>
@@ -1687,9 +1648,6 @@ export default function AIResume() {
               >
                 {/* Render sections in the order defined by sidebar */}
                 {sections.map((section) => renderResumeSection(section))}
-
-                {/* Suggested Skills Section - Always visible */}
-                {renderSuggestedSkillsSection()}
               </div>
             </div>
           </div>
