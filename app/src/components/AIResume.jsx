@@ -261,6 +261,42 @@ export default function AIResume() {
     );
   };
 
+  // AI Skill Suggestions based on field content
+  const getAISuggestions = (fieldId, currentValue) => {
+    // Simulate AI analysis based on JD requirements
+    const jdRequiredSkills = {
+      "work-description": ["Microservices", "Kubernetes", "GraphQL", "CI/CD", "DevOps", "Docker", "AWS Lambda"],
+      "work-title": ["Senior", "Lead", "Principal"],
+      "work-company": [],
+      "personal-name": [],
+      "personal-email": [],
+      "personal-phone": [],
+      "personal-location": [],
+      "edu-degree": ["Machine Learning", "Data Science", "Computer Science"],
+      "edu-institution": [],
+    };
+
+    // Determine field type more accurately
+    let fieldType = fieldId;
+    if (fieldId.includes("work-description")) {
+      fieldType = "work-description";
+    } else if (fieldId.includes("work-title")) {
+      fieldType = "work-title";
+    } else if (fieldId.includes("work-company")) {
+      fieldType = "work-company";
+    }
+
+    const requiredSkills = jdRequiredSkills[fieldType] || [];
+    
+    // Check which skills are missing from current text
+    const currentText = currentValue.toLowerCase();
+    const missingSkills = requiredSkills.filter(skill => 
+      !currentText.includes(skill.toLowerCase())
+    );
+
+    return missingSkills.slice(0, 3); // Return top 3 suggestions
+  };
+
   // Editable Field Component
   const EditableField = ({
     fieldId,
@@ -275,12 +311,43 @@ export default function AIResume() {
   }) => {
     const [hoveredField, setHoveredField] = useState(null);
     const isEditing = editingFields[fieldId];
+    const aiSuggestions = getAISuggestions(fieldId, value);
 
     const handleValueChange = (newValue) => {
       if (section && field) {
         updateResumeData(section, field, newValue, index);
       }
       toggleFieldEdit(fieldId);
+    };
+
+    const addSuggestionToField = (suggestion) => {
+      let newValue;
+      
+      if (fieldId.includes("work-description")) {
+        // For work descriptions, add contextual sentence
+        const contextualPhrases = {
+          "Microservices": "Designed and implemented microservices architecture",
+          "Kubernetes": "Deployed applications using Kubernetes orchestration",
+          "GraphQL": "Built efficient APIs using GraphQL",
+          "CI/CD": "Implemented CI/CD pipelines for automated deployment",
+          "DevOps": "Applied DevOps practices for streamlined development",
+          "Docker": "Containerized applications using Docker",
+          "AWS Lambda": "Developed serverless functions with AWS Lambda"
+        };
+        
+        const phrase = contextualPhrases[suggestion] || `Worked extensively with ${suggestion}`;
+        newValue = value + (value.endsWith('.') ? ' ' : '. ') + `${phrase}.`;
+      } else if (fieldId.includes("work-title")) {
+        // For job titles, prepend the suggestion
+        newValue = `${suggestion} ${value}`;
+      } else {
+        // Default behavior
+        newValue = value + (value ? ` ${suggestion}` : suggestion);
+      }
+      
+      if (section && field) {
+        updateResumeData(section, field, newValue, index);
+      }
     };
 
     if (isEditing) {
@@ -309,34 +376,55 @@ export default function AIResume() {
     }
 
     return (
-      <div
-        className={`relative w-full px-3 py-2 text-sm border rounded-lg cursor-pointer transition-colors ${
-          isHighlighted
-            ? "border-purple-300 bg-purple-50"
-            : hoveredField === fieldId
-            ? "border-gray-300 bg-gray-50"
-            : "border-gray-300 bg-white"
-        }`}
-        onMouseEnter={() => setHoveredField(fieldId)}
-        onMouseLeave={() => setHoveredField(null)}
-      >
-        <span className="text-gray-900">{value}</span>
-        {hoveredField === fieldId && (
-          <button
-            onClick={() => toggleFieldEdit(fieldId)}
-            className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-          >
-            <span
-              className="material-symbols-outlined"
-              style={{
-                fontSize: "16px",
-                fontVariationSettings:
-                  '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 16',
-              }}
+      <div className="space-y-2">
+        <div
+          className={`relative w-full px-3 py-2 text-sm border rounded-lg cursor-pointer transition-colors ${
+            isHighlighted
+              ? "border-purple-300 bg-purple-50"
+              : hoveredField === fieldId
+              ? "border-gray-300 bg-gray-50"
+              : "border-gray-300 bg-white"
+          }`}
+          onMouseEnter={() => setHoveredField(fieldId)}
+          onMouseLeave={() => setHoveredField(null)}
+        >
+          <span className="text-gray-900">{value}</span>
+          {hoveredField === fieldId && (
+            <button
+              onClick={() => toggleFieldEdit(fieldId)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
             >
-              edit
-            </span>
-          </button>
+              <span
+                className="material-symbols-outlined"
+                style={{
+                  fontSize: "16px",
+                  fontVariationSettings:
+                    '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 16',
+                }}
+              >
+                edit
+              </span>
+            </button>
+          )}
+        </div>
+
+        {/* AI Suggestions Badges */}
+        {aiSuggestions.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {aiSuggestions.map((suggestion, index) => (
+              <button
+                key={index}
+                onClick={() => addSuggestionToField(suggestion)}
+                className="group px-2 py-1 bg-orange-100 hover:bg-orange-200 text-orange-800 text-xs rounded-md transition-colors flex items-center gap-1"
+                title={`Add "${suggestion}" to this field`}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: 10 }}>
+                  add
+                </span>
+                {suggestion}
+              </button>
+            ))}
+          </div>
         )}
       </div>
     );
@@ -735,7 +823,9 @@ export default function AIResume() {
               className="px-4 border-b border-gray-200 flex items-center justify-between"
               style={{ height: "65px" }}
             >
-              <h2 className="text-base font-bold text-gray-900">AI Resume Optimizer</h2>
+              <h2 className="text-base font-bold text-gray-900">
+                AI Resume Optimizer
+              </h2>
               <button
                 onClick={() => navigate("/manage-jds")}
                 className="flex items-center justify-center p-2 text-gray-900 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
@@ -781,9 +871,7 @@ export default function AIResume() {
                         <button className="text-gray-500 hover:text-gray-700 hover:bg-white p-1 rounded">
                           <RiQuestionLine size={16} />
                         </button>
-                        <button
-                          className="text-gray-500 hover:text-gray-700 hover:bg-white p-1 rounded cursor-move"
-                        >
+                        <button className="text-gray-500 hover:text-gray-700 hover:bg-white p-1 rounded cursor-move">
                           <RiArrowUpDownFill size={16} />
                         </button>
                         <button className="text-gray-500 hover:text-red-600 hover:bg-white p-1 rounded">
@@ -798,6 +886,93 @@ export default function AIResume() {
                 );
               })}
             </Reorder.Group>
+
+            {/* Technical Skills Section - Always at bottom */}
+            <div className="p-4 border-t border-gray-200">
+              <div className="mb-4">
+                <div className="flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium text-gray-900 bg-gray-50">
+                  <div className="flex items-center space-x-3">
+                    <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
+                      psychology
+                    </span>
+                    <span>Technical Skills</span>
+                  </div>
+                </div>
+
+                <div className="mt-3 p-4 bg-white rounded-xl shadow-lg">
+                  <div className="space-y-4">
+                    {/* Current Resume Skills */}
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-700 mb-2">Current Skills</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {/* Frontend Skills */}
+                        {["React", "Vue.js", "TypeScript", "HTML5", "CSS3", "Tailwind CSS"].map((skill, index) => (
+                          <span
+                            key={index}
+                            className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-md"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                        {/* Backend Skills */}
+                        {["Node.js", "Express.js", "Python", "Django", "RESTful APIs"].map((skill, index) => (
+                          <span
+                            key={`backend-${index}`}
+                            className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-md"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                        {/* Database Skills */}
+                        {["MongoDB", "PostgreSQL", "MySQL", "Redis"].map((skill, index) => (
+                          <span
+                            key={`db-${index}`}
+                            className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-md"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                        {/* Tools */}
+                        {["Git", "Docker", "AWS", "CI/CD", "Agile/Scrum"].map((skill, index) => (
+                          <span
+                            key={`tools-${index}`}
+                            className="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-md"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* AI Recommended Skills */}
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-700 mb-2">AI Recommendations</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {["Microservices", "Kubernetes", "GraphQL", "Next.js", "Terraform"].map((skill, index) => (
+                          <button
+                            key={index}
+                            onClick={() => {
+                              // Add skill to resume (placeholder functionality)
+                              console.log(`Adding skill: ${skill}`);
+                            }}
+                            className="group px-2 py-1 bg-orange-100 hover:bg-orange-200 text-orange-800 text-xs rounded-md transition-colors flex items-center gap-1"
+                            title={`Add ${skill} to your resume`}
+                          >
+                            <span className="material-symbols-outlined" style={{ fontSize: 12 }}>
+                              add
+                            </span>
+                            {skill}
+                          </button>
+                        ))}
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Based on job requirements analysis
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
