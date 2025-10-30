@@ -183,7 +183,7 @@ export default function ManageResume() {
   // Inspect Element Functions
   const componentCodeMap = {
     'upload-resume-btn': {
-      name: 'Upload Resume Button',
+      name: '📤 Upload Resume Button',
       jsx: `<button
   onClick={() => setIsUploadModalOpen(true)}
   className="flex flex-col items-center p-6 bg-white rounded-xl transition-all group"
@@ -204,7 +204,7 @@ export default function ManageResume() {
       description: 'Interactive upload button with hover animation and icon'
     },
     'new-resume-btn': {
-      name: 'New Resume Button',
+      name: '✨ New Resume Button',
       jsx: `<button className="flex flex-col items-center p-6 bg-white rounded-xl transition-all group">
   <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
     <RiAddLine size={28} className="text-green-600" />
@@ -219,7 +219,7 @@ export default function ManageResume() {
       description: 'Button to create a new resume with green accent'
     },
     'page-title': {
-      name: 'Page Title',
+      name: '📋 Page Title',
       jsx: `<h1 className="text-base font-bold text-gray-900">Manage Resume</h1>`,
       css: `.page-title {
   @apply text-base font-bold text-gray-900;
@@ -477,7 +477,7 @@ export default function ManageResume() {
                     <p className="text-sm font-medium text-gray-900 truncate">
                       John Doe
                     </p>
-                    <p className="text-xs text-gray-500 truncate">
+                    <p className="text-xs text-gray-700 truncate">
                       john.doe@example.com
                     </p>
                   </div>
@@ -559,7 +559,7 @@ export default function ManageResume() {
                     <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                       <RiUploadLine size={28} className="text-blue-600" />
                     </div>
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-sm font-medium text-gray-800">
                       Upload Resume
                     </span>
                   </button>
@@ -577,7 +577,7 @@ export default function ManageResume() {
                     <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                       <RiAddLine size={28} className="text-green-600" />
                     </div>
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-sm font-medium text-gray-800">
                       New Resume
                     </span>
                   </button>
@@ -595,7 +595,7 @@ export default function ManageResume() {
                       <h2 className="text-xl font-semibold text-gray-900 mb-2">
                         No Resumes Yet
                       </h2>
-                      <p className="text-gray-600 mb-6">
+                      <p className="text-gray-800 mb-6">
                         Create your first resume to get started with AI-powered
                         optimization.
                       </p>
