@@ -1167,7 +1167,7 @@ export default function AIResume() {
                   </div>
                 </div>
                 <div className="space-y-3">
-                  <EditableField
+                  <EditableFieldWithBadges
                     fieldId={`work-title-${workIndex}`}
                     value={workItem.title}
                     placeholder="Job Title"
