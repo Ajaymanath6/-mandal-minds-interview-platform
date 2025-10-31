@@ -469,20 +469,25 @@ export default function ManageJDs() {
                 onClick={() => navigate("/resume")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full transition-colors`}
+                } py-1.5 text-gray-900 hover:bg-gray-50 rounded-3xl w-full transition-colors`}
               >
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: "24px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                  }}
-                >
-                  auto_awesome
-                </span>
+                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: "24px",
+                      fontVariationSettings:
+                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                      color: "#5b748e",
+                    }}
+                  >
+                    auto_awesome
+                  </span>
+                </div>
                 {firstSidebarOpen && (
-                  <span className="text-sm font-semibold text-gray-900">AI Interview</span>
+                  <span className="text-sm font-semibold text-gray-900">
+                    AI Interview
+                  </span>
                 )}
               </button>
 
@@ -490,20 +495,25 @@ export default function ManageJDs() {
                 onClick={() => navigate("/resume-editor")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full transition-colors`}
+                } py-1.5 text-gray-900 hover:bg-gray-50 rounded-3xl w-full transition-colors`}
               >
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: "24px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                  }}
-                >
-                  verified_user
-                </span>
+                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: "24px",
+                      fontVariationSettings:
+                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                      color: "#7c00ff",
+                    }}
+                  >
+                    verified_user
+                  </span>
+                </div>
                 {firstSidebarOpen && (
-                  <span className="text-sm font-semibold text-gray-900">Get Vetted</span>
+                  <span className="text-sm font-semibold text-gray-900">
+                    Get Vetted
+                  </span>
                 )}
               </button>
 
@@ -511,20 +521,25 @@ export default function ManageJDs() {
                 onClick={() => navigate("/manage-resume")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full transition-colors`}
+                } py-1.5 text-gray-900 hover:bg-gray-50 rounded-3xl w-full transition-colors`}
               >
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: "24px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                  }}
-                >
-                  content_copy
-                </span>
+                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: "24px",
+                      fontVariationSettings:
+                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                      color: "#5b748e",
+                    }}
+                  >
+                    content_copy
+                  </span>
+                </div>
                 {firstSidebarOpen && (
-                  <span className="text-sm font-semibold text-gray-900">Manage Resume</span>
+                  <span className="text-sm font-semibold text-gray-900">
+                    Manage Resume
+                  </span>
                 )}
               </button>
 
@@ -532,20 +547,27 @@ export default function ManageJDs() {
                 href="#"
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-900 bg-gray-50 rounded-md transition-colors`}
+                } py-1.5 text-gray-900 bg-gray-50 rounded-3xl transition-colors`}
               >
-                <span
-                  className="material-symbols-outlined text-purple-600"
-                  style={{
-                    fontSize: "24px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                  }}
-                >
-                  description
-                </span>
+                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: "24px",
+                      fontVariationSettings:
+                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                      color: "#7c00ff",
+                      filter:
+                        "drop-shadow(0 4px 12px rgba(124, 0, 255, 0.3)) drop-shadow(inset 0 1px 0 rgba(255, 255, 255, 0.25))",
+                    }}
+                  >
+                    description
+                  </span>
+                </div>
                 {firstSidebarOpen && (
-                  <span className="text-sm font-semibold text-gray-900">Manage JDs</span>
+                  <span className="text-sm font-semibold text-gray-900">
+                    Manage JDs
+                  </span>
                 )}
               </a>
             </nav>
@@ -570,9 +592,7 @@ export default function ManageJDs() {
                     <p className="text-sm font-medium text-gray-900 truncate">
                       John Doe
                     </p>
-                    <p className="text-xs text-gray-500 truncate">
-                      Designer
-                    </p>
+                    <p className="text-xs text-gray-500 truncate">Designer</p>
                   </div>
                 </div>
               ) : (
@@ -615,50 +635,104 @@ export default function ManageJDs() {
                   <div className="max-w-6xl w-full">
                     {/* White Box Container */}
                     <div
-                      className="bg-white rounded-lg p-10"
+                      className="bg-white rounded-2xl p-1.5"
                       style={{ minHeight: "390px" }}
                     >
                       {/* Default Empty State */}
                       <div className="text-center">
-                        <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4 mx-auto">
-                          <span
-                            className="material-symbols-outlined text-purple-600"
+                        {/* Light Gray Gradient Container - Everything inside here */}
+                        <div
+                          className="rounded-2xl p-8 border border-gray-200"
+                          style={{
+                            background:
+                              "linear-gradient(to bottom, rgba(249, 250, 251, 0.15), rgba(243, 244, 246, 0.15))",
+                          }}
+                        >
+                          {/* Heading inside the gray container */}
+                          <h2 className="text-2xl font-semibold text-gray-900 mb-6">
+                            Your Job Description Hub
+                          </h2>
+
+                          <div
+                            className="border-2 border-dashed border-gray-300 rounded-3xl p-12"
                             style={{
-                              fontSize: "32px",
-                              fontVariationSettings:
-                                '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 32',
+                              borderStyle: "dashed",
                             }}
                           >
-                            description
-                          </span>
-                        </div>
-                        <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                          Your Job Description Hub
-                        </h2>
-                        <p className="text-gray-600 mb-6">
-                          Start by adding a JD manually or uploading a JD file.
-                        </p>
-                        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                          <button
-                            onClick={() => {
-                              setIsTableView(true);
-                              setIsUploadView(false);
-                            }}
-                            className="flex items-center space-x-2 px-6 py-3 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
-                          >
-                            <RiAddLine size={20} />
-                            <span>Add JD</span>
-                          </button>
-                          <button
-                            onClick={() => {
-                              setIsUploadView(true);
-                              setIsTableView(false);
-                            }}
-                            className="flex items-center space-x-2 px-6 py-3 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
-                          >
-                            <RiUploadLine size={20} />
-                            <span>Upload JD</span>
-                          </button>
+                            {/* Three Tilted JD Images */}
+                            <div
+                              className="mb-6 flex justify-center items-center relative"
+                              style={{ height: "120px" }}
+                            >
+                              {/* Left tilted image */}
+                              <img
+                                src="/jdm.png"
+                                alt="File upload"
+                                className="w-20 h-24 object-contain absolute"
+                                style={{
+                                  transform: "rotate(-15deg) translateX(-70px)",
+                                  zIndex: 1,
+                                  mixBlendMode: "multiply",
+                                }}
+                              />
+                              {/* Center image */}
+                              <img
+                                src="/jdm.png"
+                                alt="File upload"
+                                className="w-24 h-28 object-contain relative"
+                                style={{
+                                  zIndex: 3,
+                                  mixBlendMode: "multiply",
+                                }}
+                              />
+                              {/* Right tilted image */}
+                              <img
+                                src="/jdm.png"
+                                alt="File upload"
+                                className="w-20 h-24 object-contain absolute"
+                                style={{
+                                  transform: "rotate(15deg) translateX(70px)",
+                                  zIndex: 2,
+                                  mixBlendMode: "multiply",
+                                }}
+                              />
+                            </div>
+
+                            {/* Main Text */}
+                            <p className="text-lg font-medium text-gray-900 mb-2">
+                              Drag and drop JD files to upload
+                            </p>
+
+                            {/* Subtext */}
+                            <p className="text-sm text-gray-600 mb-6">
+                              Supported formats: PDF, DOCX, TXT • Max file size:
+                              10MB
+                            </p>
+
+                            {/* Buttons */}
+                            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                              <button
+                                onClick={() => {
+                                  setIsUploadView(true);
+                                  setIsTableView(false);
+                                }}
+                                className="flex items-center justify-center gap-1.5 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-2xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] text-sm font-medium"
+                              >
+                                <RiUploadLine size={16} />
+                                <span>Upload JD</span>
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setIsTableView(true);
+                                  setIsUploadView(false);
+                                }}
+                                className="flex items-center justify-center gap-1.5 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-2xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] text-sm font-medium"
+                              >
+                                <RiAddLine size={16} />
+                                <span>Add JD</span>
+                              </button>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -747,7 +821,7 @@ export default function ManageJDs() {
                         <div className="flex gap-3">
                           <button
                             onClick={handleSaveJD}
-                            className="flex-1 px-6 py-3 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white rounded-lg transition-all border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)]"
+                            className="flex items-center justify-center gap-1.5 px-4 py-2 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white rounded-2xl transition-all border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)] text-sm font-medium"
                           >
                             Save JD
                           </button>
@@ -760,7 +834,7 @@ export default function ManageJDs() {
                                 description: "",
                               });
                             }}
-                            className="px-6 py-3 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
+                            className="flex items-center justify-center gap-1.5 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-2xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] text-sm font-medium"
                           >
                             Cancel
                           </button>
@@ -774,74 +848,109 @@ export default function ManageJDs() {
               {isUploadView && (
                 // Upload JD Area
                 <div className="flex items-center justify-center mb-8">
-                  <div className="max-w-2xl w-full">
-                    <div className="bg-white rounded-lg p-8">
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold text-gray-900">
-                          Upload Job Description
-                        </h3>
-                        <button
-                          onClick={() => setIsUploadView(false)}
-                          className="text-gray-500 hover:text-gray-700"
+                  <div className="max-w-6xl w-full">
+                    <div
+                      className="bg-white rounded-2xl p-1.5"
+                      style={{ minHeight: "390px" }}
+                    >
+                      <div className="text-center">
+                        {/* Light Gray Gradient Container - Everything inside here */}
+                        <div
+                          className="rounded-2xl p-8 border border-gray-200"
+                          style={{
+                            background:
+                              "linear-gradient(to bottom, rgba(249, 250, 251, 0.15), rgba(243, 244, 246, 0.15))",
+                          }}
                         >
-                          <span
-                            className="material-symbols-outlined"
-                            style={{
-                              fontSize: "24px",
-                              fontVariationSettings:
-                                '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24',
-                            }}
-                          >
-                            close
-                          </span>
-                        </button>
-                      </div>
-
-                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center hover:border-purple-400 transition-colors cursor-pointer">
-                        <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4 mx-auto">
-                          <RiUploadLine size={32} className="text-purple-600" />
-                        </div>
-                        <h4 className="text-lg font-medium text-gray-900 mb-2">
-                          Drop files here or click to browse
-                        </h4>
-                        <p className="text-sm text-gray-500 mb-4">
-                          Supported formats: PDF, DOCX, TXT
-                        </p>
-                        <button className="px-6 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]">
-                          Browse Files
-                        </button>
-                      </div>
-
-                      <div className="mt-6">
-                        <h4 className="text-sm font-medium text-gray-700 mb-3">
-                          Recent Uploads
-                        </h4>
-                        <div className="space-y-2">
-                          {[
-                            "Senior_FE_JD.pdf",
-                            "Backend_Engineer_JD.docx",
-                            "Fullstack_JD.txt",
-                          ].map((name) => (
-                            <div
-                              key={name}
-                              className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                          <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-2xl font-semibold text-gray-900">
+                              Upload Job Description
+                            </h3>
+                            <button
+                              onClick={() => setIsUploadView(false)}
+                              className="text-gray-500 hover:text-gray-700"
                             >
-                              <div className="flex items-center gap-3">
-                                <span
-                                  className="material-symbols-outlined text-gray-600"
-                                  style={{ fontSize: 20 }}
-                                >
-                                  description
-                                </span>
-                                <div className="text-sm text-gray-900">
-                                  {name}
-                                </div>
-                              </div>
-                              <div className="text-xs text-gray-500">
-                                Just now
-                              </div>
+                              <span
+                                className="material-symbols-outlined"
+                                style={{
+                                  fontSize: "24px",
+                                  fontVariationSettings:
+                                    '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24',
+                                }}
+                              >
+                                close
+                              </span>
+                            </button>
+                          </div>
+
+                          <div className="border-2 border-dashed border-gray-300 rounded-3xl p-12 text-center hover:border-gray-400 transition-colors cursor-pointer">
+                            {/* Upload Image */}
+                            <div className="mb-6 flex justify-center">
+                              <img
+                                src="/uplaod.png"
+                                alt="Upload files"
+                                className="w-40 h-40 object-contain"
+                                style={{
+                                  filter:
+                                    "drop-shadow(0 2px 8px rgba(0, 0, 0, 0.08))",
+                                }}
+                              />
                             </div>
-                          ))}
+
+                            <h4 className="text-lg font-medium text-gray-900 mb-2">
+                              Drop files here or click to browse
+                            </h4>
+                            <p className="text-sm text-gray-600 mb-4">
+                              Supported formats: PDF, DOCX, TXT
+                            </p>
+                            <button className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-2xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] text-sm font-medium">
+                              Browse Files
+                            </button>
+                          </div>
+
+                          <div className="mt-4">
+                            <h4 className="text-base font-semibold text-gray-900 mb-3">
+                              Recent Uploads
+                            </h4>
+                            <div className="space-y-2">
+                              {[
+                                {
+                                  name: "Senior_FE_JD.pdf",
+                                  img: "/fileimage.png",
+                                },
+                                {
+                                  name: "Backend_Engineer_JD.docx",
+                                  img: "/fileimage1.png",
+                                },
+                                {
+                                  name: "Fullstack_JD.txt",
+                                  img: "/fileimage2.png",
+                                },
+                              ].map((item) => (
+                                <div
+                                  key={item.name}
+                                  className="flex items-center justify-between p-1 bg-gray-50 rounded-2xl"
+                                  style={{
+                                    backgroundColor: "rgba(249, 250, 251, 0.9)",
+                                  }}
+                                >
+                                  <div className="flex items-center gap-2">
+                                    <img
+                                      src={item.img}
+                                      alt={item.name}
+                                      className="w-12 h-12 object-contain"
+                                    />
+                                    <div className="text-sm text-gray-900 font-medium">
+                                      {item.name}
+                                    </div>
+                                  </div>
+                                  <div className="text-xs text-gray-900 font-medium">
+                                    Just now
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -885,8 +994,7 @@ export default function ManageJDs() {
                               John Doe
                             </h2>
                             <p className="text-xs text-black">
-                              Designer | +1 (555) 123-4567 | San
-                              Francisco, CA
+                              Designer | +1 (555) 123-4567 | San Francisco, CA
                             </p>
                           </div>
 
@@ -977,9 +1085,9 @@ export default function ManageJDs() {
                               className="material-symbols-outlined"
                               style={{ fontSize: 16 }}
                             >
-                              verified_user
+                              edit_note
                             </span>
-                            <span>Get Vetted</span>
+                            <span>Smart Edit</span>
                           </button>
                         </div>
                       </div>
@@ -1002,7 +1110,7 @@ export default function ManageJDs() {
                         {!isCompareMode && (
                           <button
                             onClick={() => setIsCompareMode(true)}
-                            className="flex items-center space-x-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
+                            className="flex items-center space-x-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-2xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
                           >
                             <RiCheckboxMultipleLine size={16} />
                             <span>Compare Multiple</span>
@@ -1013,7 +1121,7 @@ export default function ManageJDs() {
                             setIsTableView(true);
                             setIsUploadView(false);
                           }}
-                          className="flex items-center space-x-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
+                          className="flex items-center space-x-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-2xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
                         >
                           <RiAddLine size={16} />
                           <span>Add New JD</span>
@@ -1024,13 +1132,13 @@ export default function ManageJDs() {
                     {/* Compare Mode Controls - Second Line */}
                     {isCompareMode && (
                       <div className="flex items-center space-x-2">
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-gray-900">
                           {selectedJDs.length} selected
                         </span>
                         <button
                           onClick={handleCompareSelected}
                           disabled={selectedJDs.length === 0}
-                          className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-purple-600 hover:text-purple-700 disabled:text-gray-400 disabled:border-gray-200 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] text-sm disabled:shadow-none"
+                          className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-purple-600 hover:text-purple-700 disabled:text-gray-400 disabled:border-gray-200 rounded-2xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] text-sm disabled:shadow-none"
                         >
                           Compare Selected
                         </button>
@@ -1039,7 +1147,7 @@ export default function ManageJDs() {
                             setIsCompareMode(false);
                             setSelectedJDs([]);
                           }}
-                          className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] text-sm"
+                          className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-2xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] text-sm"
                         >
                           Cancel
                         </button>
@@ -1053,7 +1161,7 @@ export default function ManageJDs() {
                       <thead>
                         <tr className="bg-white border-b border-gray-200">
                           {isCompareMode && (
-                            <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
+                            <th className="px-6 py-3 text-left text-sm font-medium text-gray-900">
                               <input
                                 type="checkbox"
                                 className="w-4 h-4 accent-purple-600 border-gray-300 rounded focus:ring-purple-600"
@@ -1067,124 +1175,147 @@ export default function ManageJDs() {
                               />
                             </th>
                           )}
-                          <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
+                          <th className="px-6 py-3 text-left text-sm font-medium text-gray-900">
                             Name
                           </th>
-                          <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
+                          <th className="px-6 py-3 text-left text-sm font-medium text-gray-900">
                             Company
                           </th>
-                          <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
+                          <th className="px-6 py-3 text-left text-sm font-medium text-gray-900">
                             Last Updated
                           </th>
-                          <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
+                          <th className="px-6 py-3 text-left text-sm font-medium text-gray-900">
                             Match
                           </th>
-                          <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
+                          <th className="px-6 py-3 text-left text-sm font-medium text-gray-900">
                             Actions
                           </th>
                         </tr>
                       </thead>
                       <tbody>
-                        {jds.map((jd, index) => (
-                          <tr
-                            key={jd.id}
-                            className={
-                              index % 2 === 0
-                                ? "bg-white hover:bg-gray-100"
-                                : "bg-gray-50 hover:bg-gray-100"
-                            }
-                          >
-                            {isCompareMode && (
-                              <td className="px-6 py-4">
-                                <input
-                                  type="checkbox"
-                                  checked={selectedJDs.includes(jd.id)}
-                                  onChange={() => toggleJDSelection(jd.id)}
-                                  className="w-4 h-4 accent-purple-600 border-gray-300 rounded focus:ring-purple-600"
-                                />
-                              </td>
-                            )}
-                            <td className="px-6 py-4">
-                              <div className="flex items-center gap-3">
-                                <RiFileTextLine
-                                  size={18}
-                                  className="text-gray-400"
-                                />
-                                <span className="text-sm font-medium text-gray-900">
-                                  {jd.jobTitle}
-                                </span>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4">
-                              <div className="text-sm text-gray-900">
-                                {jd.companyName}
-                              </div>
-                            </td>
-                            <td className="px-6 py-4">
-                              <div className="text-sm text-gray-500">
-                                {formatDate(jd.dateAdded)}
-                              </div>
-                            </td>
-                            <td className="px-6 py-4">
-                              {analyzingJDs.includes(jd.id) ? (
-                                <div className="flex flex-col items-center gap-1">
-                                  <div className="w-4 h-4 border-2 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
-                                  <span className="text-xs text-gray-500">
-                                    Analyzing
-                                  </span>
-                                </div>
-                              ) : jd.matchedResume ? (
-                                <div className="text-sm">
-                                  <div className="font-medium text-gray-900">
-                                    {jd.matchedResume}
-                                  </div>
-                                  <div
-                                    className={`text-sm font-semibold ${getScoreColor(
-                                      jd.matchScore
-                                    )}`}
-                                  >
-                                    {jd.matchScore}%
-                                  </div>
-                                </div>
-                              ) : (
-                                <div className="text-sm text-gray-400">—</div>
-                              )}
-                            </td>
-                            <td className="px-6 py-4">
-                              <div className="flex items-center gap-3">
-                                <button
-                                  onClick={() => handleAnalyze(jd)}
-                                  className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-md text-sm font-medium transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
-                                >
-                                  <RiSparklingFill
-                                    size={16}
-                                    className="text-purple-600"
+                        {jds.map((jd, index) => {
+                          return (
+                            <tr
+                              key={jd.id}
+                              className="transition-colors"
+                              style={{
+                                backgroundColor:
+                                  index % 2 === 0
+                                    ? "white"
+                                    : "rgba(249, 250, 251, 0.3)",
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor =
+                                  "rgba(249, 250, 251, 0.5)";
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor =
+                                  index % 2 === 0
+                                    ? "white"
+                                    : "rgba(249, 250, 251, 0.3)";
+                              }}
+                            >
+                              {isCompareMode && (
+                                <td className="px-6 py-4">
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedJDs.includes(jd.id)}
+                                    onChange={() => toggleJDSelection(jd.id)}
+                                    className="w-4 h-4 accent-purple-600 border-gray-300 rounded focus:ring-purple-600"
                                   />
-                                  <span>Analysis</span>
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    setSelectedJDForEdit(jd);
-                                    setEditJDModal(true);
-                                  }}
-                                  className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-md text-sm font-medium transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
-                                >
-                                  <span
-                                    className="material-symbols-outlined"
-                                    style={{
-                                      fontSize: "16px",
-                                      fontVariationSettings:
-                                        '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 16',
-                                    }}
-                                  >
-                                    edit
+                                </td>
+                              )}
+                              <td className="px-6 py-4">
+                                <div className="flex items-center gap-3">
+                                  <img
+                                    src="/jdm.png"
+                                    alt={jd.jobTitle}
+                                    className="w-8 h-8 object-contain"
+                                  />
+                                  <span className="text-sm font-medium text-gray-900">
+                                    {jd.jobTitle}
                                   </span>
-                                  <span>Edit</span>
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
+                                </div>
+                              </td>
+                              <td className="px-6 py-4">
+                                <div className="text-sm text-gray-900">
+                                  {jd.companyName}
+                                </div>
+                              </td>
+                              <td className="px-6 py-4">
+                                <div className="text-sm text-gray-900">
+                                  {formatDate(jd.dateAdded)}
+                                </div>
+                              </td>
+                              <td className="px-6 py-4">
+                                {analyzingJDs.includes(jd.id) ? (
+                                  <div className="flex flex-col items-center gap-1">
+                                    <div className="w-4 h-4 border-2 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+                                    <span className="text-xs text-gray-900">
+                                      Analyzing
+                                    </span>
+                                  </div>
+                                ) : jd.matchedResume ? (
+                                  <div className="text-sm">
+                                    <div className="font-medium text-gray-900">
+                                      {jd.matchedResume}
+                                    </div>
+                                    <div
+                                      className={`text-sm font-semibold ${getScoreColor(
+                                        jd.matchScore
+                                      )}`}
+                                    >
+                                      {jd.matchScore}%
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div className="text-sm text-gray-900">—</div>
+                                )}
+                              </td>
+                              <td className="px-6 py-4">
+                                <div className="flex items-center gap-3">
+                                  <button
+                                    onClick={() => handleAnalyze(jd)}
+                                    className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-2xl text-sm font-medium transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
+                                  >
+                                    <span
+                                      className="material-symbols-outlined text-purple-600"
+                                      style={{
+                                        fontSize: "16px",
+                                        fontVariationSettings:
+                                          '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 16',
+                                      }}
+                                    >
+                                      auto_awesome
+                                    </span>
+                                    <span className="text-gray-900">
+                                      Analysis
+                                    </span>
+                                  </button>
+                                  <button
+                                    onClick={() => {
+                                      setSelectedJDForEdit(jd);
+                                      setEditJDModal(true);
+                                    }}
+                                    className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-2xl text-sm font-medium transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
+                                  >
+                                    <span
+                                      className="material-symbols-outlined text-purple-600"
+                                      style={{
+                                        fontSize: "16px",
+                                        fontVariationSettings:
+                                          '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 16',
+                                      }}
+                                    >
+                                      edit_square
+                                    </span>
+                                    <span className="text-gray-900">Edit</span>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
@@ -1198,88 +1329,168 @@ export default function ManageJDs() {
       {/* Resume Selection Modal */}
       {resumeSelectionModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Select Resume to Compare Against
-              </h3>
-              <button
-                onClick={() => {
-                  setResumeSelectionModal(false);
-                  setSelectedResume(null);
-                }}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <span
-                  className="material-symbols-outlined"
+          <div className="max-w-6xl w-full mx-4">
+            <div
+              className="bg-white rounded-2xl p-1.5"
+              style={{ minHeight: "390px" }}
+            >
+              <div className="text-center">
+                {/* Light Gray Gradient Container - Everything inside here */}
+                <div
+                  className="rounded-2xl p-8 border border-gray-200 relative"
                   style={{
-                    fontSize: "24px",
-                    fontVariationSettings:
-                      '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24',
+                    background:
+                      "linear-gradient(to bottom, rgba(249, 250, 251, 0.15), rgba(243, 244, 246, 0.15))",
                   }}
                 >
-                  close
-                </span>
-              </button>
-            </div>
+                  <div className="flex items-center justify-center mb-4">
+                    <h3 className="text-xl font-semibold text-gray-900">
+                      Select Resume to Compare Against
+                    </h3>
+                    <button
+                      onClick={() => {
+                        setResumeSelectionModal(false);
+                        setSelectedResume(null);
+                      }}
+                      className="absolute right-8 top-8 text-gray-500 hover:text-gray-700"
+                    >
+                      <span
+                        className="material-symbols-outlined"
+                        style={{
+                          fontSize: "24px",
+                          fontVariationSettings:
+                            '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24',
+                        }}
+                      >
+                        close
+                      </span>
+                    </button>
+                  </div>
 
-            <p className="text-sm text-gray-600 mb-4">
-              Comparing {selectedJDs.length} JD
-              {selectedJDs.length > 1 ? "s" : ""} against selected resume
-            </p>
-
-            <div className="space-y-3 mb-6">
-              {SAMPLE_RESUMES.map((resume) => (
-                <div
-                  key={resume.id}
-                  onClick={() => handleResumeSelection(resume)}
-                  className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                    selectedResume?.id === resume.id
-                      ? "border-purple-500 bg-purple-50"
-                      : "border-gray-300 hover:bg-gray-50"
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="font-medium text-gray-900">
-                        {resume.resumeName}
-                      </h4>
-                      <p className="text-sm text-gray-500">
-                        Last edited: {formatDate(resume.lastEdited)}
-                      </p>
-                    </div>
-                    {selectedResume?.id === resume.id && (
-                      <div className="w-5 h-5 bg-purple-600 rounded-full flex items-center justify-center">
-                        <span className="text-white text-xs">✓</span>
+                  <div className="border-2 border-dashed border-gray-300 rounded-3xl p-6 text-center mb-6">
+                    {/* Scan Image */}
+                    <div className="mb-4 flex justify-center">
+                      <div className="w-48 h-28 overflow-hidden">
+                        <img
+                          src="/jdscan1.png"
+                          alt="Scan and compare"
+                          className="w-48 h-48 object-contain"
+                          style={{
+                            filter:
+                              "drop-shadow(0 2px 8px rgba(0, 0, 0, 0.08))",
+                            transform: "translateY(-15%)",
+                          }}
+                        />
                       </div>
-                    )}
+                    </div>
+
+                    <p className="text-lg font-medium text-gray-900 mb-2">
+                      Comparing {selectedJDs.length} JD
+                      {selectedJDs.length > 1 ? "s" : ""} against selected
+                      resume
+                    </p>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Select a resume from the list below to compare your
+                      selected job descriptions
+                    </p>
+                  </div>
+
+                  <div className="space-y-2 mb-6">
+                    {SAMPLE_RESUMES.map((resume, index) => {
+                      const fileImages = [
+                        "/fileimage.png",
+                        "/fileimage1.png",
+                        "/fileimage2.png",
+                      ];
+                      const fileImage = fileImages[index % fileImages.length];
+
+                      return (
+                        <div
+                          key={resume.id}
+                          onClick={() => handleResumeSelection(resume)}
+                          className={`rounded-2xl cursor-pointer transition-colors ${
+                            selectedResume?.id === resume.id
+                              ? "border border-purple-400"
+                              : ""
+                          }`}
+                          style={{
+                            backgroundColor:
+                              selectedResume?.id === resume.id
+                                ? "rgba(249, 250, 251, 0.3)"
+                                : "transparent",
+                            borderWidth:
+                              selectedResume?.id === resume.id ? "1px" : "0px",
+                          }}
+                          onMouseEnter={(e) => {
+                            if (selectedResume?.id !== resume.id) {
+                              e.currentTarget.style.backgroundColor =
+                                "rgba(249, 250, 251, 0.5)";
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (selectedResume?.id !== resume.id) {
+                              e.currentTarget.style.backgroundColor =
+                                "transparent";
+                            } else {
+                              e.currentTarget.style.backgroundColor =
+                                "rgba(249, 250, 251, 0.3)";
+                            }
+                          }}
+                        >
+                          <div className="flex items-center gap-3 py-2 px-3">
+                            <img
+                              src={fileImage}
+                              alt={resume.resumeName}
+                              className="w-12 h-12 object-contain"
+                            />
+                            <div className="flex-1 flex items-center justify-between">
+                              <div className="text-sm font-medium text-gray-900">
+                                {resume.resumeName}
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs text-gray-900">
+                                  Last edited: {formatDate(resume.lastEdited)}
+                                </span>
+                                {selectedResume?.id === resume.id && (
+                                  <div className="w-5 h-5 bg-purple-600 rounded-full flex items-center justify-center">
+                                    <span className="text-white text-xs">
+                                      ✓
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <div className="flex gap-3">
+                    <button
+                      onClick={handleStartAnalysis}
+                      disabled={!selectedResume}
+                      className={`flex items-center justify-center gap-1.5 px-4 py-2 rounded-2xl transition-all font-medium text-sm ${
+                        selectedResume
+                          ? "bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)]"
+                          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      }`}
+                    >
+                      <RiSparklingFill size={16} />
+                      <span>Analyze All JDs</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setResumeSelectionModal(false);
+                        setSelectedResume(null);
+                      }}
+                      className="flex items-center justify-center gap-1.5 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-2xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] text-sm font-medium"
+                    >
+                      Cancel
+                    </button>
                   </div>
                 </div>
-              ))}
-            </div>
-
-            <div className="flex gap-3">
-              <button
-                onClick={handleStartAnalysis}
-                disabled={!selectedResume}
-                className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg transition-all font-medium ${
-                  selectedResume
-                    ? "bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)]"
-                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                }`}
-              >
-                <RiSparklingFill size={20} />
-                <span>Analyze All JDs</span>
-              </button>
-              <button
-                onClick={() => {
-                  setResumeSelectionModal(false);
-                  setSelectedResume(null);
-                }}
-                className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
-              >
-                Cancel
-              </button>
+              </div>
             </div>
           </div>
         </div>

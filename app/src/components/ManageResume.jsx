@@ -376,18 +376,21 @@ export default function ManageResume() {
                 onClick={() => navigate("/resume")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full transition-colors`}
+                } py-1.5 text-gray-900 hover:bg-gray-50 rounded-3xl w-full transition-colors`}
               >
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: "24px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                  }}
-                >
-                  auto_awesome
-                </span>
+                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: "24px",
+                      fontVariationSettings:
+                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                      color: "#5b748e",
+                    }}
+                  >
+                    auto_awesome
+                  </span>
+                </div>
                 {firstSidebarOpen && (
                   <span className="text-sm font-semibold text-gray-900">AI Interview</span>
                 )}
@@ -397,18 +400,21 @@ export default function ManageResume() {
                 onClick={() => navigate("/resume-editor")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full transition-colors`}
+                } py-1.5 text-gray-900 hover:bg-gray-50 rounded-3xl w-full transition-colors`}
               >
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: "24px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                  }}
-                >
-                  verified_user
-                </span>
+                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: "24px",
+                      fontVariationSettings:
+                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                      color: "#7c00ff",
+                    }}
+                  >
+                    verified_user
+                  </span>
+                </div>
                 {firstSidebarOpen && (
                   <span className="text-sm font-semibold text-gray-900">Get Vetted</span>
                 )}
@@ -418,18 +424,22 @@ export default function ManageResume() {
                 href="#"
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-900 bg-gray-50 rounded-md transition-colors`}
+                } py-1.5 text-gray-900 bg-gray-50 rounded-3xl transition-colors`}
               >
-                <span
-                  className="material-symbols-outlined text-purple-600"
-                  style={{
-                    fontSize: "24px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                  }}
-                >
-                  content_copy
-                </span>
+                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: "24px",
+                      fontVariationSettings:
+                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                      color: "#7c00ff",
+                      filter: "drop-shadow(0 4px 12px rgba(124, 0, 255, 0.3)) drop-shadow(inset 0 1px 0 rgba(255, 255, 255, 0.25))",
+                    }}
+                  >
+                    content_copy
+                  </span>
+                </div>
                 {firstSidebarOpen && (
                   <span className="text-sm font-semibold text-gray-900">Manage Resume</span>
                 )}
@@ -439,18 +449,21 @@ export default function ManageResume() {
                 onClick={() => navigate("/manage-jds")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full transition-colors`}
+                } py-1.5 text-gray-900 hover:bg-gray-50 rounded-3xl w-full transition-colors`}
               >
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: "24px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                  }}
-                >
-                  description
-                </span>
+                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: "24px",
+                      fontVariationSettings:
+                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                      color: "#5b748e",
+                    }}
+                  >
+                    description
+                  </span>
+                </div>
                 {firstSidebarOpen && (
                   <span className="text-sm font-semibold text-gray-900">Manage JDs</span>
                 )}
@@ -537,68 +550,96 @@ export default function ManageResume() {
           {/* Scrollable Content Area */}
           <div className="flex-1 overflow-y-auto">
             <div className="max-w-6xl mx-auto">
-              {/* Action Buttons */}
-              <div className="mb-8">
-                <div className="grid grid-cols-2 gap-4">
-                  {/* Upload Resume Button */}
-                  <button
-                    onClick={(e) => {
-                      if (inspectMode) {
-                        handleInspectClick(e, 'upload-resume-btn');
-                      } else {
-                        setIsUploadModalOpen(true);
-                      }
-                    }}
-                    onMouseEnter={(e) => handleInspectHover(e, 'upload-resume-btn')}
-                    onMouseLeave={handleInspectLeave}
-                    className="flex flex-col items-center p-6 bg-white rounded-xl transition-all group"
-                    style={{ 
-                      cursor: inspectMode ? 'pointer' : 'default'
-                    }}
-                  >
-                    <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                      <RiUploadLine size={28} className="text-blue-600" />
-                    </div>
-                    <span className="text-sm font-medium text-gray-800">
-                      Upload Resume
-                    </span>
-                  </button>
-
-                  {/* New Resume Button */}
-                  <button 
-                    onClick={(e) => handleInspectClick(e, 'new-resume-btn')}
-                    onMouseEnter={(e) => handleInspectHover(e, 'new-resume-btn')}
-                    onMouseLeave={handleInspectLeave}
-                    className="flex flex-col items-center p-6 bg-white rounded-xl transition-all group"
-                    style={{ 
-                      cursor: inspectMode ? 'pointer' : 'default'
-                    }}
-                  >
-                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                      <RiAddLine size={28} className="text-green-600" />
-                    </div>
-                    <span className="text-sm font-medium text-gray-800">
-                      New Resume
-                    </span>
-                  </button>
-                </div>
-              </div>
-
               {resumes.length === 0 ? (
                 // Empty State
-                <div className="flex items-center justify-center h-64">
-                  <div className="max-w-2xl w-full">
-                    <div className="bg-white rounded-lg p-8 text-center">
-                      <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4 mx-auto">
-                        <RiFileCopyLine size={32} className="text-purple-600" />
+                <div className="flex items-center justify-center w-full" style={{ minHeight: "calc(100vh - 200px)" }}>
+                  <div className="max-w-2xl w-full mx-auto">
+                    <div className="bg-white rounded-3xl p-1.5" style={{ minHeight: "390px" }}>
+                      <div className="text-center h-full">
+                        {/* Light Gray Gradient Container - Everything inside here */}
+                        <div 
+                          className="rounded-2xl p-8 border border-gray-200"
+                          style={{
+                            background: 'linear-gradient(to bottom, rgba(249, 250, 251, 0.15), rgba(243, 244, 246, 0.15))'
+                          }}
+                        >
+                          {/* Heading inside the gray container */}
+                          <h2 className="text-2xl font-semibold text-gray-900 mb-6">
+                            Your Resume Hub
+                          </h2>
+                          
+                          <div 
+                            className="border-2 border-dashed border-gray-300 rounded-3xl p-12"
+                            style={{
+                              borderStyle: 'dashed',
+                            }}
+                          >
+                            {/* Three Tilted JD Images */}
+                            <div className="mb-6 flex justify-center items-center relative" style={{ height: '120px' }}>
+                              {/* Left tilted image */}
+                              <img 
+                                src="/jdm.png" 
+                                alt="File upload" 
+                                className="w-20 h-24 object-contain absolute"
+                                style={{
+                                  transform: 'rotate(-15deg) translateX(-70px)',
+                                  zIndex: 1,
+                                  mixBlendMode: 'multiply',
+                                }}
+                              />
+                              {/* Center image */}
+                              <img 
+                                src="/jdm.png" 
+                                alt="File upload" 
+                                className="w-24 h-28 object-contain relative"
+                                style={{
+                                  zIndex: 3,
+                                  mixBlendMode: 'multiply',
+                                }}
+                              />
+                              {/* Right tilted image */}
+                              <img 
+                                src="/jdm.png" 
+                                alt="File upload" 
+                                className="w-20 h-24 object-contain absolute"
+                                style={{
+                                  transform: 'rotate(15deg) translateX(70px)',
+                                  zIndex: 2,
+                                  mixBlendMode: 'multiply',
+                                }}
+                              />
+                            </div>
+                            
+                            {/* Main Text */}
+                            <p className="text-lg font-medium text-gray-900 mb-2">
+                              Drag and drop resume files to upload
+                            </p>
+                            
+                            {/* Subtext */}
+                            <p className="text-sm text-gray-600 mb-6">
+                              Supported formats: PDF, DOC, DOCX • Max file size: 10MB
+                            </p>
+                            
+                            {/* Buttons */}
+                            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                              <button
+                                onClick={() => setIsUploadModalOpen(true)}
+                                className="flex items-center justify-center gap-1.5 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-2xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] text-sm font-medium"
+                              >
+                                <RiUploadLine size={16} />
+                                <span>Upload Resume</span>
+                              </button>
+                              <button
+                                onClick={() => handleUploadResume()}
+                                className="flex items-center justify-center gap-1.5 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-2xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] text-sm font-medium"
+                              >
+                                <RiAddLine size={16} />
+                                <span>New Resume</span>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                        No Resumes Yet
-                      </h2>
-                      <p className="text-gray-800 mb-6">
-                        Create your first resume to get started with AI-powered
-                        optimization.
-                      </p>
                     </div>
                   </div>
                 </div>
@@ -614,7 +655,7 @@ export default function ManageResume() {
                       {!isCompareMode && (
                         <button
                           onClick={() => setIsCompareMode(true)}
-                          className="flex items-center space-x-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
+                          className="flex items-center space-x-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-3xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
                         >
                           <RiCheckboxMultipleLine size={16} />
                           <span>Compare Multiple</span>
@@ -625,13 +666,13 @@ export default function ManageResume() {
                     {/* Compare Mode Controls */}
                     {isCompareMode && (
                       <div className="flex items-center space-x-2 mt-4">
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-gray-900">
                           {selectedResumes.length} selected
                         </span>
                         <button
                           onClick={handleCompareSelected}
                           disabled={selectedResumes.length === 0}
-                          className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-purple-600 hover:text-purple-700 disabled:text-gray-400 disabled:border-gray-200 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] text-sm disabled:shadow-none"
+                          className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-purple-600 hover:text-purple-700 disabled:text-gray-400 disabled:border-gray-200 rounded-3xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] text-sm disabled:shadow-none"
                         >
                           Compare Selected
                         </button>
@@ -640,7 +681,7 @@ export default function ManageResume() {
                             setIsCompareMode(false);
                             setSelectedResumes([]);
                           }}
-                          className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] text-sm"
+                          className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-3xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] text-sm"
                         >
                           Cancel
                         </button>
@@ -649,7 +690,7 @@ export default function ManageResume() {
                   </div>
 
                   {/* Resume Table */}
-                  <div className="bg-white rounded-lg overflow-hidden">
+                  <div className="bg-white rounded-3xl overflow-hidden">
                     <table className="w-full">
                       <thead>
                         <tr className="bg-white border-b border-gray-200">
@@ -691,10 +732,20 @@ export default function ManageResume() {
                         </tr>
                       </thead>
                       <tbody>
-                        {resumes.map((resume) => (
+                        {resumes.map((resume, index) => {
+                          return (
                           <tr
                             key={resume.id}
-                            className="bg-white hover:bg-gray-50/80 border-b border-gray-200"
+                            className="transition-colors"
+                            style={{
+                              backgroundColor: index % 2 === 0 ? 'white' : 'rgba(249, 250, 251, 0.3)',
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.backgroundColor = 'rgba(249, 250, 251, 0.5)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.backgroundColor = index % 2 === 0 ? 'white' : 'rgba(249, 250, 251, 0.3)';
+                            }}
                           >
                             {isCompareMode && (
                               <td className="px-6 py-4">
@@ -710,9 +761,10 @@ export default function ManageResume() {
                             )}
                             <td className="px-6 py-4">
                               <div className="flex items-center gap-3">
-                                <RiFolder6Fill
-                                  size={18}
-                                  className="text-gray-900"
+                                <img 
+                                  src="/jdm.png" 
+                                  alt={resume.resumeName} 
+                                  className="w-12 h-12 object-contain"
                                 />
                                 <span className="text-sm font-medium text-gray-900">
                                   {resume.resumeName}
@@ -739,7 +791,7 @@ export default function ManageResume() {
                               {analyzingResumes.includes(resume.id) ? (
                                 <div className="flex flex-col items-center gap-1">
                                   <div className="w-4 h-4 border-2 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
-                                  <span className="text-xs text-gray-500">
+                                  <span className="text-xs text-gray-900">
                                     Analyzing
                                   </span>
                                 </div>
@@ -752,7 +804,7 @@ export default function ManageResume() {
                                   {resume.match}%
                                 </div>
                               ) : (
-                                <div className="text-sm text-gray-400">—</div>
+                                <div className="text-sm text-gray-900">—</div>
                               )}
                             </td>
                             <td className="px-6 py-4">
@@ -770,33 +822,47 @@ export default function ManageResume() {
                                 <button
                                   onClick={() => handleAnalyze(resume)}
                                   disabled={!resume.matchedJob}
-                                  className={`flex items-center justify-center gap-1.5 px-3 py-1.5 border rounded-md text-sm font-medium transition-all ${
+                                  className={`flex items-center justify-center gap-1.5 px-3 py-1.5 border rounded-3xl text-sm font-medium transition-all ${
                                     resume.matchedJob
                                       ? "bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
                                       : "border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed"
                                   }`}
                                 >
-                                  <RiSparklingFill
-                                    size={16}
-                                    className={
-                                      resume.matchedJob
-                                        ? "text-purple-600"
-                                        : "text-gray-400"
-                                    }
-                                  />
-                                  <span>Analyze</span>
+                                  <span
+                                    className={`material-symbols-outlined ${
+                                      resume.matchedJob ? "text-purple-600" : "text-gray-400"
+                                    }`}
+                                    style={{
+                                      fontSize: "16px",
+                                      fontVariationSettings:
+                                        '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 16',
+                                    }}
+                                  >
+                                    auto_awesome
+                                  </span>
+                                  <span className="text-gray-900">Analyze</span>
                                 </button>
                                 <button
                                   onClick={() => handleEditResume(resume)}
-                                  className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-md text-sm font-medium transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
+                                  className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-3xl text-sm font-medium transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
                                 >
-                                  <RiEditLine size={16} />
-                                  <span>Edit</span>
+                                  <span
+                                    className="material-symbols-outlined text-purple-600"
+                                    style={{
+                                      fontSize: "16px",
+                                      fontVariationSettings:
+                                        '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 16',
+                                    }}
+                                  >
+                                    edit_square
+                                  </span>
+                                  <span className="text-gray-900">Edit</span>
                                 </button>
                               </div>
                             </td>
                           </tr>
-                        ))}
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
@@ -810,32 +876,110 @@ export default function ManageResume() {
       {/* Upload Modal */}
       {isUploadModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Upload Resume
-            </h3>
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center mb-4">
-              <RiUploadLine size={48} className="text-gray-400 mx-auto mb-2" />
-              <p className="text-sm text-gray-600">
-                Drop your resume here or click to browse
-              </p>
-              <p className="text-xs text-gray-500 mt-2">
-                Supports PDF, DOC, DOCX files
-              </p>
-            </div>
-            <div className="flex gap-3">
-              <button
-                onClick={handleUploadResume}
-                className="flex-1 px-4 py-2 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white rounded-lg transition-all border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)]"
+          <div className="bg-white rounded-3xl p-1.5 max-w-2xl w-full mx-4" style={{ minHeight: "390px" }}>
+            <div className="text-center h-full">
+              {/* Light Gray Gradient Container - Everything inside here */}
+              <div 
+                className="rounded-2xl p-8 border border-gray-200"
+                style={{
+                  background: 'linear-gradient(to bottom, rgba(249, 250, 251, 0.15), rgba(243, 244, 246, 0.15))'
+                }}
               >
-                OK
-              </button>
-              <button
-                onClick={() => setIsUploadModalOpen(false)}
-                className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
-              >
-                Cancel
-              </button>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-2xl font-semibold text-gray-900">
+                    Upload Resume
+                  </h3>
+                  <button
+                    onClick={() => setIsUploadModalOpen(false)}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    <span
+                      className="material-symbols-outlined"
+                      style={{
+                        fontSize: "24px",
+                        fontVariationSettings:
+                          '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24',
+                      }}
+                    >
+                      close
+                    </span>
+                  </button>
+                </div>
+
+                <div className="border-2 border-dashed border-gray-300 rounded-3xl p-12 text-center hover:border-gray-400 transition-colors cursor-pointer">
+                  {/* Upload Image */}
+                  <div className="mb-6 flex justify-center">
+                    <img 
+                      src="/uplaod.png" 
+                      alt="Upload files" 
+                      className="w-40 h-40 object-contain"
+                      style={{
+                        filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.08))'
+                      }}
+                    />
+                  </div>
+                  
+                  <h4 className="text-lg font-medium text-gray-900 mb-2">
+                    Drop files here or click to browse
+                  </h4>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Supported formats: PDF, DOC, DOCX
+                  </p>
+                  <button className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-2xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] text-sm font-medium">
+                    Browse Files
+                  </button>
+                </div>
+
+                <div className="mt-4">
+                  <h4 className="text-base font-semibold text-gray-900 mb-3">
+                    Recent Uploads
+                  </h4>
+                  <div className="space-y-2">
+                    {[
+                      { name: "Senior_FE_Resume.pdf", img: "/fileimage.png" },
+                      { name: "Backend_Engineer_Resume.docx", img: "/fileimage1.png" },
+                      { name: "Fullstack_Resume.pdf", img: "/fileimage2.png" },
+                    ].map((item) => (
+                      <div
+                        key={item.name}
+                        className="flex items-center justify-between p-1 bg-gray-50 rounded-2xl"
+                        style={{
+                          backgroundColor: 'rgba(249, 250, 251, 0.9)'
+                        }}
+                      >
+                        <div className="flex items-center gap-2">
+                          <img 
+                            src={item.img} 
+                            alt={item.name} 
+                            className="w-12 h-12 object-contain"
+                          />
+                          <div className="text-sm text-gray-900 font-medium">
+                            {item.name}
+                          </div>
+                        </div>
+                        <div className="text-xs text-gray-900 font-medium">
+                          Just now
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex gap-3 mt-6">
+                  <button
+                    onClick={handleUploadResume}
+                    className="flex-1 px-4 py-2 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white rounded-3xl transition-all border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)]"
+                  >
+                    OK
+                  </button>
+                  <button
+                    onClick={() => setIsUploadModalOpen(false)}
+                    className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-3xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1070,7 +1214,7 @@ export default function ManageResume() {
             </span>
             <button
               onClick={closeTooltip}
-              className="flex items-center justify-center w-6 h-6 bg-gray-800 hover:bg-gray-700 text-white rounded-md transition-colors duration-200"
+              className="flex items-center justify-center w-6 h-6 bg-gray-800 hover:bg-gray-700 text-white rounded-3xl transition-colors duration-200"
               title="Close"
             >
               ✕

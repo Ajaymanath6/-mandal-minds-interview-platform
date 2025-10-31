@@ -251,7 +251,7 @@ export default function ResumeEditor() {
                           }));
                         }
                       }}
-                      className="px-2 py-1 bg-blue-100 hover:bg-blue-200 text-blue-800 text-xs rounded-md transition-colors"
+                      className="px-2 py-1 bg-blue-100 hover:bg-blue-200 text-blue-800 text-xs rounded-3xl transition-colors"
                     >
                       + {skill}
                     </button>
@@ -362,18 +362,21 @@ export default function ResumeEditor() {
                 onClick={() => navigate("/resume")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full transition-colors`}
+                } py-1.5 text-gray-900 hover:bg-gray-50 rounded-3xl w-full transition-colors`}
               >
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: "24px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                  }}
-                >
-                  auto_awesome
-                </span>
+                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: "24px",
+                      fontVariationSettings:
+                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                      color: "#5b748e",
+                    }}
+                  >
+                    auto_awesome
+                  </span>
+                </div>
                 {firstSidebarOpen && (
                   <span className="text-sm font-semibold text-gray-900">AI Interview</span>
                 )}
@@ -383,18 +386,22 @@ export default function ResumeEditor() {
                 href="#"
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-900 bg-gray-50 rounded-md transition-colors`}
+                } py-1.5 text-gray-900 bg-gray-50 rounded-3xl transition-colors`}
               >
-                <span
-                  className="material-symbols-outlined text-purple-600"
-                  style={{
-                    fontSize: "24px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                  }}
-                >
-                  verified_user
-                </span>
+                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: "24px",
+                      fontVariationSettings:
+                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                      color: "#7c00ff",
+                      filter: "drop-shadow(0 4px 12px rgba(124, 0, 255, 0.3)) drop-shadow(inset 0 1px 0 rgba(255, 255, 255, 0.25))",
+                    }}
+                  >
+                    verified_user
+                  </span>
+                </div>
                 {firstSidebarOpen && (
                   <span className="text-sm font-semibold text-gray-900">Get Vetted</span>
                 )}
@@ -404,18 +411,21 @@ export default function ResumeEditor() {
                 onClick={() => navigate("/manage-resume")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full transition-colors`}
+                } py-1.5 text-gray-900 hover:bg-gray-50 rounded-3xl w-full transition-colors`}
               >
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: "24px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                  }}
-                >
-                  content_copy
-                </span>
+                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: "24px",
+                      fontVariationSettings:
+                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                      color: "#5b748e",
+                    }}
+                  >
+                    content_copy
+                  </span>
+                </div>
                 {firstSidebarOpen && (
                   <span className="text-sm font-semibold text-gray-900">Manage Resume</span>
                 )}
@@ -425,18 +435,21 @@ export default function ResumeEditor() {
                 onClick={() => navigate("/manage-jds")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full transition-colors`}
+                } py-1.5 text-gray-900 hover:bg-gray-50 rounded-3xl w-full transition-colors`}
               >
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: "24px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                  }}
-                >
-                  description
-                </span>
+                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: "24px",
+                      fontVariationSettings:
+                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                      color: "#5b748e",
+                    }}
+                  >
+                    description
+                  </span>
+                </div>
                 {firstSidebarOpen && (
                   <span className="text-sm font-semibold text-gray-900">Manage JDs</span>
                 )}

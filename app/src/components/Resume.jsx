@@ -454,18 +454,22 @@ export default function Resume() {
                 href="#"
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-900 bg-gray-50 rounded-md transition-colors`}
+                } py-1.5 text-gray-900 bg-gray-50 rounded-3xl transition-colors`}
               >
-                <span
-                  className="material-symbols-outlined text-purple-600"
-                  style={{
-                    fontSize: "24px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                  }}
-                >
-                  auto_awesome
-                </span>
+                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: "24px",
+                      fontVariationSettings:
+                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                      color: "#7c00ff",
+                      filter: "drop-shadow(0 4px 12px rgba(124, 0, 255, 0.3)) drop-shadow(inset 0 1px 0 rgba(255, 255, 255, 0.25))",
+                    }}
+                  >
+                    auto_awesome
+                  </span>
+                </div>
                 {firstSidebarOpen && (
                   <span className="text-sm font-semibold text-gray-900">AI Interview</span>
                 )}
@@ -475,18 +479,21 @@ export default function Resume() {
                 onClick={() => navigate("/resume-editor")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full transition-colors`}
+                } py-1.5 text-gray-900 hover:bg-gray-50 rounded-3xl w-full transition-colors`}
               >
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: "24px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                  }}
-                >
-                  verified_user
-                </span>
+                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: "24px",
+                      fontVariationSettings:
+                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                      color: "#5b748e",
+                    }}
+                  >
+                    edit_note
+                  </span>
+                </div>
                 {firstSidebarOpen && (
                   <span className="text-sm font-semibold text-gray-900">Get Vetted</span>
                 )}
@@ -496,18 +503,21 @@ export default function Resume() {
                 onClick={() => navigate("/manage-resume")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full transition-colors`}
+                } py-1.5 text-gray-900 hover:bg-gray-50 rounded-3xl w-full transition-colors`}
               >
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: "24px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                  }}
-                >
-                  content_copy
-                </span>
+                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: "24px",
+                      fontVariationSettings:
+                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                      color: "#5b748e",
+                    }}
+                  >
+                    content_copy
+                  </span>
+                </div>
                 {firstSidebarOpen && (
                   <span className="text-sm font-semibold text-gray-900">Manage Resume</span>
                 )}
@@ -517,18 +527,21 @@ export default function Resume() {
                 onClick={() => navigate("/manage-jds")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full transition-colors`}
+                } py-1.5 text-gray-900 hover:bg-gray-50 rounded-3xl w-full transition-colors`}
               >
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: "24px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                  }}
-                >
-                  description
-                </span>
+                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: "24px",
+                      fontVariationSettings:
+                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                      color: "#5b748e",
+                    }}
+                  >
+                    description
+                  </span>
+                </div>
                 {firstSidebarOpen && (
                   <span className="text-sm font-semibold text-gray-900">Manage JDs</span>
                 )}
@@ -640,7 +653,7 @@ export default function Resume() {
                         <RiUser3Fill size={24} className="text-gray-600" />
                       </div>
                       <p className="text-gray-600 text-sm">Camera Off</p>
-                      <button className="mt-2 px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white text-xs rounded-md transition-colors">
+                      <button className="mt-2 px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white text-xs rounded-3xl transition-colors">
                         Enable Camera
                       </button>
                     </div>
@@ -696,7 +709,7 @@ export default function Resume() {
                         <button
                           onClick={() => setIsAnalyzed(true)}
                           disabled={!jdContent.trim()}
-                          className="w-full bg-gray-900 hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-md transition-colors"
+                          className="w-full bg-gray-900 hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-3xl transition-colors"
                         >
                           Analyze JD
                         </button>
@@ -779,7 +792,7 @@ export default function Resume() {
                   </div>
                   <button
                     onClick={() => setIsInterviewStarted(false)}
-                    className="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+                    className="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-3xl transition-colors"
                   >
                     End Interview
                   </button>
@@ -1200,7 +1213,7 @@ export default function Resume() {
                           setNewSkill("");
                         }
                       }}
-                      className="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-md transition-colors flex items-center space-x-2"
+                      className="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-3xl transition-colors flex items-center space-x-2"
                     >
                       <RiAddLine size={16} />
                       <span>Add</span>

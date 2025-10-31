@@ -313,14 +313,11 @@ export default function EditResume() {
           <button
             onClick={() => toggleFieldEdit(fieldId)}
             className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] text-white rounded-[7px] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] transition-all hover:opacity-90"
+            title="Edit this field"
           >
             <span
               className="material-symbols-outlined"
-              style={{
-                fontSize: "16px",
-                fontVariationSettings:
-                  '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 16',
-              }}
+              style={{ fontSize: 16 }}
             >
               edit
             </span>
@@ -587,18 +584,21 @@ export default function EditResume() {
                 onClick={() => navigate("/resume")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full transition-colors`}
+                } py-1.5 text-gray-900 hover:bg-gray-50 rounded-3xl w-full transition-colors`}
               >
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: "24px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                  }}
-                >
-                  auto_awesome
-                </span>
+                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: "24px",
+                      fontVariationSettings:
+                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                      color: "#5b748e",
+                    }}
+                  >
+                    auto_awesome
+                  </span>
+                </div>
                 {firstSidebarOpen && (
                   <span className="text-sm font-semibold text-gray-900">
                     AI Interview
@@ -610,18 +610,21 @@ export default function EditResume() {
                 onClick={() => navigate("/resume-editor")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full transition-colors`}
+                } py-1.5 text-gray-900 hover:bg-gray-50 rounded-3xl w-full transition-colors`}
               >
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: "24px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                  }}
-                >
-                  verified_user
-                </span>
+                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: "24px",
+                      fontVariationSettings:
+                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                      color: "#5b748e",
+                    }}
+                  >
+                    edit_note
+                  </span>
+                </div>
                 {firstSidebarOpen && (
                   <span className="text-sm font-semibold text-gray-900">
                     Get Vetted
@@ -633,18 +636,23 @@ export default function EditResume() {
                 onClick={() => navigate("/manage-resume")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-900 bg-gray-50 rounded-md w-full transition-colors`}
+                } py-1.5 text-gray-900 bg-gray-50 rounded-3xl w-full transition-colors`}
               >
-                <span
-                  className="material-symbols-outlined text-purple-600"
-                  style={{
-                    fontSize: "24px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                  }}
-                >
-                  content_copy
-                </span>
+                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: "24px",
+                      fontVariationSettings:
+                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                      color: "#7c00ff",
+                      filter:
+                        "drop-shadow(0 4px 12px rgba(124, 0, 255, 0.3)) drop-shadow(inset 0 1px 0 rgba(255, 255, 255, 0.25))",
+                    }}
+                  >
+                    content_copy
+                  </span>
+                </div>
                 {firstSidebarOpen && (
                   <span className="text-sm font-semibold text-gray-900">
                     Manage Resume
@@ -656,18 +664,21 @@ export default function EditResume() {
                 onClick={() => navigate("/manage-jds")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-gray-900 hover:bg-gray-50 rounded-md w-full transition-colors`}
+                } py-1.5 text-gray-900 hover:bg-gray-50 rounded-3xl w-full transition-colors`}
               >
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: "24px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                  }}
-                >
-                  description
-                </span>
+                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: "24px",
+                      fontVariationSettings:
+                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
+                      color: "#5b748e",
+                    }}
+                  >
+                    description
+                  </span>
+                </div>
                 {firstSidebarOpen && (
                   <span className="text-sm font-semibold text-gray-900">
                     Manage JDs
@@ -959,16 +970,21 @@ export default function EditResume() {
                 }}
                 className="w-full flex items-center gap-3 p-3 border border-gray-300 rounded-lg bg-purple-50 text-left"
               >
-                <span
-                  className="material-symbols-outlined text-purple-600"
-                  style={{
-                    fontSize: "20px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20',
-                  }}
-                >
-                  verified_user
-                </span>
+                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: "20px",
+                      fontVariationSettings:
+                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20',
+                      color: "#7c00ff",
+                      filter:
+                        "drop-shadow(0 4px 12px rgba(124, 0, 255, 0.3)) drop-shadow(inset 0 1px 0 rgba(255, 255, 255, 0.25))",
+                    }}
+                  >
+                    verified_user
+                  </span>
+                </div>
                 <span className="text-gray-900 font-medium">
                   Get Vetted (Current)
                 </span>
