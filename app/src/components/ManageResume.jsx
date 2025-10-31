@@ -389,7 +389,7 @@ export default function ManageResume() {
                   auto_awesome
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm">AI Interview</span>
+                  <span className="text-sm font-semibold text-gray-900">AI Interview</span>
                 )}
               </button>
 
@@ -410,7 +410,7 @@ export default function ManageResume() {
                   verified_user
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm">Get Vetted</span>
+                  <span className="text-sm font-semibold text-gray-900">Get Vetted</span>
                 )}
               </button>
 
@@ -418,10 +418,10 @@ export default function ManageResume() {
                 href="#"
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-purple-600 bg-gray-50 rounded-md transition-colors`}
+                } py-2 text-gray-900 bg-gray-50 rounded-md transition-colors`}
               >
                 <span
-                  className="material-symbols-outlined"
+                  className="material-symbols-outlined text-purple-600"
                   style={{
                     fontSize: "24px",
                     fontVariationSettings:
@@ -431,7 +431,7 @@ export default function ManageResume() {
                   content_copy
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm">Manage Resume</span>
+                  <span className="text-sm font-semibold text-gray-900">Manage Resume</span>
                 )}
               </a>
 
@@ -452,7 +452,7 @@ export default function ManageResume() {
                   description
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm">Manage JDs</span>
+                  <span className="text-sm font-semibold text-gray-900">Manage JDs</span>
                 )}
               </button>
             </nav>
@@ -478,7 +478,7 @@ export default function ManageResume() {
                       John Doe
                     </p>
                     <p className="text-xs text-gray-700 truncate">
-                      john.doe@example.com
+                      Designer
                     </p>
                   </div>
                 </div>
@@ -614,7 +614,7 @@ export default function ManageResume() {
                       {!isCompareMode && (
                         <button
                           onClick={() => setIsCompareMode(true)}
-                          className="flex items-center space-x-2 px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+                          className="flex items-center space-x-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
                         >
                           <RiCheckboxMultipleLine size={16} />
                           <span>Compare Multiple</span>
@@ -631,7 +631,7 @@ export default function ManageResume() {
                         <button
                           onClick={handleCompareSelected}
                           disabled={selectedResumes.length === 0}
-                          className="px-4 py-2 bg-white border border-gray-300 text-purple-600 hover:bg-purple-50 disabled:text-gray-400 disabled:border-gray-200 rounded-lg transition-colors text-sm"
+                          className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-purple-600 hover:text-purple-700 disabled:text-gray-400 disabled:border-gray-200 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] text-sm disabled:shadow-none"
                         >
                           Compare Selected
                         </button>
@@ -640,7 +640,7 @@ export default function ManageResume() {
                             setIsCompareMode(false);
                             setSelectedResumes([]);
                           }}
-                          className="px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                          className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] text-sm"
                         >
                           Cancel
                         </button>
@@ -770,9 +770,9 @@ export default function ManageResume() {
                                 <button
                                   onClick={() => handleAnalyze(resume)}
                                   disabled={!resume.matchedJob}
-                                  className={`flex items-center justify-center gap-1.5 px-3 py-1.5 border rounded-md text-sm font-medium transition-colors ${
+                                  className={`flex items-center justify-center gap-1.5 px-3 py-1.5 border rounded-md text-sm font-medium transition-all ${
                                     resume.matchedJob
-                                      ? "border-gray-300 bg-transparent text-gray-900 hover:bg-gray-50"
+                                      ? "bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
                                       : "border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed"
                                   }`}
                                 >
@@ -788,7 +788,7 @@ export default function ManageResume() {
                                 </button>
                                 <button
                                   onClick={() => handleEditResume(resume)}
-                                  className="flex items-center justify-center gap-1.5 px-3 py-1.5 border border-gray-300 bg-transparent text-gray-900 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors"
+                                  className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-md text-sm font-medium transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
                                 >
                                   <RiEditLine size={16} />
                                   <span>Edit</span>
@@ -826,13 +826,13 @@ export default function ManageResume() {
             <div className="flex gap-3">
               <button
                 onClick={handleUploadResume}
-                className="flex-1 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                className="flex-1 px-4 py-2 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white rounded-lg transition-all border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)]"
               >
                 OK
               </button>
               <button
                 onClick={() => setIsUploadModalOpen(false)}
-                className="px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
               >
                 Cancel
               </button>
@@ -857,13 +857,13 @@ export default function ManageResume() {
                 onChange={(e) => setJdContent(e.target.value)}
                 placeholder="Paste the job description here..."
                 rows={8}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+                className="w-full px-4 py-2 text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b] resize-none"
               />
             </div>
             <div className="flex gap-3">
               <button
                 onClick={handleAnalyzeWithJD}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white rounded-lg transition-all border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)]"
               >
                 <RiSparklingFill size={16} />
                 <span>Analyze</span>
@@ -873,7 +873,7 @@ export default function ManageResume() {
                   setConnectJobModal(null);
                   setJdContent("");
                 }}
-                className="px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
               >
                 Cancel
               </button>
@@ -903,13 +903,13 @@ export default function ManageResume() {
                 onChange={(e) => setCompareJDContent(e.target.value)}
                 placeholder="Paste the job description here..."
                 rows={8}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+                className="w-full px-4 py-2 text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b] resize-none"
               />
             </div>
             <div className="flex gap-3">
               <button
                 onClick={handleCompareAnalyze}
-                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors font-medium"
+                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white rounded-lg transition-all border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)] font-medium"
               >
                 <RiSparklingFill size={20} />
                 <span>Analyze All</span>
@@ -919,7 +919,7 @@ export default function ManageResume() {
                   setCompareModalOpen(false);
                   setCompareJDContent("");
                 }}
-                className="px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
               >
                 Cancel
               </button>
@@ -966,7 +966,7 @@ export default function ManageResume() {
                   setAnalyzeModalOpen(false);
                   setSelectedResumeForAnalysis(null);
                 }}
-                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors font-medium"
+                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white rounded-lg transition-all border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)] font-medium"
               >
                 <RiSparklingFill size={20} />
                 <span>Start Analysis</span>
@@ -976,7 +976,7 @@ export default function ManageResume() {
                   setAnalyzeModalOpen(false);
                   setSelectedResumeForAnalysis(null);
                 }}
-                className="px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
               >
                 Cancel
               </button>

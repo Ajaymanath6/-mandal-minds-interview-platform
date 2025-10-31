@@ -278,7 +278,7 @@ export default function EditResume() {
             rows={rows}
             defaultValue={value}
             placeholder={placeholder}
-            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black"
+            className="w-full px-3 py-2 text-sm text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b]"
             autoFocus
             onBlur={(e) => handleValueChange(e.target.value)}
           />
@@ -289,7 +289,7 @@ export default function EditResume() {
           type={type}
           defaultValue={value}
           placeholder={placeholder}
-          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black"
+          className="w-full px-3 py-2 text-sm text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b]"
           autoFocus
           onBlur={(e) => handleValueChange(e.target.value)}
         />
@@ -600,7 +600,7 @@ export default function EditResume() {
                   auto_awesome
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm">AI Interview</span>
+                  <span className="text-sm font-semibold text-gray-900">AI Interview</span>
                 )}
               </button>
 
@@ -621,7 +621,7 @@ export default function EditResume() {
                   verified_user
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm">Get Vetted</span>
+                  <span className="text-sm font-semibold text-gray-900">Get Vetted</span>
                 )}
               </button>
 
@@ -629,10 +629,10 @@ export default function EditResume() {
                 onClick={() => navigate("/manage-resume")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-purple-600 bg-gray-50 rounded-md w-full transition-colors`}
+                } py-2 text-gray-900 bg-gray-50 rounded-md w-full transition-colors`}
               >
                 <span
-                  className="material-symbols-outlined"
+                  className="material-symbols-outlined text-purple-600"
                   style={{
                     fontSize: "24px",
                     fontVariationSettings:
@@ -642,7 +642,7 @@ export default function EditResume() {
                   content_copy
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm">Manage Resume</span>
+                  <span className="text-sm font-semibold text-gray-900">Manage Resume</span>
                 )}
               </button>
 
@@ -663,7 +663,7 @@ export default function EditResume() {
                   description
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm">Manage JDs</span>
+                  <span className="text-sm font-semibold text-gray-900">Manage JDs</span>
                 )}
               </button>
             </nav>
@@ -689,7 +689,7 @@ export default function EditResume() {
                       John Doe
                     </p>
                     <p className="text-xs text-gray-500 truncate">
-                      john.doe@example.com
+                      Designer
                     </p>
                   </div>
                 </div>

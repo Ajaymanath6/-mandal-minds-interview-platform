@@ -58,7 +58,7 @@ export default function Landing() {
               <div className="grid grid-cols-3 gap-3">
                 <button
                   onClick={handleGoogleSignIn}
-                  className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex items-center justify-center px-4 py-3 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
                 >
                   <svg className="w-5 h-5" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -70,7 +70,7 @@ export default function Landing() {
 
                 <button
                   onClick={handleMicrosoftSignIn}
-                  className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex items-center justify-center px-4 py-3 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
                 >
                   <svg className="w-5 h-5" viewBox="0 0 24 24">
                     <path fill="#F25022" d="M1 1h10v10H1z"/>
@@ -82,7 +82,7 @@ export default function Landing() {
 
                 <button
                   onClick={handleAppleSignIn}
-                  className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex items-center justify-center px-4 py-3 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
                 >
                   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
@@ -110,8 +110,8 @@ export default function Landing() {
                   onFocus={() => setIsEmailFocused(true)}
                   onBlur={() => setIsEmailFocused(false)}
                   placeholder="Enter your email"
-                  className={`w-full px-4 py-3 bg-gray-50 border rounded-lg focus:outline-none transition-colors ${
-                    isEmailFocused ? 'border-purple-600 bg-white' : 'border-gray-300'
+                  className={`w-full px-4 py-3 text-[#3c4043] bg-white border rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none transition-all placeholder:text-[#80868b] ${
+                    isEmailFocused ? 'border-[#a854ff] shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)]' : 'border-[#dfe1e5]'
                   }`}
                 />
               </div>
@@ -126,8 +126,8 @@ export default function Landing() {
                   onFocus={() => setIsPasswordFocused(true)}
                   onBlur={() => setIsPasswordFocused(false)}
                   placeholder="Enter your password"
-                  className={`w-full px-4 py-3 bg-gray-50 border rounded-lg focus:outline-none transition-colors ${
-                    isPasswordFocused ? 'border-purple-600 bg-white' : 'border-gray-300'
+                  className={`w-full px-4 py-3 text-[#3c4043] bg-white border rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none transition-all placeholder:text-[#80868b] ${
+                    isPasswordFocused ? 'border-[#a854ff] shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)]' : 'border-[#dfe1e5]'
                   }`}
                 />
               </div>
@@ -135,7 +135,7 @@ export default function Landing() {
               {/* Sign In Button */}
               <button
                 onClick={handleEmailSignIn}
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
+                className="w-full bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white font-medium py-3 px-4 rounded-lg transition-all border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)]"
               >
                 Sign In
               </button>

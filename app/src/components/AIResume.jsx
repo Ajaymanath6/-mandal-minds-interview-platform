@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Reorder } from "framer-motion";
+import { Reorder, useDragControls } from "framer-motion";
 import {
   RiBriefcaseLine,
   RiGraduationCapLine,
@@ -8,10 +8,12 @@ import {
   RiDeleteBinLine,
   RiQuestionLine,
   RiArrowUpSLine,
+  RiArrowDownSLine,
   RiEditLine,
   RiArrowUpDownFill,
   RiSparklingFill,
   RiArrowLeftLine,
+  RiAddLine,
 } from "@remixicon/react";
 import logoSvg from "../assets/logo.svg";
 import "material-symbols/outlined.css";
@@ -23,6 +25,101 @@ link.href =
 link.rel = "stylesheet";
 if (!document.head.querySelector('link[href*="material+symbols"]')) {
   document.head.appendChild(link);
+}
+
+// Section Item Component with Drag Controls
+function SectionItem({
+  section,
+  renderSectionForm,
+  onAdd,
+  isCollapsed,
+  onToggleCollapse,
+}) {
+  const dragControls = useDragControls();
+  const Icon = section.icon;
+
+  const handleAddClick = () => {
+    if (onAdd) {
+      onAdd(section.id);
+    }
+  };
+
+  const handleToggleCollapse = () => {
+    if (onToggleCollapse) {
+      onToggleCollapse(section.id);
+    }
+  };
+
+  return (
+    <Reorder.Item
+      key={section.id}
+      value={section}
+      className="mb-4"
+      dragListener={false}
+      dragControls={dragControls}
+      layout="position"
+      initial={{ rotate: 0 }}
+      animate={{ rotate: 0 }}
+      transition={{
+        type: "spring",
+        stiffness: 200,
+        damping: 25,
+        mass: 0.8,
+      }}
+      whileDrag={{
+        scale: 1.02,
+        rotate: 2,
+        zIndex: 50,
+      }}
+    >
+      {/* Header Section - Always Active, No Animation */}
+      <div className="flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium text-gray-900 bg-gray-50">
+        <div className="flex items-center space-x-3">
+          <Icon size={16} />
+          <span>{section.name}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            className="text-gray-500 hover:text-gray-900 hover:bg-white p-1 rounded"
+            title="Help"
+          >
+            <RiQuestionLine size={16} />
+          </button>
+          <button
+            onClick={handleAddClick}
+            className="text-gray-500 hover:text-gray-900 hover:bg-white p-1 rounded"
+            title="Add new entry"
+          >
+            <RiAddLine size={16} />
+          </button>
+          <button
+            className="text-gray-500 hover:text-gray-900 hover:bg-white p-1 rounded cursor-grab active:cursor-grabbing"
+            onPointerDown={(e) => {
+              e.preventDefault();
+              dragControls.start(e);
+            }}
+            title="Drag to reorder"
+          >
+            <RiArrowUpDownFill size={16} />
+          </button>
+          <button
+            onClick={handleToggleCollapse}
+            className="text-gray-500 hover:text-gray-900 hover:bg-white p-1 rounded"
+            title={isCollapsed ? "Expand" : "Collapse"}
+          >
+            {isCollapsed ? (
+              <RiArrowDownSLine size={16} />
+            ) : (
+              <RiArrowUpSLine size={16} />
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Form Section - Conditionally Rendered, Simple Show/Hide */}
+      {!isCollapsed && <div>{renderSectionForm(section.id)}</div>}
+    </Reorder.Item>
+  );
 }
 
 export default function AIResume() {
@@ -51,6 +148,7 @@ export default function AIResume() {
   const [editingFields, setEditingFields] = useState({}); // Track which fields are being edited
   const [hoveredResumeSection, setHoveredResumeSection] = useState(null);
   const [activeResumeSection, setActiveResumeSection] = useState(null);
+  const [collapsedSections, setCollapsedSections] = useState(new Set()); // Track collapsed sections
   const [resumeData, setResumeData] = useState({
     personal: {
       name: "John Doe",
@@ -78,56 +176,16 @@ export default function AIResume() {
           "Developed and maintained web applications using modern JavaScript frameworks. Implemented RESTful APIs and integrated third-party services.",
       },
     ],
-    education: {
-      degree: "Bachelor of Science in Computer Science",
-      institution: "Stanford University",
-      startYear: "2015",
-      endYear: "2019",
-      gpa: "3.8/4.0",
-    },
-    skills: {
-      frontend: "React, Vue.js, TypeScript, HTML5, CSS3, Tailwind CSS",
-      backend: "Node.js, Express.js, Python, Django, RESTful APIs",
-      database: "MongoDB, PostgreSQL, MySQL, Redis",
-      tools: "Git, Docker, AWS, CI/CD, Agile/Scrum",
-    },
-  });
-
-  // Track original resume content to only allow removal of AI-added skills
-  const [originalResumeData] = useState({
-    personal: {
-      name: "John Doe",
-      email: "john.doe@example.com",
-      phone: "+1 (555) 123-4567",
-      location: "San Francisco, CA",
-    },
-    work: [
+    education: [
       {
         id: 1,
-        title: "Senior Full-Stack Developer",
-        company: "Mandal Minds",
-        startDate: "2021-01",
-        endDate: "Present",
-        description:
-          "Led development of scalable web applications using React and Node.js. Collaborated with cross-functional teams to deliver high-quality features.",
-      },
-      {
-        id: 2,
-        title: "Full-Stack Developer",
-        company: "TechCorp Inc",
-        startDate: "2019-06",
-        endDate: "2020-12",
-        description:
-          "Developed and maintained web applications using modern JavaScript frameworks. Implemented RESTful APIs and integrated third-party services.",
+        degree: "Bachelor of Science in Computer Science",
+        institution: "Stanford University",
+        startYear: "2015",
+        endYear: "2019",
+        gpa: "3.8/4.0",
       },
     ],
-    education: {
-      degree: "Bachelor of Science in Computer Science",
-      institution: "Stanford University",
-      startYear: "2015",
-      endYear: "2019",
-      gpa: "3.8/4.0",
-    },
     skills: {
       frontend: "React, Vue.js, TypeScript, HTML5, CSS3, Tailwind CSS",
       backend: "Node.js, Express.js, Python, Django, RESTful APIs",
@@ -165,7 +223,7 @@ export default function AIResume() {
   const updateResumeData = (section, field, value, index = null) => {
     setResumeData((prev) => {
       if (Array.isArray(prev[section]) && index !== null) {
-        // Handle array sections like work experience
+        // Handle array sections like work experience and education
         const updatedArray = [...prev[section]];
         updatedArray[index] = {
           ...updatedArray[index],
@@ -188,20 +246,92 @@ export default function AIResume() {
     });
   };
 
-  // Add new work experience
-  const addWorkExperience = () => {
-    const newWorkItem = {
-      id: Date.now(),
-      title: "",
-      company: "",
-      startDate: "",
-      endDate: "",
-      description: "",
-    };
+  // Handler to add new entry to a section
+  const handleAddEntry = (sectionId) => {
+    setResumeData((prev) => {
+      if (sectionId === "work") {
+        // Add new work experience entry
+        const maxId =
+          prev.work.length > 0 ? Math.max(...prev.work.map((w) => w.id)) : 0;
+        const newWorkEntry = {
+          id: maxId + 1,
+          title: "",
+          company: "",
+          startDate: "",
+          endDate: "",
+          description: "",
+        };
+        return {
+          ...prev,
+          work: [...prev.work, newWorkEntry],
+        };
+      } else if (sectionId === "education") {
+        // Add new education entry
+        const maxId =
+          prev.education.length > 0
+            ? Math.max(...prev.education.map((e) => e.id))
+            : 0;
+        const newEducationEntry = {
+          id: maxId + 1,
+          degree: "",
+          institution: "",
+          startYear: "",
+          endYear: "",
+          gpa: "",
+        };
+        return {
+          ...prev,
+          education: [...prev.education, newEducationEntry],
+        };
+      }
+      // For other sections (personal, skills), don't add duplicates
+      return prev;
+    });
+  };
+
+  // Handler to reorder work experience items
+  const handleReorderWork = (newOrder) => {
     setResumeData((prev) => ({
       ...prev,
-      work: [...prev.work, newWorkItem],
+      work: newOrder,
     }));
+  };
+
+  // Handler to delete work experience item
+  const handleDeleteWork = (workId) => {
+    setResumeData((prev) => ({
+      ...prev,
+      work: prev.work.filter((item) => item.id !== workId),
+    }));
+  };
+
+  // Handler to reorder education items
+  const handleReorderEducation = (newOrder) => {
+    setResumeData((prev) => ({
+      ...prev,
+      education: newOrder,
+    }));
+  };
+
+  // Handler to delete education item
+  const handleDeleteEducation = (eduId) => {
+    setResumeData((prev) => ({
+      ...prev,
+      education: prev.education.filter((item) => item.id !== eduId),
+    }));
+  };
+
+  // Handler to toggle section collapse
+  const handleToggleCollapse = (sectionId) => {
+    setCollapsedSections((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(sectionId)) {
+        newSet.delete(sectionId);
+      } else {
+        newSet.add(sectionId);
+      }
+      return newSet;
+    });
   };
 
   // Render sections in order based on sidebar arrangement
@@ -268,25 +398,26 @@ export default function AIResume() {
               <h2 className="text-xl font-bold text-gray-900 mb-3 border-b-2 border-gray-300 pb-2">
                 EDUCATION
               </h2>
-              <div className="mb-4 relative">
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <div className="relative">
-                      <h3 className="text-lg font-semibold text-gray-900">
-                        {resumeData.education.degree}
-                      </h3>
+              {resumeData.education.map((eduItem) => (
+                <div key={eduItem.id} className="mb-4 relative">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <div className="relative">
+                        <h3 className="text-lg font-semibold text-gray-900">
+                          {eduItem.degree}
+                        </h3>
+                      </div>
+                      <p className="text-gray-900">{eduItem.institution}</p>
                     </div>
                     <p className="text-gray-900">
-                      {resumeData.education.institution}
+                      {eduItem.startYear} - {eduItem.endYear}
                     </p>
                   </div>
-                  <p className="text-gray-900">
-                    {resumeData.education.startYear} -{" "}
-                    {resumeData.education.endYear}
-                  </p>
+                  {eduItem.gpa && (
+                    <p className="text-gray-900">GPA: {eduItem.gpa}</p>
+                  )}
                 </div>
-                <p className="text-gray-900">GPA: {resumeData.education.gpa}</p>
-              </div>
+              ))}
             </div>
           </ResumeSectionWrapper>
         );
@@ -352,51 +483,6 @@ export default function AIResume() {
       return () => clearTimeout(timer);
     }
   }, [activeResumeSection]);
-
-  // Function to extract only AI-added skills from text (not original resume skills)
-  const extractSkillsFromText = (text, sectionId, field, index = null) => {
-    // Get original text for comparison
-    let originalText = "";
-    if (sectionId === "work" && index !== null) {
-      originalText = originalResumeData.work[index]?.[field] || "";
-    } else if (sectionId === "education") {
-      originalText = originalResumeData.education[field] || "";
-    } else if (sectionId === "skills") {
-      originalText = originalResumeData.skills[field] || "";
-    } else if (sectionId === "personal") {
-      originalText = originalResumeData.personal[field] || "";
-    }
-
-    // AI-suggested skills that can be removed
-    const aiSkills = [
-      "Microservices",
-      "Kubernetes",
-      "GraphQL",
-      "DevOps",
-      "AWS Lambda",
-      "Next.js",
-      "Terraform",
-      "CI/CD pipelines",
-      "microservices architecture",
-      "Kubernetes orchestration",
-      "serverless functions",
-      "containerization",
-      "cloud platforms",
-    ];
-
-    // Only return skills that:
-    // 1. Are AI-suggested skills
-    // 2. Are present in current text but NOT in original text
-    const foundSkills = aiSkills.filter((skill) => {
-      const inCurrentText = text.toLowerCase().includes(skill.toLowerCase());
-      const inOriginalText = originalText
-        .toLowerCase()
-        .includes(skill.toLowerCase());
-      return inCurrentText && !inOriginalText;
-    });
-
-    return foundSkills;
-  };
 
   // Function to remove skill from text
   const removeSkillFromText = (
@@ -679,13 +765,11 @@ export default function AIResume() {
     field,
     index = null,
     isHighlighted = false,
+    hideAISuggestions = false,
   }) => {
     const [hoveredField, setHoveredField] = useState(null);
     const isEditing = editingFields[fieldId];
     const aiSuggestions = getAISuggestions(fieldId, value);
-
-    // Extract AI-added skills from the current value
-    const aiAddedSkills = extractSkillsFromText(value, section, field, index);
 
     const handleValueChange = (newValue) => {
       if (section && field) {
@@ -730,31 +814,42 @@ export default function AIResume() {
 
         // Track AI-added skill globally
         setAddedAISkills((prev) => [...prev, suggestion]);
-        
+
         // Track field-specific AI addition
         setFieldAIAdditions((prev) => ({
           ...prev,
-          [fieldId]: [...(prev[fieldId] || []), { text: addedText, suggestion }]
+          [fieldId]: [
+            ...(prev[fieldId] || []),
+            { text: addedText, suggestion },
+          ],
         }));
       }
     };
 
     const removeSkillFromField = (skillToRemove) => {
       removeSkillFromText(value, skillToRemove, section, field, index);
-      
+
       // Also remove from field-specific tracking
       setFieldAIAdditions((prev) => ({
         ...prev,
-        [fieldId]: (prev[fieldId] || []).filter(addition => addition.suggestion !== skillToRemove)
+        [fieldId]: (prev[fieldId] || []).filter(
+          (addition) => addition.suggestion !== skillToRemove
+        ),
       }));
     };
 
     // Function to render text with AI-added portions as badges
     const renderTextWithInlineBadges = () => {
       const fieldAdditions = fieldAIAdditions[fieldId] || [];
-      
+
       if (!value || fieldAdditions.length === 0) {
-        return <span className="text-gray-900">{value}</span>;
+        return (
+          <span className="text-gray-900">
+            {value || (
+              <span className="text-gray-400 italic">{placeholder}</span>
+            )}
+          </span>
+        );
       }
 
       let processedText = value;
@@ -763,7 +858,7 @@ export default function AIResume() {
       // Find all AI-added text in the current field value
       fieldAdditions.forEach((addition) => {
         const { text, suggestion } = addition;
-        
+
         // Escape special regex characters
         const escapedText = text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
         const regex = new RegExp(`\\b${escapedText}\\b`, "gi");
@@ -806,7 +901,7 @@ export default function AIResume() {
             rows={rows}
             defaultValue={value}
             placeholder={placeholder}
-            className="w-full px-3 py-2 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-purple-500 focus:bg-white"
+            className="w-full px-3 py-2 text-sm text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b]"
             autoFocus
             onBlur={(e) => handleValueChange(e.target.value)}
           />
@@ -817,7 +912,7 @@ export default function AIResume() {
           type={type}
           defaultValue={value}
           placeholder={placeholder}
-          className="w-full px-3 py-2 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-purple-500 focus:bg-white"
+          className="w-full px-3 py-2 text-sm text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b]"
           autoFocus
           onBlur={(e) => handleValueChange(e.target.value)}
         />
@@ -827,7 +922,7 @@ export default function AIResume() {
     return (
       <div className="space-y-2">
         <div
-          className={`relative w-full px-3 py-2 text-sm border rounded-lg cursor-pointer transition-colors ${
+          className={`relative w-full px-3 py-2 text-sm border rounded-lg cursor-pointer transition-colors min-h-[2.5rem] ${
             isHighlighted
               ? "border-purple-300 bg-purple-50"
               : hoveredField === fieldId
@@ -901,7 +996,7 @@ export default function AIResume() {
         </div>
 
         {/* AI Suggestions Badges */}
-        {aiSuggestions.length > 0 && (
+        {!hideAISuggestions && aiSuggestions.length > 0 && (
           <div className="flex flex-wrap gap-1">
             {aiSuggestions.map((suggestion, index) => (
               <button
@@ -1026,11 +1121,14 @@ export default function AIResume() {
 
         // Track AI-added skill globally
         setAddedAISkills((prev) => [...prev, suggestion]);
-        
+
         // Track field-specific AI addition
         setFieldAIAdditions((prev) => ({
           ...prev,
-          [fieldId]: [...(prev[fieldId] || []), { text: addedText, suggestion }]
+          [fieldId]: [
+            ...(prev[fieldId] || []),
+            { text: addedText, suggestion },
+          ],
         }));
       }
     };
@@ -1042,7 +1140,7 @@ export default function AIResume() {
             rows={rows}
             defaultValue={value}
             placeholder={placeholder}
-            className="w-full px-3 py-2 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-purple-500 focus:bg-white"
+            className="w-full px-3 py-2 text-sm text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b]"
             autoFocus
             onBlur={(e) => handleValueChange(e.target.value)}
           />
@@ -1053,7 +1151,7 @@ export default function AIResume() {
           type={type}
           defaultValue={value}
           placeholder={placeholder}
-          className="w-full px-3 py-2 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-purple-500 focus:bg-white"
+          className="w-full px-3 py-2 text-sm text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b]"
           autoFocus
           onBlur={(e) => handleValueChange(e.target.value)}
         />
@@ -1063,7 +1161,7 @@ export default function AIResume() {
     return (
       <div className="space-y-2">
         <div
-          className={`relative w-full px-3 py-2 text-sm border rounded-lg cursor-pointer transition-colors ${
+          className={`relative w-full px-3 py-2 text-sm border rounded-lg cursor-pointer transition-colors min-h-[2.5rem] ${
             isHighlighted
               ? "border-purple-300 bg-purple-50"
               : hoveredField === fieldId
@@ -1073,7 +1171,11 @@ export default function AIResume() {
           onMouseEnter={() => setHoveredField(fieldId)}
           onMouseLeave={() => setHoveredField(null)}
         >
-          <span className="text-gray-900">{value}</span>
+          <span className="text-gray-900">
+            {value || (
+              <span className="text-gray-400 italic">{placeholder}</span>
+            )}
+          </span>
           {hoveredField === fieldId && (
             <button
               onClick={() => toggleFieldEdit(fieldId)}
@@ -1115,6 +1217,199 @@ export default function AIResume() {
           </div>
         )}
       </div>
+    );
+  };
+
+  // Work Item Component for Draggable Work Experience
+  const WorkItem = ({ workItem, workIndex, isHighlighted }) => {
+    const dragControls = useDragControls();
+    const isEmpty =
+      !workItem.title && !workItem.company && !workItem.description;
+
+    return (
+      <Reorder.Item
+        key={workItem.id}
+        value={workItem}
+        className="mb-4"
+        dragListener={false}
+        dragControls={dragControls}
+        layout
+      >
+        <div className="p-4 bg-white rounded-xl shadow-lg">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="font-medium text-gray-900">
+              Work Experience {workIndex + 1}
+            </h4>
+            <div className="flex items-center gap-2">
+              <button
+                className="text-gray-400 hover:text-gray-600 transition-colors cursor-grab"
+                onPointerDown={(e) => {
+                  e.preventDefault();
+                  dragControls.start(e);
+                }}
+                title="Drag to reorder"
+              >
+                <RiArrowUpDownFill size={16} />
+              </button>
+              <button
+                onClick={() => handleDeleteWork(workItem.id)}
+                className="text-gray-400 hover:text-red-600 transition-colors"
+                title="Delete this work experience"
+              >
+                <RiDeleteBinLine size={16} />
+              </button>
+            </div>
+          </div>
+          <div className="space-y-3">
+            <EditableFieldWithBadges
+              fieldId={`work-title-${workIndex}`}
+              value={workItem.title}
+              placeholder="Job Title"
+              section="work"
+              field="title"
+              index={workIndex}
+              isHighlighted={isHighlighted}
+              hideAISuggestions={isEmpty}
+            />
+            <EditableField
+              fieldId={`work-company-${workIndex}`}
+              value={workItem.company}
+              placeholder="Company"
+              section="work"
+              field="company"
+              index={workIndex}
+              isHighlighted={isHighlighted}
+            />
+            <div className="grid grid-cols-2 gap-2">
+              <EditableField
+                fieldId={`work-start-${workIndex}`}
+                value={workItem.startDate}
+                placeholder="Start Date"
+                type="month"
+                section="work"
+                field="startDate"
+                index={workIndex}
+                isHighlighted={isHighlighted}
+              />
+              <EditableField
+                fieldId={`work-end-${workIndex}`}
+                value={workItem.endDate}
+                placeholder="End Date"
+                section="work"
+                field="endDate"
+                index={workIndex}
+                isHighlighted={isHighlighted}
+              />
+            </div>
+            <EditableFieldWithBadges
+              fieldId={`work-description-${workIndex}`}
+              value={workItem.description}
+              placeholder="Description"
+              type="textarea"
+              rows={3}
+              section="work"
+              field="description"
+              index={workIndex}
+              isHighlighted={isHighlighted}
+              hideAISuggestions={isEmpty}
+            />
+          </div>
+        </div>
+      </Reorder.Item>
+    );
+  };
+
+  // Education Item Component for Draggable Education
+  const EducationItem = ({ eduItem, eduIndex, isHighlighted }) => {
+    const dragControls = useDragControls();
+
+    return (
+      <Reorder.Item
+        key={eduItem.id}
+        value={eduItem}
+        className="mb-4"
+        dragListener={false}
+        dragControls={dragControls}
+        layout
+      >
+        <div className="p-4 bg-white rounded-xl shadow-lg">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="font-medium text-gray-900">
+              Education {eduIndex + 1}
+            </h4>
+            <div className="flex items-center gap-2">
+              <button
+                className="text-gray-400 hover:text-gray-600 transition-colors cursor-grab"
+                onPointerDown={(e) => {
+                  e.preventDefault();
+                  dragControls.start(e);
+                }}
+                title="Drag to reorder"
+              >
+                <RiArrowUpDownFill size={16} />
+              </button>
+              <button
+                onClick={() => handleDeleteEducation(eduItem.id)}
+                className="text-gray-400 hover:text-red-600 transition-colors"
+                title="Delete this education entry"
+              >
+                <RiDeleteBinLine size={16} />
+              </button>
+            </div>
+          </div>
+          <div className="space-y-3">
+            <EditableField
+              fieldId={`edu-degree-${eduIndex}`}
+              value={eduItem.degree}
+              placeholder="Degree"
+              section="education"
+              field="degree"
+              index={eduIndex}
+              isHighlighted={isHighlighted}
+            />
+            <EditableField
+              fieldId={`edu-institution-${eduIndex}`}
+              value={eduItem.institution}
+              placeholder="Institution"
+              section="education"
+              field="institution"
+              index={eduIndex}
+              isHighlighted={isHighlighted}
+            />
+            <div className="grid grid-cols-2 gap-2">
+              <EditableField
+                fieldId={`edu-start-${eduIndex}`}
+                value={eduItem.startYear}
+                placeholder="Start Year"
+                type="number"
+                section="education"
+                field="startYear"
+                index={eduIndex}
+                isHighlighted={isHighlighted}
+              />
+              <EditableField
+                fieldId={`edu-end-${eduIndex}`}
+                value={eduItem.endYear}
+                placeholder="End Year"
+                type="number"
+                section="education"
+                field="endYear"
+                index={eduIndex}
+                isHighlighted={isHighlighted}
+              />
+            </div>
+            <EditableField
+              fieldId={`edu-gpa-${eduIndex}`}
+              value={eduItem.gpa}
+              placeholder="GPA (Optional)"
+              section="education"
+              field="gpa"
+              index={eduIndex}
+              isHighlighted={isHighlighted}
+            />
+          </div>
+        </div>
+      </Reorder.Item>
     );
   };
 
@@ -1169,127 +1464,43 @@ export default function AIResume() {
       case "work":
         return (
           <div id="section-work" className="mt-3 space-y-4">
-            {resumeData.work.map((workItem, workIndex) => (
-              <div
-                key={workItem.id}
-                className="p-4 bg-white rounded-xl shadow-lg"
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-medium text-gray-900">
-                    Work Experience {workIndex + 1}
-                  </h4>
-                  <div className="text-gray-400 cursor-grab active:cursor-grabbing">
-                    <RiArrowUpDownFill size={16} />
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <EditableFieldWithBadges
-                    fieldId={`work-title-${workIndex}`}
-                    value={workItem.title}
-                    placeholder="Job Title"
-                    section="work"
-                    field="title"
-                    index={workIndex}
-                    isHighlighted={isHighlighted}
-                  />
-                  <EditableField
-                    fieldId={`work-company-${workIndex}`}
-                    value={workItem.company}
-                    placeholder="Company"
-                    section="work"
-                    field="company"
-                    index={workIndex}
-                    isHighlighted={isHighlighted}
-                  />
-                  <div className="grid grid-cols-2 gap-2">
-                    <EditableField
-                      fieldId={`work-start-${workIndex}`}
-                      value={workItem.startDate}
-                      placeholder="Start Date"
-                      type="month"
-                      section="work"
-                      field="startDate"
-                      index={workIndex}
-                      isHighlighted={isHighlighted}
-                    />
-                    <EditableField
-                      fieldId={`work-end-${workIndex}`}
-                      value={workItem.endDate}
-                      placeholder="End Date"
-                      section="work"
-                      field="endDate"
-                      index={workIndex}
-                      isHighlighted={isHighlighted}
-                    />
-                  </div>
-                  <EditableFieldWithBadges
-                    fieldId={`work-description-${workIndex}`}
-                    value={workItem.description}
-                    placeholder="Description"
-                    type="textarea"
-                    rows={3}
-                    section="work"
-                    field="description"
-                    index={workIndex}
-                    isHighlighted={isHighlighted}
-                  />
-                </div>
-              </div>
-            ))}
+            <Reorder.Group
+              axis="y"
+              values={resumeData.work}
+              onReorder={handleReorderWork}
+              className="space-y-4"
+              layout
+            >
+              {resumeData.work.map((workItem, workIndex) => (
+                <WorkItem
+                  key={workItem.id}
+                  workItem={workItem}
+                  workIndex={workIndex}
+                  isHighlighted={isHighlighted}
+                />
+              ))}
+            </Reorder.Group>
           </div>
         );
       case "education":
         return (
-          <div
-            id="section-education"
-            className="mt-3 p-4 bg-white rounded-xl shadow-lg"
-          >
-            <div className="space-y-3">
-              <EditableField
-                fieldId="edu-degree"
-                value={resumeData.education.degree}
-                placeholder="Degree"
-                section="education"
-                field="degree"
-                isHighlighted={isHighlighted}
-              />
-              <EditableField
-                fieldId="edu-institution"
-                value={resumeData.education.institution}
-                placeholder="Institution"
-                section="education"
-                field="institution"
-                isHighlighted={isHighlighted}
-              />
-              <div className="grid grid-cols-2 gap-2">
-                <EditableField
-                  fieldId="edu-start"
-                  value={resumeData.education.startYear}
-                  placeholder="Start Year"
-                  type="number"
-                  section="education"
-                  field="startYear"
+          <div id="section-education" className="mt-3 space-y-4">
+            <Reorder.Group
+              axis="y"
+              values={resumeData.education}
+              onReorder={handleReorderEducation}
+              className="space-y-4"
+              layout
+            >
+              {resumeData.education.map((eduItem, eduIndex) => (
+                <EducationItem
+                  key={eduItem.id}
+                  eduItem={eduItem}
+                  eduIndex={eduIndex}
                   isHighlighted={isHighlighted}
                 />
-                <EditableField
-                  fieldId="edu-end"
-                  value={resumeData.education.endYear}
-                  placeholder="End Year"
-                  type="number"
-                  section="education"
-                  field="endYear"
-                  isHighlighted={isHighlighted}
-                />
-              </div>
-              <EditableField
-                fieldId="edu-gpa"
-                value={resumeData.education.gpa}
-                placeholder="GPA (Optional)"
-                section="education"
-                field="gpa"
-                isHighlighted={isHighlighted}
-              />
-            </div>
+              ))}
+            </Reorder.Group>
           </div>
         );
       case "skills":
@@ -1478,7 +1689,9 @@ export default function AIResume() {
                   auto_awesome
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm">AI Interview</span>
+                  <span className="text-sm font-semibold text-gray-900">
+                    AI Interview
+                  </span>
                 )}
               </button>
 
@@ -1499,7 +1712,9 @@ export default function AIResume() {
                   verified_user
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm">Get Vetted</span>
+                  <span className="text-sm font-semibold text-gray-900">
+                    Get Vetted
+                  </span>
                 )}
               </button>
 
@@ -1520,7 +1735,9 @@ export default function AIResume() {
                   content_copy
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm">Manage Resume</span>
+                  <span className="text-sm font-semibold text-gray-900">
+                    Manage Resume
+                  </span>
                 )}
               </button>
 
@@ -1528,10 +1745,10 @@ export default function AIResume() {
                 onClick={() => navigate("/manage-jds")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-purple-600 bg-gray-50 rounded-md w-full transition-colors`}
+                } py-2 text-gray-900 bg-gray-50 rounded-md w-full transition-colors`}
               >
                 <span
-                  className="material-symbols-outlined"
+                  className="material-symbols-outlined text-purple-600"
                   style={{
                     fontSize: "24px",
                     fontVariationSettings:
@@ -1541,7 +1758,9 @@ export default function AIResume() {
                   description
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm">Manage JDs</span>
+                  <span className="text-sm font-semibold text-gray-900">
+                    Manage JDs
+                  </span>
                 )}
               </button>
             </nav>
@@ -1566,9 +1785,7 @@ export default function AIResume() {
                     <p className="text-sm font-medium text-gray-900 truncate">
                       John Doe
                     </p>
-                    <p className="text-xs text-gray-900 truncate">
-                      john.doe@example.com
-                    </p>
+                    <p className="text-xs text-gray-900 truncate">Designer</p>
                   </div>
                 </div>
               ) : (
@@ -1629,49 +1846,16 @@ export default function AIResume() {
               onReorder={setSections}
               className="flex-1 p-4 space-y-4 overflow-y-auto"
             >
-              {sections.map((section) => {
-                const Icon = section.icon;
-
-                return (
-                  <Reorder.Item
-                    key={section.id}
-                    value={section}
-                    className="mb-4"
-                    dragListener={false}
-                  >
-                    {/* Header Section - Always Active */}
-                    <div className="flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium text-gray-900 bg-gray-50">
-                      <div className="flex items-center space-x-3">
-                        <Icon size={16} />
-                        <span>{section.name}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {section.id === "work" && (
-                          <button 
-                            onClick={addWorkExperience}
-                            className="text-gray-500 hover:text-gray-900 hover:bg-white p-1 rounded"
-                            title="Add Work Experience"
-                          >
-                            <RiAddLine size={16} />
-                          </button>
-                        )}
-                        <button className="text-gray-500 hover:text-gray-900 hover:bg-white p-1 rounded">
-                          <RiQuestionLine size={16} />
-                        </button>
-                        <button className="text-gray-500 hover:text-gray-900 hover:bg-white p-1 rounded cursor-move">
-                          <RiArrowUpDownFill size={16} />
-                        </button>
-                        <button className="text-gray-500 hover:text-red-600 hover:bg-white p-1 rounded">
-                          <RiDeleteBinLine size={16} />
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Form Section - Always Visible */}
-                    {renderSectionForm(section.id)}
-                  </Reorder.Item>
-                );
-              })}
+              {sections.map((section) => (
+                <SectionItem
+                  key={section.id}
+                  section={section}
+                  renderSectionForm={renderSectionForm}
+                  onAdd={handleAddEntry}
+                  isCollapsed={collapsedSections.has(section.id)}
+                  onToggleCollapse={handleToggleCollapse}
+                />
+              ))}
             </Reorder.Group>
           </div>
         </div>

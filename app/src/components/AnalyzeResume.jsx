@@ -83,7 +83,7 @@ export default function AnalyzeResume() {
                       John Doe
                     </p>
                     <p className="text-xs text-gray-500">
-                      john.doe@example.com
+                      Designer
                     </p>
                   </div>
                   <button
@@ -201,11 +201,11 @@ export default function AnalyzeResume() {
                 </h1>
               </div>
               <div className="flex items-center space-x-3">
-                <button className="flex items-center space-x-2 px-4 py-2 bg-white border border-gray-300 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors">
+                <button className="flex items-center space-x-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-purple-600 hover:text-purple-700 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]">
                   <RiDownloadLine size={16} />
                   <span>Export PDF</span>
                 </button>
-                <button className="flex items-center space-x-2 px-4 py-2 bg-white border border-gray-300 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors">
+                <button className="flex items-center space-x-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-purple-600 hover:text-purple-700 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]">
                   <RiMoreLine size={16} />
                   <span>More Options</span>
                 </button>
@@ -250,13 +250,13 @@ export default function AnalyzeResume() {
                   placeholder="Paste the job description here..."
                   value={jdContent}
                   onChange={(e) => setJdContent(e.target.value)}
-                  className="w-full h-64 px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                  className="w-full h-64 px-3 py-3 text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b] resize-none"
                 />
               </div>
 
               <button
                 disabled={!jdContent.trim()}
-                className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-purple-300 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-lg transition-colors"
+                className="w-full bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] disabled:bg-purple-300 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-lg transition-all border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)]"
               >
                 Analyze
               </button>

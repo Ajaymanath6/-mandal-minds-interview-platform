@@ -214,12 +214,12 @@ export default function Resume() {
               setQuestionCount(0);
               setIsInterviewStarted(false);
             }}
-            className="flex items-center justify-center space-x-2 px-4 py-2 bg-white border border-gray-300 text-purple-600 rounded-lg hover:bg-purple-50 transition-colors"
+            className="flex items-center justify-center space-x-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-purple-600 hover:text-purple-700 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
           >
             <RiArrowLeftLine size={16} />
             <span>Back to Topics</span>
           </button>
-          <button className="flex items-center justify-center space-x-2 px-4 py-2 bg-white border border-gray-300 text-purple-600 rounded-lg hover:bg-purple-50 transition-colors">
+          <button className="flex items-center justify-center space-x-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-purple-600 hover:text-purple-700 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]">
             <RiTrophyLine size={16} />
             <span>View Leaderboard</span>
           </button>
@@ -243,7 +243,7 @@ export default function Resume() {
                 typeMessage(initialMessage, aiMessage.id);
               }, 500);
             }}
-            className="flex items-center justify-center space-x-2 px-4 py-2 bg-white border border-gray-300 text-purple-600 rounded-lg hover:bg-purple-50 transition-colors"
+            className="flex items-center justify-center space-x-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-purple-600 hover:text-purple-700 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
           >
             <RiRefreshLine size={16} />
             <span>Revise Again</span>
@@ -454,10 +454,10 @@ export default function Resume() {
                 href="#"
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-purple-600 bg-gray-50 rounded-md transition-colors`}
+                } py-2 text-gray-900 bg-gray-50 rounded-md transition-colors`}
               >
                 <span
-                  className="material-symbols-outlined"
+                  className="material-symbols-outlined text-purple-600"
                   style={{
                     fontSize: "24px",
                     fontVariationSettings:
@@ -467,7 +467,7 @@ export default function Resume() {
                   auto_awesome
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm">AI Interview</span>
+                  <span className="text-sm font-semibold text-gray-900">AI Interview</span>
                 )}
               </a>
 
@@ -488,7 +488,7 @@ export default function Resume() {
                   verified_user
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm">Get Vetted</span>
+                  <span className="text-sm font-semibold text-gray-900">Get Vetted</span>
                 )}
               </button>
 
@@ -509,7 +509,7 @@ export default function Resume() {
                   content_copy
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm">Manage Resume</span>
+                  <span className="text-sm font-semibold text-gray-900">Manage Resume</span>
                 )}
               </button>
 
@@ -530,7 +530,7 @@ export default function Resume() {
                   description
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm">Manage JDs</span>
+                  <span className="text-sm font-semibold text-gray-900">Manage JDs</span>
                 )}
               </button>
             </nav>
@@ -556,7 +556,7 @@ export default function Resume() {
                       John Doe
                     </p>
                     <p className="text-xs text-gray-500 truncate">
-                      john.doe@example.com
+                      Designer
                     </p>
                   </div>
                 </div>
@@ -689,7 +689,7 @@ export default function Resume() {
                           placeholder="Paste the job description here..."
                           value={jdContent}
                           onChange={(e) => setJdContent(e.target.value)}
-                          className="w-full h-40 md:h-48 lg:h-56 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent resize-none"
+                          className="w-full h-40 md:h-48 lg:h-56 px-3 py-2 text-[#3c4043] bg-white border border-[#dfe1e5] rounded-md shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b] resize-none"
                         />
                       </div>
                       <div className="mt-4">
@@ -722,7 +722,7 @@ export default function Resume() {
                               or click to browse files
                             </p>
                           </div>
-                          <button className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors">
+                          <button className="bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-700 rounded-md text-sm font-medium transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] px-4 py-2">
                             Choose Resume
                           </button>
                         </div>
@@ -844,7 +844,7 @@ export default function Resume() {
                                       performanceMessage,
                                     ]);
                                   }}
-                                  className="flex items-center justify-center space-x-2 px-4 py-2 bg-white border border-gray-300 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                                  className="flex items-center justify-center space-x-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-purple-600 hover:text-purple-700 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
                                 >
                                   <RiBarChartBoxLine size={16} />
                                   <span>Review my performance</span>
@@ -855,7 +855,7 @@ export default function Resume() {
                                     setQuestionCount(0);
                                     setIsInterviewStarted(false);
                                   }}
-                                  className="flex items-center justify-center space-x-2 px-4 py-2 bg-white border border-gray-300 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                                  className="flex items-center justify-center space-x-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-purple-600 hover:text-purple-700 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
                                 >
                                   <RiRefreshLine size={16} />
                                   <span>Revise again</span>
@@ -927,9 +927,9 @@ export default function Resume() {
                   />
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-2">
                     <button
-                      className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors relative group ${
+                      className={`w-10 h-10 rounded-full flex items-center justify-center transition-all relative group ${
                         isVoiceActive
-                          ? "bg-purple-600 text-white"
+                          ? "bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)]"
                           : "bg-gray-100 hover:bg-gray-200 text-gray-700"
                       }`}
                       onClick={handleVoiceClick}
@@ -989,9 +989,9 @@ export default function Resume() {
                           }, 1500);
                         }
                       }}
-                      className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors relative group ${
+                      className={`w-10 h-10 rounded-full flex items-center justify-center transition-all relative group ${
                         currentMessage.trim()
-                          ? "bg-purple-600 hover:bg-purple-700 text-white"
+                          ? "bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)]"
                           : "bg-gray-800 hover:bg-gray-900 text-white"
                       }`}
                       title="Send message"
@@ -1185,7 +1185,7 @@ export default function Resume() {
                       value={newSkill}
                       onChange={(e) => setNewSkill(e.target.value)}
                       placeholder="Add a skill..."
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                      className="flex-1 px-3 py-2 text-[#3c4043] bg-white border border-[#dfe1e5] rounded-md shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b]"
                       onKeyPress={(e) => {
                         if (e.key === "Enter" && newSkill.trim()) {
                           setSkills([...skills, newSkill.trim()]);
@@ -1228,7 +1228,7 @@ export default function Resume() {
                           typeMessage(initialMessage, aiMessage.id);
                         }, 500);
                       }}
-                      className="w-full flex items-center justify-center space-x-3 px-6 lg:px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition-colors text-sm lg:text-base"
+                      className="w-full flex items-center justify-center space-x-3 px-6 lg:px-8 py-3 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white font-semibold rounded-lg transition-all border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)] text-sm lg:text-base"
                     >
                       <RiPlayFill size={20} />
                       <span>Start AI Interview</span>

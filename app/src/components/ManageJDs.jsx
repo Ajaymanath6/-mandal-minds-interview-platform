@@ -482,7 +482,7 @@ export default function ManageJDs() {
                   auto_awesome
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm">AI Interview</span>
+                  <span className="text-sm font-semibold text-gray-900">AI Interview</span>
                 )}
               </button>
 
@@ -503,7 +503,7 @@ export default function ManageJDs() {
                   verified_user
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm">Get Vetted</span>
+                  <span className="text-sm font-semibold text-gray-900">Get Vetted</span>
                 )}
               </button>
 
@@ -524,7 +524,7 @@ export default function ManageJDs() {
                   content_copy
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm">Manage Resume</span>
+                  <span className="text-sm font-semibold text-gray-900">Manage Resume</span>
                 )}
               </button>
 
@@ -532,10 +532,10 @@ export default function ManageJDs() {
                 href="#"
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-2 text-purple-600 bg-gray-50 rounded-md transition-colors`}
+                } py-2 text-gray-900 bg-gray-50 rounded-md transition-colors`}
               >
                 <span
-                  className="material-symbols-outlined"
+                  className="material-symbols-outlined text-purple-600"
                   style={{
                     fontSize: "24px",
                     fontVariationSettings:
@@ -545,7 +545,7 @@ export default function ManageJDs() {
                   description
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm">Manage JDs</span>
+                  <span className="text-sm font-semibold text-gray-900">Manage JDs</span>
                 )}
               </a>
             </nav>
@@ -571,7 +571,7 @@ export default function ManageJDs() {
                       John Doe
                     </p>
                     <p className="text-xs text-gray-500 truncate">
-                      john.doe@example.com
+                      Designer
                     </p>
                   </div>
                 </div>
@@ -644,7 +644,7 @@ export default function ManageJDs() {
                               setIsTableView(true);
                               setIsUploadView(false);
                             }}
-                            className="flex items-center space-x-2 px-6 py-3 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+                            className="flex items-center space-x-2 px-6 py-3 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
                           >
                             <RiAddLine size={20} />
                             <span>Add JD</span>
@@ -654,7 +654,7 @@ export default function ManageJDs() {
                               setIsUploadView(true);
                               setIsTableView(false);
                             }}
-                            className="flex items-center space-x-2 px-6 py-3 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+                            className="flex items-center space-x-2 px-6 py-3 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
                           >
                             <RiUploadLine size={20} />
                             <span>Upload JD</span>
@@ -704,7 +704,7 @@ export default function ManageJDs() {
                               setNewJD({ ...newJD, jobTitle: e.target.value })
                             }
                             placeholder="e.g., Senior Full-Stack Developer"
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none"
+                            className="w-full px-4 py-2 text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b]"
                           />
                         </div>
 
@@ -722,7 +722,7 @@ export default function ManageJDs() {
                               })
                             }
                             placeholder="e.g., Mandal Minds"
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none"
+                            className="w-full px-4 py-2 text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b]"
                           />
                         </div>
 
@@ -740,14 +740,14 @@ export default function ManageJDs() {
                               })
                             }
                             placeholder="Paste the complete job description here..."
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none resize-none"
+                            className="w-full px-4 py-2 text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b] resize-none"
                           />
                         </div>
 
                         <div className="flex gap-3">
                           <button
                             onClick={handleSaveJD}
-                            className="flex-1 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                            className="flex-1 px-6 py-3 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white rounded-lg transition-all border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)]"
                           >
                             Save JD
                           </button>
@@ -760,7 +760,7 @@ export default function ManageJDs() {
                                 description: "",
                               });
                             }}
-                            className="px-6 py-3 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+                            className="px-6 py-3 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
                           >
                             Cancel
                           </button>
@@ -807,7 +807,7 @@ export default function ManageJDs() {
                         <p className="text-sm text-gray-500 mb-4">
                           Supported formats: PDF, DOCX, TXT
                         </p>
-                        <button className="px-6 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors">
+                        <button className="px-6 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]">
                           Browse Files
                         </button>
                       </div>
@@ -885,7 +885,7 @@ export default function ManageJDs() {
                               John Doe
                             </h2>
                             <p className="text-xs text-black">
-                              john.doe@example.com | +1 (555) 123-4567 | San
+                              Designer | +1 (555) 123-4567 | San
                               Francisco, CA
                             </p>
                           </div>
@@ -944,7 +944,7 @@ export default function ManageJDs() {
                             onClick={() => {
                               navigate("/resume");
                             }}
-                            className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors font-medium"
+                            className="flex items-center gap-2 px-4 py-2 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white rounded-lg transition-all border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)] font-medium"
                           >
                             <span
                               className="material-symbols-outlined"
@@ -971,7 +971,7 @@ export default function ManageJDs() {
                                 },
                               });
                             }}
-                            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-black hover:bg-gray-50 rounded-lg transition-colors font-medium"
+                            className="flex items-center gap-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-black rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] font-medium"
                           >
                             <span
                               className="material-symbols-outlined"
@@ -1002,7 +1002,7 @@ export default function ManageJDs() {
                         {!isCompareMode && (
                           <button
                             onClick={() => setIsCompareMode(true)}
-                            className="flex items-center space-x-2 px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+                            className="flex items-center space-x-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
                           >
                             <RiCheckboxMultipleLine size={16} />
                             <span>Compare Multiple</span>
@@ -1013,7 +1013,7 @@ export default function ManageJDs() {
                             setIsTableView(true);
                             setIsUploadView(false);
                           }}
-                          className="flex items-center space-x-2 px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+                          className="flex items-center space-x-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
                         >
                           <RiAddLine size={16} />
                           <span>Add New JD</span>
@@ -1030,7 +1030,7 @@ export default function ManageJDs() {
                         <button
                           onClick={handleCompareSelected}
                           disabled={selectedJDs.length === 0}
-                          className="px-4 py-2 bg-white border border-gray-300 text-purple-600 hover:bg-purple-50 disabled:text-gray-400 disabled:border-gray-200 rounded-lg transition-colors text-sm"
+                          className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-purple-600 hover:text-purple-700 disabled:text-gray-400 disabled:border-gray-200 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] text-sm disabled:shadow-none"
                         >
                           Compare Selected
                         </button>
@@ -1039,7 +1039,7 @@ export default function ManageJDs() {
                             setIsCompareMode(false);
                             setSelectedJDs([]);
                           }}
-                          className="px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                          className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] text-sm"
                         >
                           Cancel
                         </button>
@@ -1154,7 +1154,7 @@ export default function ManageJDs() {
                               <div className="flex items-center gap-3">
                                 <button
                                   onClick={() => handleAnalyze(jd)}
-                                  className="flex items-center justify-center gap-1.5 px-3 py-1.5 border border-gray-300 bg-transparent text-gray-900 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors"
+                                  className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-md text-sm font-medium transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
                                 >
                                   <RiSparklingFill
                                     size={16}
@@ -1167,7 +1167,7 @@ export default function ManageJDs() {
                                     setSelectedJDForEdit(jd);
                                     setEditJDModal(true);
                                   }}
-                                  className="flex items-center justify-center gap-1.5 px-3 py-1.5 border border-gray-300 bg-transparent text-gray-900 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors"
+                                  className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-md text-sm font-medium transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
                                 >
                                   <span
                                     className="material-symbols-outlined"
@@ -1262,9 +1262,9 @@ export default function ManageJDs() {
               <button
                 onClick={handleStartAnalysis}
                 disabled={!selectedResume}
-                className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg transition-colors font-medium ${
+                className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg transition-all font-medium ${
                   selectedResume
-                    ? "bg-purple-600 hover:bg-purple-700 text-white"
+                    ? "bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)]"
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
                 }`}
               >
@@ -1276,7 +1276,7 @@ export default function ManageJDs() {
                   setResumeSelectionModal(false);
                   setSelectedResume(null);
                 }}
-                className="px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
               >
                 Cancel
               </button>
@@ -1386,7 +1386,7 @@ export default function ManageJDs() {
                   setSelectedResume(null);
                   setSelectedResultIndex(0);
                 }}
-                className="flex-1 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors font-medium"
+                className="flex-1 px-6 py-3 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white rounded-lg transition-all border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)] font-medium"
               >
                 Proceed with Selected
               </button>
@@ -1396,7 +1396,7 @@ export default function ManageJDs() {
                   setAnalysisResults([]);
                   setSelectedResume(null);
                 }}
-                className="px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
               >
                 Close
               </button>
@@ -1484,9 +1484,9 @@ export default function ManageJDs() {
               <button
                 onClick={handleSingleAnalysis}
                 disabled={!selectedResume}
-                className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg transition-colors font-medium ${
+                className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg transition-all font-medium ${
                   selectedResume
-                    ? "bg-purple-600 hover:bg-purple-700 text-white"
+                    ? "bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)]"
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
                 }`}
               >
@@ -1499,7 +1499,7 @@ export default function ManageJDs() {
                   setSingleJDToAnalyze(null);
                   setSelectedResume(null);
                 }}
-                className="px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
               >
                 Cancel
               </button>
@@ -1550,7 +1550,7 @@ export default function ManageJDs() {
                       jobTitle: e.target.value,
                     })
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full px-4 py-2 text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b]"
                 />
               </div>
 
@@ -1567,7 +1567,7 @@ export default function ManageJDs() {
                       companyName: e.target.value,
                     })
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full px-4 py-2 text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b]"
                 />
               </div>
 
@@ -1584,14 +1584,14 @@ export default function ManageJDs() {
                       description: e.target.value,
                     })
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+                  className="w-full px-4 py-2 text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b] resize-none"
                 />
               </div>
 
               <div className="flex gap-3">
                 <button
                   onClick={handleUpdateJD}
-                  className="flex-1 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                  className="flex-1 px-6 py-3 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white rounded-lg transition-all border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)]"
                 >
                   Update JD
                 </button>
@@ -1600,7 +1600,7 @@ export default function ManageJDs() {
                     setEditJDModal(false);
                     setSelectedJDForEdit(null);
                   }}
-                  className="px-6 py-3 bg-white border border-gray-300 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="px-6 py-3 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
                 >
                   Cancel
                 </button>
