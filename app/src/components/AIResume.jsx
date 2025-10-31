@@ -188,22 +188,6 @@ export default function AIResume() {
     });
   };
 
-  // Add new work experience
-  const addWorkExperience = () => {
-    const newWorkItem = {
-      id: Date.now(),
-      title: "",
-      company: "",
-      startDate: "",
-      endDate: "",
-      description: "",
-    };
-    setResumeData((prev) => ({
-      ...prev,
-      work: [...prev.work, newWorkItem],
-    }));
-  };
-
   // Render sections in order based on sidebar arrangement
   const renderResumeSection = (section) => {
     switch (section.id) {
@@ -1168,29 +1152,17 @@ export default function AIResume() {
         );
       case "work":
         return (
-          <Reorder.Group
-            axis="y"
-            values={resumeData.work}
-            onReorder={(newOrder) => {
-              setResumeData((prev) => ({
-                ...prev,
-                work: newOrder,
-              }));
-            }}
-            id="section-work"
-            className="mt-3 space-y-4"
-          >
+          <div id="section-work" className="mt-3 space-y-4">
             {resumeData.work.map((workItem, workIndex) => (
-              <Reorder.Item
+              <div
                 key={workItem.id}
-                value={workItem}
                 className="p-4 bg-white rounded-xl shadow-lg"
               >
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="font-medium text-gray-900">
                     Work Experience {workIndex + 1}
                   </h4>
-                  <div className="text-gray-400 cursor-move">
+                  <div className="text-gray-400">
                     <RiArrowUpDownFill size={16} />
                   </div>
                 </div>
@@ -1245,58 +1217,10 @@ export default function AIResume() {
                     index={workIndex}
                     isHighlighted={isHighlighted}
                   />
-
-                  {/* AI Recommendations for this Work Experience */}
-                  <div className="mt-3">
-                    <h4 className="text-sm font-medium text-gray-900 mb-2">
-                      AI Recommendations
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {[
-                        "Team Leadership",
-                        "Agile Methodology",
-                        "Code Review",
-                        "Mentoring",
-                      ].map((skill, skillIndex) => (
-                        <button
-                          key={skillIndex}
-                          onClick={() => {
-                            const contextualPhrases = {
-                              "Team Leadership": "Led cross-functional teams to deliver projects on time",
-                              "Agile Methodology": "Implemented Agile methodologies for efficient project delivery",
-                              "Code Review": "Conducted thorough code reviews to maintain code quality",
-                              "Mentoring": "Mentored junior developers to improve team capabilities",
-                            };
-                            const phrase = contextualPhrases[skill] || `Worked with ${skill}`;
-                            const newDesc = workItem.description + (workItem.description.endsWith(".") ? " " : ". ") + phrase + ".";
-                            updateResumeData("work", "description", newDesc, workIndex);
-                            setAddedAISkills((prev) => [...prev, skill]);
-                            setFieldAIAdditions((prev) => ({
-                              ...prev,
-                              [`work-description-${workIndex}`]: [...(prev[`work-description-${workIndex}`] || []), { text: phrase, suggestion: skill }]
-                            }));
-                          }}
-                          className="group px-2 py-1 bg-orange-100 hover:bg-orange-200 text-orange-800 text-xs rounded-md transition-colors flex items-center gap-1"
-                          title={`Add "${skill}" to this experience`}
-                        >
-                          <span
-                            className="material-symbols-outlined"
-                            style={{ fontSize: 12 }}
-                          >
-                            add
-                          </span>
-                          {skill}
-                        </button>
-                      ))}
-                    </div>
-                    <p className="text-xs text-gray-900 mt-1">
-                      Based on job requirements analysis
-                    </p>
-                  </div>
                 </div>
-              </Reorder.Item>
+              </div>
             ))}
-          </Reorder.Group>
+          </div>
         );
       case "education":
         return (
@@ -1349,44 +1273,6 @@ export default function AIResume() {
                 field="gpa"
                 isHighlighted={isHighlighted}
               />
-            </div>
-
-            {/* AI Recommendations for Education */}
-            <div className="mt-4">
-              <h4 className="text-sm font-medium text-gray-900 mb-2">
-                AI Recommendations
-              </h4>
-              <div className="flex flex-wrap gap-2">
-                {[
-                  "Machine Learning",
-                  "Data Science",
-                  "Artificial Intelligence",
-                  "Computer Vision",
-                ].map((skill, index) => (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      // Add to degree field
-                      const newDegree = resumeData.education.degree + (resumeData.education.degree ? ", " : "") + skill;
-                      updateResumeData("education", "degree", newDegree);
-                      setAddedAISkills((prev) => [...prev, skill]);
-                    }}
-                    className="group px-2 py-1 bg-orange-100 hover:bg-orange-200 text-orange-800 text-xs rounded-md transition-colors flex items-center gap-1"
-                    title={`Add ${skill} to your education`}
-                  >
-                    <span
-                      className="material-symbols-outlined"
-                      style={{ fontSize: 12 }}
-                    >
-                      add
-                    </span>
-                    {skill}
-                  </button>
-                ))}
-              </div>
-              <p className="text-xs text-gray-900 mt-1">
-                Based on job requirements analysis
-              </p>
             </div>
           </div>
         );
@@ -1750,15 +1636,6 @@ export default function AIResume() {
                         <span>{section.name}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        {section.id === "work" && (
-                          <button 
-                            onClick={addWorkExperience}
-                            className="text-gray-500 hover:text-gray-900 hover:bg-white p-1 rounded"
-                            title="Add Work Experience"
-                          >
-                            <RiAddLine size={16} />
-                          </button>
-                        )}
                         <button className="text-gray-500 hover:text-gray-900 hover:bg-white p-1 rounded">
                           <RiQuestionLine size={16} />
                         </button>
