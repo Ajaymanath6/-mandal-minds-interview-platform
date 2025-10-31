@@ -240,7 +240,7 @@ export default function EditResume() {
             {/* Purple border overlay - doesn't affect layout */}
             <div className="absolute inset-0 border-2 border-purple-300 rounded-lg pointer-events-none"></div>
             {/* Edit badge */}
-            <div className="absolute top-2 right-2 bg-purple-600 text-white px-2 py-1 text-xs rounded-full font-medium z-10">
+            <div className="absolute top-2 right-2 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] text-white px-3 py-[5px] text-[13px] rounded-[7px] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] font-semibold leading-[1.2] whitespace-nowrap z-10">
               Click to edit this section
             </div>
           </>
@@ -312,7 +312,7 @@ export default function EditResume() {
         {hoveredField === fieldId && (
           <button
             onClick={() => toggleFieldEdit(fieldId)}
-            className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+            className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] text-white rounded-[7px] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] transition-all hover:opacity-90"
           >
             <span
               className="material-symbols-outlined"
@@ -600,7 +600,9 @@ export default function EditResume() {
                   auto_awesome
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm font-semibold text-gray-900">AI Interview</span>
+                  <span className="text-sm font-semibold text-gray-900">
+                    AI Interview
+                  </span>
                 )}
               </button>
 
@@ -621,7 +623,9 @@ export default function EditResume() {
                   verified_user
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm font-semibold text-gray-900">Get Vetted</span>
+                  <span className="text-sm font-semibold text-gray-900">
+                    Get Vetted
+                  </span>
                 )}
               </button>
 
@@ -642,7 +646,9 @@ export default function EditResume() {
                   content_copy
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm font-semibold text-gray-900">Manage Resume</span>
+                  <span className="text-sm font-semibold text-gray-900">
+                    Manage Resume
+                  </span>
                 )}
               </button>
 
@@ -663,7 +669,9 @@ export default function EditResume() {
                   description
                 </span>
                 {firstSidebarOpen && (
-                  <span className="text-sm font-semibold text-gray-900">Manage JDs</span>
+                  <span className="text-sm font-semibold text-gray-900">
+                    Manage JDs
+                  </span>
                 )}
               </button>
             </nav>
@@ -688,9 +696,7 @@ export default function EditResume() {
                     <p className="text-sm font-medium text-gray-900 truncate">
                       John Doe
                     </p>
-                    <p className="text-xs text-gray-500 truncate">
-                      Designer
-                    </p>
+                    <p className="text-xs text-gray-500 truncate">Designer</p>
                   </div>
                 </div>
               ) : (

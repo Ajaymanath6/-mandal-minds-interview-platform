@@ -688,7 +688,7 @@ export default function AIResume() {
             {/* Purple border overlay - doesn't affect layout */}
             <div className="absolute inset-0 border-2 border-purple-300 rounded-lg pointer-events-none"></div>
             {/* Edit badge */}
-            <div className="absolute top-2 right-2 bg-purple-600 text-white px-2 py-1 text-xs rounded-full font-medium z-10">
+            <div className="absolute top-2 right-2 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] text-white px-3 py-[5px] text-[13px] rounded-[7px] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] font-semibold leading-[1.2] whitespace-nowrap z-10">
               Click to edit this section
             </div>
           </>
@@ -701,7 +701,7 @@ export default function AIResume() {
               style={{ paddingTop: "40px" }}
             ></div>
             {/* Active edit badge */}
-            <div className="absolute top-2 right-2 bg-purple-700 text-white px-2 py-1 text-xs rounded-full font-medium z-30">
+            <div className="absolute top-2 right-2 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] text-white px-3 py-[5px] text-[13px] rounded-[7px] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] font-semibold leading-[1.2] whitespace-nowrap z-30">
               Editing mode active
             </div>
           </>
@@ -964,12 +964,12 @@ export default function AIResume() {
                     updateResumeData(section, field, rephrasedText, index);
                   }
                 }}
-                className="w-6 h-6 flex items-center justify-center bg-orange-600 hover:bg-orange-700 text-white rounded-md transition-colors"
+                className="w-8 h-8 flex items-center justify-center bg-[#f59e0b] text-white rounded-[7px] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.3)] transition-all hover:opacity-90"
                 title="AI Rephrase content"
               >
                 <span
                   className="material-symbols-outlined"
-                  style={{ fontSize: 12 }}
+                  style={{ fontSize: 16 }}
                 >
                   auto_fix_high
                 </span>
@@ -981,12 +981,12 @@ export default function AIResume() {
                   e.stopPropagation();
                   toggleFieldEdit(fieldId);
                 }}
-                className="w-6 h-6 flex items-center justify-center bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+                className="w-8 h-8 flex items-center justify-center bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] text-white rounded-[7px] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] transition-all hover:opacity-90"
                 title="Edit this field"
               >
                 <span
                   className="material-symbols-outlined"
-                  style={{ fontSize: 12 }}
+                  style={{ fontSize: 16 }}
                 >
                   edit
                 </span>
@@ -1179,7 +1179,7 @@ export default function AIResume() {
           {hoveredField === fieldId && (
             <button
               onClick={() => toggleFieldEdit(fieldId)}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] text-white rounded-[7px] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] transition-all hover:opacity-90"
             >
               <span
                 className="material-symbols-outlined"
