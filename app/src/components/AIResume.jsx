@@ -188,6 +188,22 @@ export default function AIResume() {
     });
   };
 
+  // Add new work experience
+  const addWorkExperience = () => {
+    const newWorkItem = {
+      id: Date.now(),
+      title: "",
+      company: "",
+      startDate: "",
+      endDate: "",
+      description: "",
+    };
+    setResumeData((prev) => ({
+      ...prev,
+      work: [...prev.work, newWorkItem],
+    }));
+  };
+
   // Render sections in order based on sidebar arrangement
   const renderResumeSection = (section) => {
     switch (section.id) {
@@ -1152,17 +1168,31 @@ export default function AIResume() {
         );
       case "work":
         return (
-          <div id="section-work" className="mt-3 space-y-4">
+          <Reorder.Group
+            axis="y"
+            values={resumeData.work}
+            onReorder={(newOrder) => {
+              setResumeData((prev) => ({
+                ...prev,
+                work: newOrder,
+              }));
+            }}
+            as="div"
+            id="section-work"
+            className="mt-3 space-y-4"
+          >
             {resumeData.work.map((workItem, workIndex) => (
-              <div
+              <Reorder.Item
                 key={workItem.id}
+                value={workItem}
+                as="div"
                 className="p-4 bg-white rounded-xl shadow-lg"
               >
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="font-medium text-gray-900">
                     Work Experience {workIndex + 1}
                   </h4>
-                  <div className="text-gray-400">
+                  <div className="text-gray-400 cursor-grab active:cursor-grabbing">
                     <RiArrowUpDownFill size={16} />
                   </div>
                 </div>
@@ -1218,9 +1248,9 @@ export default function AIResume() {
                     isHighlighted={isHighlighted}
                   />
                 </div>
-              </div>
+              </Reorder.Item>
             ))}
-          </div>
+          </Reorder.Group>
         );
       case "education":
         return (
@@ -1330,9 +1360,6 @@ export default function AIResume() {
 
               {/* AI Recommended Skills */}
               <div>
-                <h4 className="text-sm font-medium text-gray-900 mb-2">
-                  AI Recommendations
-                </h4>
                 <div className="flex flex-wrap gap-2">
                   {[
                     "Microservices",
@@ -1365,9 +1392,6 @@ export default function AIResume() {
                     </button>
                   ))}
                 </div>
-                <p className="text-xs text-gray-900 mt-1">
-                  Based on job requirements analysis
-                </p>
               </div>
             </div>
           </div>
@@ -1636,6 +1660,15 @@ export default function AIResume() {
                         <span>{section.name}</span>
                       </div>
                       <div className="flex items-center gap-2">
+                        {section.id === "work" && (
+                          <button 
+                            onClick={addWorkExperience}
+                            className="text-gray-500 hover:text-gray-900 hover:bg-white p-1 rounded"
+                            title="Add Work Experience"
+                          >
+                            <RiAddLine size={16} />
+                          </button>
+                        )}
                         <button className="text-gray-500 hover:text-gray-900 hover:bg-white p-1 rounded">
                           <RiQuestionLine size={16} />
                         </button>
