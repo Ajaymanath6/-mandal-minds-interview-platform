@@ -1168,24 +1168,10 @@ export default function AIResume() {
         );
       case "work":
         return (
-          <Reorder.Group
-            axis="y"
-            values={resumeData.work}
-            onReorder={(newOrder) => {
-              setResumeData((prev) => ({
-                ...prev,
-                work: newOrder,
-              }));
-            }}
-            as="div"
-            id="section-work"
-            className="mt-3 space-y-4"
-          >
+          <div id="section-work" className="mt-3 space-y-4">
             {resumeData.work.map((workItem, workIndex) => (
-              <Reorder.Item
+              <div
                 key={workItem.id}
-                value={workItem}
-                as="div"
                 className="p-4 bg-white rounded-xl shadow-lg"
               >
                 <div className="flex items-center justify-between mb-3">
@@ -1248,9 +1234,9 @@ export default function AIResume() {
                     isHighlighted={isHighlighted}
                   />
                 </div>
-              </Reorder.Item>
+              </div>
             ))}
-          </Reorder.Group>
+          </div>
         );
       case "education":
         return (
