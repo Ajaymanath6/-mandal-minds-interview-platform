@@ -200,7 +200,7 @@ export default function AIResume() {
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 {resumeData.personal.name}
               </h1>
-              <p className="text-gray-600">
+              <p className="text-gray-700">
                 {resumeData.personal.email} | {resumeData.personal.phone} |{" "}
                 {resumeData.personal.location}
               </p>
@@ -227,7 +227,7 @@ export default function AIResume() {
                       </h3>
                       <p className="text-gray-700">{workItem.company}</p>
                     </div>
-                    <p className="text-gray-600">
+                    <p className="text-gray-700">
                       {workItem.startDate} - {workItem.endDate}
                     </p>
                   </div>
@@ -262,7 +262,7 @@ export default function AIResume() {
                       {resumeData.education.institution}
                     </p>
                   </div>
-                  <p className="text-gray-600">
+                  <p className="text-gray-700">
                     {resumeData.education.startYear} -{" "}
                     {resumeData.education.endYear}
                   </p>
@@ -764,7 +764,7 @@ export default function AIResume() {
         const beforeText = processedText.substring(0, start);
         const afterText = processedText.substring(end);
 
-        const badgeHtml = `<span class="inline-badge" data-skill="${skill}" data-phrase="${phrase}">${phrase}</span>`;
+        const badgeHtml = `<button class="inline-badge" data-skill="${skill}" data-phrase="${phrase}">${phrase}</button>`;
         processedText = beforeText + badgeHtml + afterText;
       });
 
@@ -902,26 +902,30 @@ export default function AIResume() {
         {/* Add CSS for inline badges */}
         <style jsx>{`
           .inline-badge {
-            background-color: #fef3c7;
-            color: #92400e;
+            background-color: #fed7aa;
+            color: #ea580c;
             padding: 2px 6px;
             border-radius: 4px;
-            border: 1px solid #fbbf24;
+            border: 1px solid #fb923c;
             cursor: pointer;
             transition: all 0.2s;
             position: relative;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
           }
           .inline-badge:hover {
-            background-color: #fde68a;
-            border-color: #f59e0b;
+            background-color: #fdba74;
+            border-color: #f97316;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
           }
           .inline-badge:hover::after {
-            content: "delete";
+            content: "close";
             font-family: "Material Symbols Outlined";
             position: absolute;
-            top: -10px;
-            right: -10px;
+            top: -8px;
+            right: -8px;
             background: white;
             color: #ef4444;
             border-radius: 50%;
@@ -1344,7 +1348,7 @@ export default function AIResume() {
                     </button>
                   ))}
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-700 mt-1">
                   Based on job requirements analysis
                 </p>
               </div>
@@ -1535,7 +1539,7 @@ export default function AIResume() {
                     <p className="text-sm font-medium text-gray-900 truncate">
                       John Doe
                     </p>
-                    <p className="text-xs text-gray-500 truncate">
+                    <p className="text-xs text-gray-700 truncate">
                       john.doe@example.com
                     </p>
                   </div>
