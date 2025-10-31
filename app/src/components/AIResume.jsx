@@ -200,7 +200,7 @@ export default function AIResume() {
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 {resumeData.personal.name}
               </h1>
-              <p className="text-gray-700">
+              <p className="text-gray-900">
                 {resumeData.personal.email} | {resumeData.personal.phone} |{" "}
                 {resumeData.personal.location}
               </p>
@@ -225,14 +225,14 @@ export default function AIResume() {
                       <h3 className="text-lg font-semibold text-gray-900">
                         {workItem.title}
                       </h3>
-                      <p className="text-gray-700">{workItem.company}</p>
+                      <p className="text-gray-900">{workItem.company}</p>
                     </div>
-                    <p className="text-gray-700">
+                    <p className="text-gray-900">
                       {workItem.startDate} - {workItem.endDate}
                     </p>
                   </div>
                   <div className="relative">
-                    <p className="text-gray-700">{workItem.description}</p>
+                    <p className="text-gray-900">{workItem.description}</p>
                   </div>
                 </div>
               ))}
@@ -258,16 +258,16 @@ export default function AIResume() {
                         {resumeData.education.degree}
                       </h3>
                     </div>
-                    <p className="text-gray-700">
+                    <p className="text-gray-900">
                       {resumeData.education.institution}
                     </p>
                   </div>
-                  <p className="text-gray-700">
+                  <p className="text-gray-900">
                     {resumeData.education.startYear} -{" "}
                     {resumeData.education.endYear}
                   </p>
                 </div>
-                <p className="text-gray-700">GPA: {resumeData.education.gpa}</p>
+                <p className="text-gray-900">GPA: {resumeData.education.gpa}</p>
               </div>
             </div>
           </ResumeSectionWrapper>
@@ -289,7 +289,7 @@ export default function AIResume() {
                     Frontend:
                   </h4>
                   <div className="relative">
-                    <p className="text-gray-700">
+                    <p className="text-gray-900">
                       {resumeData.skills.frontend}
                     </p>
                   </div>
@@ -297,7 +297,7 @@ export default function AIResume() {
                 <div className="relative">
                   <h4 className="font-semibold text-gray-900 mb-2">Backend:</h4>
                   <div className="relative">
-                    <p className="text-gray-700">{resumeData.skills.backend}</p>
+                    <p className="text-gray-900">{resumeData.skills.backend}</p>
                   </div>
                 </div>
                 <div className="relative">
@@ -305,7 +305,7 @@ export default function AIResume() {
                     Database:
                   </h4>
                   <div className="relative">
-                    <p className="text-gray-700">
+                    <p className="text-gray-900">
                       {resumeData.skills.database}
                     </p>
                   </div>
@@ -313,7 +313,7 @@ export default function AIResume() {
                 <div className="relative">
                   <h4 className="font-semibold text-gray-900 mb-2">Tools:</h4>
                   <div className="relative">
-                    <p className="text-gray-700">{resumeData.skills.tools}</p>
+                    <p className="text-gray-900">{resumeData.skills.tools}</p>
                   </div>
                 </div>
               </div>
@@ -783,7 +783,7 @@ export default function AIResume() {
             rows={rows}
             defaultValue={value}
             placeholder={placeholder}
-            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black"
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-purple-500"
             autoFocus
             onBlur={(e) => handleValueChange(e.target.value)}
           />
@@ -794,7 +794,7 @@ export default function AIResume() {
           type={type}
           defaultValue={value}
           placeholder={placeholder}
-          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black"
+          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-purple-500"
           autoFocus
           onBlur={(e) => handleValueChange(e.target.value)}
         />
@@ -902,11 +902,11 @@ export default function AIResume() {
         {/* Add CSS for inline badges */}
         <style jsx>{`
           .inline-badge {
-            background-color: #fed7aa;
-            color: #ea580c;
+            background-color: #fef3c7;
+            color: #92400e;
             padding: 2px 6px;
             border-radius: 4px;
-            border: 1px solid #fb923c;
+            border: 1px solid #fbbf24;
             cursor: pointer;
             transition: all 0.2s;
             position: relative;
@@ -916,8 +916,8 @@ export default function AIResume() {
             gap: 2px;
           }
           .inline-badge:hover {
-            background-color: #fdba74;
-            border-color: #f97316;
+            background-color: #fde68a;
+            border-color: #f59e0b;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
           }
           .inline-badge:hover::after {
@@ -1009,7 +1009,7 @@ export default function AIResume() {
             rows={rows}
             defaultValue={value}
             placeholder={placeholder}
-            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black"
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-purple-500"
             autoFocus
             onBlur={(e) => handleValueChange(e.target.value)}
           />
@@ -1020,7 +1020,7 @@ export default function AIResume() {
           type={type}
           defaultValue={value}
           placeholder={placeholder}
-          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black"
+          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-purple-500"
           autoFocus
           onBlur={(e) => handleValueChange(e.target.value)}
         />
@@ -1268,7 +1268,7 @@ export default function AIResume() {
             <div className="space-y-4">
               {/* Current Resume Skills */}
               <div>
-                <h4 className="text-sm font-medium text-gray-700 mb-2">
+                <h4 className="text-sm font-medium text-gray-900 mb-2">
                   Current Skills
                 </h4>
                 <div className="space-y-3">
@@ -1313,7 +1313,7 @@ export default function AIResume() {
 
               {/* AI Recommended Skills */}
               <div>
-                <h4 className="text-sm font-medium text-gray-700 mb-2">
+                <h4 className="text-sm font-medium text-gray-900 mb-2">
                   AI Recommendations
                 </h4>
                 <div className="flex flex-wrap gap-2">
@@ -1348,7 +1348,7 @@ export default function AIResume() {
                     </button>
                   ))}
                 </div>
-                <p className="text-xs text-gray-700 mt-1">
+                <p className="text-xs text-gray-900 mt-1">
                   Based on job requirements analysis
                 </p>
               </div>
@@ -1419,7 +1419,7 @@ export default function AIResume() {
                 {firstSidebarOpen && (
                   <button
                     onClick={() => setFirstSidebarOpen(false)}
-                    className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded"
+                    className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded"
                   >
                     <span
                       className="material-symbols-outlined"
@@ -1539,7 +1539,7 @@ export default function AIResume() {
                     <p className="text-sm font-medium text-gray-900 truncate">
                       John Doe
                     </p>
-                    <p className="text-xs text-gray-700 truncate">
+                    <p className="text-xs text-gray-900 truncate">
                       john.doe@example.com
                     </p>
                   </div>
@@ -1547,7 +1547,7 @@ export default function AIResume() {
               ) : (
                 <button
                   onClick={() => navigate("/")}
-                  className="w-full p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors flex items-center justify-center"
+                  className="w-full p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors flex items-center justify-center"
                   title="Logout"
                 >
                   <span
@@ -1579,7 +1579,7 @@ export default function AIResume() {
               </h2>
               <button
                 onClick={() => navigate("/manage-jds")}
-                className="flex items-center justify-center p-2 text-gray-900 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                className="flex items-center justify-center p-2 text-gray-900 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
                 title="Back to JDs"
               >
                 <span
@@ -1619,10 +1619,10 @@ export default function AIResume() {
                         <span>{section.name}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <button className="text-gray-500 hover:text-gray-700 hover:bg-white p-1 rounded">
+                        <button className="text-gray-500 hover:text-gray-900 hover:bg-white p-1 rounded">
                           <RiQuestionLine size={16} />
                         </button>
-                        <button className="text-gray-500 hover:text-gray-700 hover:bg-white p-1 rounded cursor-move">
+                        <button className="text-gray-500 hover:text-gray-900 hover:bg-white p-1 rounded cursor-move">
                           <RiArrowUpDownFill size={16} />
                         </button>
                         <button className="text-gray-500 hover:text-red-600 hover:bg-white p-1 rounded">
@@ -1667,7 +1667,7 @@ export default function AIResume() {
               </h3>
               <button
                 onClick={() => setLogoModalOpen(false)}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-gray-500 hover:text-gray-900"
               >
                 <span
                   className="material-symbols-outlined"
