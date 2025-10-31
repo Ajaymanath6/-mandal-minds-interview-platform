@@ -138,6 +138,8 @@ export default function AIResume() {
 
   // Track AI-suggested skills that have been added
   const [addedAISkills, setAddedAISkills] = useState([]);
+  // Track field-specific AI additions with their exact text and position
+  const [fieldAIAdditions, setFieldAIAdditions] = useState({});
   console.log("Added AI skills:", addedAISkills); // For debugging - remove in production
   const navigate = useNavigate();
   const location = useLocation();
@@ -678,6 +680,7 @@ export default function AIResume() {
 
     const addSuggestionToField = (suggestion) => {
       let newValue;
+      let addedText = suggestion; // Track the exact text that was added
 
       if (fieldId.includes("work-description")) {
         // For work descriptions, add contextual sentence
@@ -694,64 +697,68 @@ export default function AIResume() {
         const phrase =
           contextualPhrases[suggestion] ||
           `Worked extensively with ${suggestion}`;
+        addedText = phrase;
         newValue = value + (value.endsWith(".") ? " " : ". ") + `${phrase}.`;
       } else if (fieldId.includes("work-title")) {
         // For job titles, prepend the suggestion
+        addedText = suggestion;
         newValue = `${suggestion} ${value}`;
       } else {
         // Default behavior
+        addedText = suggestion;
         newValue = value + (value ? `, ${suggestion}` : suggestion);
       }
 
       if (section && field) {
         updateResumeData(section, field, newValue, index);
 
-        // Track AI-added skill
+        // Track AI-added skill globally
         setAddedAISkills((prev) => [...prev, suggestion]);
+        
+        // Track field-specific AI addition
+        setFieldAIAdditions((prev) => ({
+          ...prev,
+          [fieldId]: [...(prev[fieldId] || []), { text: addedText, suggestion }]
+        }));
       }
     };
 
     const removeSkillFromField = (skillToRemove) => {
       removeSkillFromText(value, skillToRemove, section, field, index);
+      
+      // Also remove from field-specific tracking
+      setFieldAIAdditions((prev) => ({
+        ...prev,
+        [fieldId]: (prev[fieldId] || []).filter(addition => addition.suggestion !== skillToRemove)
+      }));
     };
 
     // Function to render text with AI-added portions as badges
     const renderTextWithInlineBadges = () => {
-      if (!value || aiAddedSkills.length === 0) {
+      const fieldAdditions = fieldAIAdditions[fieldId] || [];
+      
+      if (!value || fieldAdditions.length === 0) {
         return <span className="text-gray-900">{value}</span>;
       }
 
       let processedText = value;
       const badges = [];
 
-      // Find AI-added phrases and their positions
-      const aiPhrases = {
-        Microservices: ["microservices architecture", "Microservices"],
-        Kubernetes: ["Kubernetes orchestration", "Kubernetes"],
-        GraphQL: ["GraphQL", "Built efficient APIs using GraphQL"],
-        "CI/CD": ["CI/CD pipelines", "CI/CD"],
-        DevOps: ["DevOps practices", "DevOps"],
-        Docker: ["Docker", "Containerized applications using Docker"],
-        "AWS Lambda": ["AWS Lambda", "serverless functions with AWS Lambda"],
-      };
+      // Find all AI-added text in the current field value
+      fieldAdditions.forEach((addition) => {
+        const { text, suggestion } = addition;
+        
+        // Escape special regex characters
+        const escapedText = text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        const regex = new RegExp(`\\b${escapedText}\\b`, "gi");
+        const matches = [...processedText.matchAll(regex)];
 
-      aiAddedSkills.forEach((skill) => {
-        const phrases = aiPhrases[skill] || [skill];
-
-        phrases.forEach((phrase) => {
-          const regex = new RegExp(
-            `\\b${phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`,
-            "gi"
-          );
-          const matches = [...processedText.matchAll(regex)];
-
-          matches.forEach((match) => {
-            badges.push({
-              skill,
-              phrase: match[0],
-              start: match.index,
-              end: match.index + match[0].length,
-            });
+        matches.forEach((match) => {
+          badges.push({
+            skill: suggestion,
+            phrase: match[0],
+            start: match.index,
+            end: match.index + match[0].length,
           });
         });
       });
@@ -783,7 +790,7 @@ export default function AIResume() {
             rows={rows}
             defaultValue={value}
             placeholder={placeholder}
-            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-purple-500"
+            className="w-full px-3 py-2 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-purple-500 focus:bg-white"
             autoFocus
             onBlur={(e) => handleValueChange(e.target.value)}
           />
@@ -794,7 +801,7 @@ export default function AIResume() {
           type={type}
           defaultValue={value}
           placeholder={placeholder}
-          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-purple-500"
+          className="w-full px-3 py-2 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-purple-500 focus:bg-white"
           autoFocus
           onBlur={(e) => handleValueChange(e.target.value)}
         />
@@ -969,6 +976,7 @@ export default function AIResume() {
 
     const addSuggestionToField = (suggestion) => {
       let newValue;
+      let addedText = suggestion; // Track the exact text that was added
 
       if (fieldId.includes("work-description")) {
         // For work descriptions, add contextual sentence
@@ -985,20 +993,29 @@ export default function AIResume() {
         const phrase =
           contextualPhrases[suggestion] ||
           `Worked extensively with ${suggestion}`;
+        addedText = phrase;
         newValue = value + (value.endsWith(".") ? " " : ". ") + `${phrase}.`;
       } else if (fieldId.includes("work-title")) {
         // For job titles, prepend the suggestion
+        addedText = suggestion;
         newValue = `${suggestion} ${value}`;
       } else {
         // Default behavior
+        addedText = suggestion;
         newValue = value + (value ? ` ${suggestion}` : suggestion);
       }
 
       if (section && field) {
         updateResumeData(section, field, newValue, index);
 
-        // Track AI-added skill
+        // Track AI-added skill globally
         setAddedAISkills((prev) => [...prev, suggestion]);
+        
+        // Track field-specific AI addition
+        setFieldAIAdditions((prev) => ({
+          ...prev,
+          [fieldId]: [...(prev[fieldId] || []), { text: addedText, suggestion }]
+        }));
       }
     };
 
@@ -1009,7 +1026,7 @@ export default function AIResume() {
             rows={rows}
             defaultValue={value}
             placeholder={placeholder}
-            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-purple-500"
+            className="w-full px-3 py-2 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-purple-500 focus:bg-white"
             autoFocus
             onBlur={(e) => handleValueChange(e.target.value)}
           />
@@ -1020,7 +1037,7 @@ export default function AIResume() {
           type={type}
           defaultValue={value}
           placeholder={placeholder}
-          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-purple-500"
+          className="w-full px-3 py-2 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-purple-500 focus:bg-white"
           autoFocus
           onBlur={(e) => handleValueChange(e.target.value)}
         />
