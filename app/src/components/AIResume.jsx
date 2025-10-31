@@ -1185,18 +1185,14 @@ export default function AIResume() {
                 key={workItem.id}
                 value={workItem}
                 className="p-4 bg-white rounded-xl shadow-lg"
-                dragListener={false}
               >
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="font-medium text-gray-900">
                     Work Experience {workIndex + 1}
                   </h4>
-                  <button
-                    className="text-gray-400 hover:text-gray-600 cursor-move"
-                    onPointerDown={(e) => e.currentTarget.closest('[data-framer-component-type="Reorder.Item"]')?.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: e.clientX, clientY: e.clientY }))}
-                  >
+                  <div className="text-gray-400 cursor-move">
                     <RiArrowUpDownFill size={16} />
-                  </button>
+                  </div>
                 </div>
                 <div className="space-y-3">
                   <EditableFieldWithBadges
