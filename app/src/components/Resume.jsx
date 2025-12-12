@@ -28,12 +28,12 @@ import {
   RiGraduationCapLine,
   RiStarLine,
 } from "@remixicon/react";
+import Sidebar from "./Sidebar";
 import logoSvg from "../assets/logo.svg";
 import "material-symbols/outlined.css";
 import voiceResponsesData from "../data/voiceResponses.json";
 
 export default function Resume() {
-  const [firstSidebarOpen, setFirstSidebarOpen] = useState(true);
   const [secondSidebarOpen, setSecondSidebarOpen] = useState(true);
   const [activeTab, setActiveTab] = useState("paste-jd");
   const [jdContent, setJdContent] = useState("");
@@ -48,7 +48,6 @@ export default function Resume() {
   const [isInterviewStarted, setIsInterviewStarted] = useState(false);
   const [messages, setMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState("");
-  const [isLogoHovered, setIsLogoHovered] = useState(false);
   const [isVoiceActive, setIsVoiceActive] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
@@ -386,214 +385,7 @@ export default function Resume() {
         style={{ height: "100vh" }}
       >
         {/* First Sidebar - Always Visible */}
-        <div
-          className={`${
-            firstSidebarOpen ? "w-52" : "w-16"
-          } bg-white transition-all duration-300 flex-shrink-0 h-full`}
-        >
-          <div className="flex flex-col h-full">
-            {/* Logo and Toggle */}
-            <div className="p-4 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                {firstSidebarOpen && (
-                  <div className="flex items-center space-x-2">
-                    <img
-                      src={logoSvg}
-                      alt="Mandal Minds Logo"
-                      className="w-8 h-6"
-                    />
-                    <span className="font-semibold text-gray-900">
-                      Mandal Minds
-                    </span>
-                  </div>
-                )}
-                {!firstSidebarOpen && (
-                  <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center mx-auto cursor-pointer relative overflow-hidden"
-                    onMouseEnter={() => setIsLogoHovered(true)}
-                    onMouseLeave={() => setIsLogoHovered(false)}
-                    onClick={() => setFirstSidebarOpen(true)}
-                  >
-                    {isLogoHovered ? (
-                      <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                        <span
-                          className="material-symbols-outlined text-gray-600"
-                          style={{ fontSize: 20 }}
-                        >
-                          dock_to_right
-                        </span>
-                      </div>
-                    ) : (
-                      <img
-                        src={logoSvg}
-                        alt="Mandal Minds Logo"
-                        className="w-8 h-6"
-                      />
-                    )}
-                  </div>
-                )}
-                {firstSidebarOpen && (
-                  <button
-                    onClick={() => setFirstSidebarOpen(false)}
-                    className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded"
-                  >
-                    <span
-                      className="material-symbols-outlined"
-                      style={{ fontSize: 20 }}
-                    >
-                      dock_to_left
-                    </span>
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* Navigation */}
-            <nav className="flex-1 p-2 space-y-2">
-              <a
-                href="#"
-                className={`flex items-center ${
-                  firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-1.5 text-gray-900 bg-gray-50 rounded-3xl transition-colors`}
-              >
-                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
-                  <span
-                    className="material-symbols-outlined"
-                    style={{
-                      fontSize: "24px",
-                      fontVariationSettings:
-                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                      color: "#7c00ff",
-                      filter: "drop-shadow(0 4px 12px rgba(124, 0, 255, 0.3)) drop-shadow(inset 0 1px 0 rgba(255, 255, 255, 0.25))",
-                    }}
-                  >
-                    auto_awesome
-                  </span>
-                </div>
-                {firstSidebarOpen && (
-                  <span className="text-sm font-semibold text-gray-900">AI Interview</span>
-                )}
-              </a>
-
-              <button
-                onClick={() => navigate("/resume-editor")}
-                className={`flex items-center ${
-                  firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-1.5 text-gray-900 hover:bg-gray-50 rounded-3xl w-full transition-colors`}
-              >
-                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
-                  <span
-                    className="material-symbols-outlined"
-                    style={{
-                      fontSize: "24px",
-                      fontVariationSettings:
-                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                      color: "#5b748e",
-                    }}
-                  >
-                    edit_note
-                  </span>
-                </div>
-                {firstSidebarOpen && (
-                  <span className="text-sm font-semibold text-gray-900">Get Vetted</span>
-                )}
-              </button>
-
-              <button
-                onClick={() => navigate("/manage-resume")}
-                className={`flex items-center ${
-                  firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-1.5 text-gray-900 hover:bg-gray-50 rounded-3xl w-full transition-colors`}
-              >
-                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
-                  <span
-                    className="material-symbols-outlined"
-                    style={{
-                      fontSize: "24px",
-                      fontVariationSettings:
-                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                      color: "#5b748e",
-                    }}
-                  >
-                    content_copy
-                  </span>
-                </div>
-                {firstSidebarOpen && (
-                  <span className="text-sm font-semibold text-gray-900">Manage Resume</span>
-                )}
-              </button>
-
-              <button
-                onClick={() => navigate("/manage-jds")}
-                className={`flex items-center ${
-                  firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-1.5 text-gray-900 hover:bg-gray-50 rounded-3xl w-full transition-colors`}
-              >
-                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
-                  <span
-                    className="material-symbols-outlined"
-                    style={{
-                      fontSize: "24px",
-                      fontVariationSettings:
-                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                      color: "#5b748e",
-                    }}
-                  >
-                    description
-                  </span>
-                </div>
-                {firstSidebarOpen && (
-                  <span className="text-sm font-semibold text-gray-900">Manage JDs</span>
-                )}
-              </button>
-            </nav>
-
-            {/* User Profile - Bottom */}
-            <div className="p-3 border-t border-gray-200">
-              {firstSidebarOpen ? (
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                    <span
-                      className="material-symbols-outlined text-purple-600"
-                      style={{
-                        fontSize: "18px",
-                        fontVariationSettings:
-                          '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 18',
-                      }}
-                    >
-                      person
-                    </span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">
-                      John Doe
-                    </p>
-                    <p className="text-xs text-gray-500 truncate">
-                      Designer
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <button
-                  onClick={() => navigate("/")}
-                  className="w-full p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors flex items-center justify-center"
-                  title="Logout"
-                >
-                  <span
-                    className="material-symbols-outlined"
-                    style={{
-                      fontSize: "24px",
-                      fontVariationSettings:
-                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                    }}
-                  >
-                    logout
-                  </span>
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
+        <Sidebar activeItem="ai-interview" />
 
         {/* Second Sidebar - Job Description Input */}
         <div
@@ -605,14 +397,25 @@ export default function Resume() {
         >
           <div className="w-80 flex flex-col h-full">
             {/* Header with collapse button */}
-            <div className="p-4 border-b border-gray-200">
+            <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-gray-900">
-                  {isInterviewStarted ? "Interview Session" : "Resume Builder"}
-                </h2>
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <span
+                      className="material-symbols-outlined text-purple-600"
+                      style={{ fontSize: 18 }}
+                    >
+                      {isInterviewStarted ? "videocam" : "description"}
+                    </span>
+                  </div>
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    {isInterviewStarted ? "Interview Session" : "Resume Builder"}
+                  </h2>
+                </div>
                 <button
                   onClick={() => setSecondSidebarOpen(!secondSidebarOpen)}
-                  className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded"
+                  className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all"
+                  title="Collapse sidebar"
                 >
                   <span
                     className="material-symbols-outlined"
@@ -626,34 +429,40 @@ export default function Resume() {
 
             {isInterviewStarted ? (
               /* Interview Video Sections */
-              <div className="flex-1 p-4 space-y-4">
+              <div className="flex-1 p-4 space-y-4 overflow-y-auto">
                 {/* AI Interview Video */}
-                <div className="space-y-2">
-                  <h3 className="text-sm font-medium text-gray-700">
-                    AI Interviewer
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold text-gray-900 flex items-center space-x-2">
+                    <span className="material-symbols-outlined text-purple-600" style={{ fontSize: 18 }}>
+                      smart_toy
+                    </span>
+                    <span>AI Interviewer</span>
                   </h3>
-                  <div className="bg-gray-900 rounded-lg aspect-video flex items-center justify-center">
+                  <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl aspect-video flex items-center justify-center shadow-lg border border-gray-700">
                     <div className="text-center">
-                      <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <RiRobotLine size={24} className="text-white" />
+                      <div className="w-14 h-14 bg-gradient-to-br from-purple-600 to-purple-700 rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
+                        <RiRobotLine size={28} className="text-white" />
                       </div>
-                      <p className="text-white text-sm">AI Interviewer</p>
+                      <p className="text-white text-sm font-medium">AI Interviewer</p>
                     </div>
                   </div>
                 </div>
 
                 {/* User Video */}
-                <div className="space-y-2">
-                  <h3 className="text-sm font-medium text-gray-700">
-                    Your Video
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold text-gray-900 flex items-center space-x-2">
+                    <span className="material-symbols-outlined text-purple-600" style={{ fontSize: 18 }}>
+                      videocam
+                    </span>
+                    <span>Your Video</span>
                   </h3>
-                  <div className="bg-gray-100 rounded-lg aspect-video flex items-center justify-center border-2 border-dashed border-gray-300">
+                  <div className="bg-gray-50 rounded-xl aspect-video flex items-center justify-center border-2 border-dashed border-gray-300 hover:border-purple-400 transition-colors">
                     <div className="text-center">
-                      <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <RiUser3Fill size={24} className="text-gray-600" />
+                      <div className="w-14 h-14 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <RiUser3Fill size={28} className="text-gray-600" />
                       </div>
-                      <p className="text-gray-600 text-sm">Camera Off</p>
-                      <button className="mt-2 px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white text-xs rounded-3xl transition-colors">
+                      <p className="text-gray-600 text-sm font-medium mb-2">Camera Off</p>
+                      <button className="px-4 py-1.5 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white text-xs font-semibold rounded-lg transition-all shadow-md hover:shadow-lg">
                         Enable Camera
                       </button>
                     </div>
@@ -663,13 +472,13 @@ export default function Resume() {
             ) : (
               <>
                 {/* Tab Buttons */}
-                <div className="p-4 border-b border-gray-200">
-                  <div className="flex space-x-2">
+                <div className="p-4 border-b border-gray-200 bg-gray-50">
+                  <div className="flex space-x-2 bg-white p-1 rounded-lg">
                     <button
                       onClick={() => setActiveTab("paste-jd")}
-                      className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                      className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
                         activeTab === "paste-jd"
-                          ? "bg-gray-100 text-gray-900"
+                          ? "bg-purple-50 text-purple-700 shadow-sm"
                           : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                       }`}
                     >
@@ -678,9 +487,9 @@ export default function Resume() {
                     </button>
                     <button
                       onClick={() => setActiveTab("upload-resume")}
-                      className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                      className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
                         activeTab === "upload-resume"
-                          ? "bg-gray-100 text-gray-900"
+                          ? "bg-purple-50 text-purple-700 shadow-sm"
                           : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                       }`}
                     >
@@ -691,27 +500,33 @@ export default function Resume() {
                 </div>
 
                 {/* Tab Content */}
-                <div className="flex-1 p-4">
+                <div className="flex-1 p-4 overflow-y-auto">
                   {activeTab === "paste-jd" && (
                     <div className="space-y-4 h-full flex flex-col">
                       <div className="flex-1">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Job Description
+                        <label className="block text-sm font-semibold text-gray-900 mb-3 flex items-center space-x-2">
+                          <span className="material-symbols-outlined text-purple-600" style={{ fontSize: 18 }}>
+                            description
+                          </span>
+                          <span>Job Description</span>
                         </label>
                         <textarea
                           placeholder="Paste the job description here..."
                           value={jdContent}
                           onChange={(e) => setJdContent(e.target.value)}
-                          className="w-full h-40 md:h-48 lg:h-56 px-3 py-2 text-[#3c4043] bg-white border border-[#dfe1e5] rounded-md shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b] resize-none"
+                          className="w-full h-40 md:h-48 lg:h-56 px-4 py-3 text-[#3c4043] bg-white border-2 border-gray-200 rounded-lg shadow-sm focus:outline-none focus:border-purple-500 focus:shadow-md focus:ring-2 focus:ring-purple-100 transition-all placeholder:text-gray-400 resize-none"
                         />
                       </div>
                       <div className="mt-4">
                         <button
                           onClick={() => setIsAnalyzed(true)}
                           disabled={!jdContent.trim()}
-                          className="w-full bg-gray-900 hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-3xl transition-colors"
+                          className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-all shadow-md hover:shadow-lg disabled:shadow-none flex items-center justify-center space-x-2"
                         >
-                          Analyze JD
+                          <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
+                            auto_awesome
+                          </span>
+                          <span>Analyze JD</span>
                         </button>
                       </div>
                     </div>
@@ -719,30 +534,36 @@ export default function Resume() {
 
                   {activeTab === "upload-resume" && (
                     <div className="space-y-4">
-                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-purple-400 transition-colors">
+                      <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-purple-400 hover:bg-purple-50/30 transition-all duration-300 cursor-pointer group">
                         <div className="flex flex-col items-center space-y-4">
-                          <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
+                          <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-purple-50 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                             <RiFileTextLine
-                              size={32}
-                              className="text-gray-400"
+                              size={36}
+                              className="text-purple-600"
                             />
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-gray-900 mb-1">
+                            <p className="text-sm font-semibold text-gray-900 mb-1">
                               Drop your resume here
                             </p>
                             <p className="text-xs text-gray-500">
                               or click to browse files
                             </p>
                           </div>
-                          <button className="bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-700 rounded-md text-sm font-medium transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] px-4 py-2">
-                            Choose Resume
+                          <button className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white rounded-lg text-sm font-semibold transition-all shadow-md hover:shadow-lg px-6 py-2.5 flex items-center space-x-2">
+                            <RiUploadLine size={16} />
+                            <span>Choose Resume</span>
                           </button>
                         </div>
                       </div>
-                      <p className="text-xs text-gray-500 text-center">
-                        Supports PDF, DOC, DOCX files up to 10MB
-                      </p>
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                        <p className="text-xs text-blue-700 text-center flex items-center justify-center space-x-1">
+                          <span className="material-symbols-outlined" style={{ fontSize: 14 }}>
+                            info
+                          </span>
+                          <span>Supports PDF, DOC, DOCX files up to 10MB</span>
+                        </p>
+                      </div>
                     </div>
                   )}
                 </div>
