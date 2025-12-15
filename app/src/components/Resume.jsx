@@ -2,14 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   RiNotification3Line,
-  RiUser3Fill,
   RiMenuLine,
-  RiFileTextLine,
-  RiUploadLine,
-  RiFileCopyLine,
   RiFileList3Line,
   RiBookmarkLine,
-  RiRobotLine,
   RiPlayFill,
   RiAddLine,
   RiCloseLine,
@@ -27,15 +22,17 @@ import {
   RiTrophyLine,
   RiGraduationCapLine,
   RiStarLine,
+  RiArrowRightLine,
 } from "@remixicon/react";
 import Sidebar from "./Sidebar";
+import ResumeBuilderSidebar from "./ResumeBuilderSidebar";
+import AISearchBar from "./AISearchBar";
 import logoSvg from "../assets/logo.svg";
 import "material-symbols/outlined.css";
 import voiceResponsesData from "../data/voiceResponses.json";
 
 export default function Resume() {
   const [secondSidebarOpen, setSecondSidebarOpen] = useState(true);
-  const [activeTab, setActiveTab] = useState("paste-jd");
   const [jdContent, setJdContent] = useState("");
   const [isAnalyzed, setIsAnalyzed] = useState(false);
   const [skills, setSkills] = useState([
@@ -60,27 +57,28 @@ export default function Resume() {
   const [displayedText, setDisplayedText] = useState("");
   const [questionCount, setQuestionCount] = useState(0);
   const [showPerformanceReview, setShowPerformanceReview] = useState(false);
+  const [savedJDs, setSavedJDs] = useState([]);
 
   // Custom User Chat Card Component with Layered Effect - Responsive
   const UserChatCard = ({ content }) => {
     return (
       <div className="relative mx-auto w-fit max-w-xs sm:max-w-md lg:max-w-2xl">
         {/* Bottom Layer (deepest) */}
-        <div className="absolute top-2 left-2 bg-gray-300 rounded-3xl border border-gray-400 shadow-sm p-3 sm:p-4 lg:p-6 min-w-32 sm:min-w-48 lg:min-w-64 max-w-xs sm:max-w-md lg:max-w-2xl opacity-40">
+        <div className="absolute top-2 left-2 bg-gray-300 rounded-3xl border border-gray-400 p-3 sm:p-4 lg:p-6 min-w-32 sm:min-w-48 lg:min-w-64 max-w-xs sm:max-w-md lg:max-w-2xl opacity-40">
           <p className="text-gray-700 text-sm sm:text-base leading-relaxed whitespace-pre-wrap invisible">
             {content}
           </p>
         </div>
 
         {/* Middle Layer */}
-        <div className="absolute top-1 left-1 bg-gray-200 rounded-3xl border border-gray-300 shadow-sm p-3 sm:p-4 lg:p-6 min-w-32 sm:min-w-48 lg:min-w-64 max-w-xs sm:max-w-md lg:max-w-2xl opacity-60">
+        <div className="absolute top-1 left-1 bg-gray-200 rounded-3xl border border-gray-300 p-3 sm:p-4 lg:p-6 min-w-32 sm:min-w-48 lg:min-w-64 max-w-xs sm:max-w-md lg:max-w-2xl opacity-60">
           <p className="text-gray-700 text-sm sm:text-base leading-relaxed whitespace-pre-wrap invisible">
             {content}
           </p>
         </div>
 
         {/* Top Layer (main visible content) */}
-        <div className="relative bg-white rounded-3xl border border-gray-200 shadow-md p-3 sm:p-4 lg:p-6 w-fit min-w-32 sm:min-w-48 lg:min-w-64 max-w-xs sm:max-w-md lg:max-w-2xl">
+        <div className="relative bg-white rounded-3xl border border-gray-200 p-3 sm:p-4 lg:p-6 w-fit min-w-32 sm:min-w-48 lg:min-w-64 max-w-xs sm:max-w-md lg:max-w-2xl">
           <p className="text-gray-900 text-sm sm:text-base leading-relaxed whitespace-pre-wrap">
             {content}
           </p>
@@ -92,7 +90,7 @@ export default function Resume() {
   // Performance Review Component
   const PerformanceReviewCard = () => {
     return (
-      <div className="max-w-4xl bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+      <div className="max-w-4xl bg-white rounded-xl border border-gray-200 overflow-hidden">
         {/* Header Section */}
         <div className="bg-gradient-to-r from-gray-100 to-gray-200 p-6">
           <div className="flex items-center space-x-4">
@@ -213,12 +211,13 @@ export default function Resume() {
               setQuestionCount(0);
               setIsInterviewStarted(false);
             }}
-            className="flex items-center justify-center space-x-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-purple-600 hover:text-purple-700 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
+            className="flex items-center justify-center space-x-2 px-4 py-2 bg-white hover:bg-gray-100 active:bg-black active:text-white border border-gray-300 hover:border-black rounded-lg transition-all"
+            style={{ color: "#575757" }}
           >
             <RiArrowLeftLine size={16} />
             <span>Back to Topics</span>
           </button>
-          <button className="flex items-center justify-center space-x-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-purple-600 hover:text-purple-700 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]">
+          <button className="flex items-center justify-center space-x-2 px-4 py-2 bg-white hover:bg-gray-100 active:bg-black active:text-white border border-gray-300 hover:border-black text-gray-700 hover:text-black rounded-lg transition-all">
             <RiTrophyLine size={16} />
             <span>View Leaderboard</span>
           </button>
@@ -242,7 +241,7 @@ export default function Resume() {
                 typeMessage(initialMessage, aiMessage.id);
               }, 500);
             }}
-            className="flex items-center justify-center space-x-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-purple-600 hover:text-purple-700 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
+            className="flex items-center justify-center space-x-2 px-4 py-2 bg-white hover:bg-gray-100 active:bg-black active:text-white border border-gray-300 hover:border-black text-gray-700 hover:text-black rounded-lg transition-all"
           >
             <RiRefreshLine size={16} />
             <span>Revise Again</span>
@@ -379,217 +378,22 @@ export default function Resume() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ backgroundColor: "#fcfcfb" }}>
       <div
-        className="flex flex-col lg:flex-row gap-2 sm:gap-4 min-h-0 p-2 sm:p-4 lg:p-0"
+        className="flex flex-col lg:flex-row min-h-0 p-2 sm:p-4 lg:p-0"
         style={{ height: "100vh" }}
       >
         {/* First Sidebar - Always Visible */}
         <Sidebar activeItem="ai-interview" />
 
-        {/* Second Sidebar - Job Description Input */}
-        <div
-          className={`${
-            secondSidebarOpen ? "w-80" : "w-12 md:w-0"
-          } bg-white transition-all duration-300 ${
-            secondSidebarOpen ? "" : "md:hidden"
-          } flex-shrink-0 h-full`}
-        >
-          <div className="w-80 flex flex-col h-full">
-            {/* Header with collapse button */}
-            <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <span
-                      className="material-symbols-outlined text-purple-600"
-                      style={{ fontSize: 18 }}
-                    >
-                      {isInterviewStarted ? "videocam" : "description"}
-                    </span>
-                  </div>
-                  <h2 className="text-lg font-semibold text-gray-900">
-                    {isInterviewStarted ? "Interview Session" : "Resume Builder"}
-                  </h2>
-                </div>
-                <button
-                  onClick={() => setSecondSidebarOpen(!secondSidebarOpen)}
-                  className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all"
-                  title="Collapse sidebar"
-                >
-                  <span
-                    className="material-symbols-outlined"
-                    style={{ fontSize: 20 }}
-                  >
-                    dock_to_left
-                  </span>
-                </button>
-              </div>
-            </div>
-
-            {isInterviewStarted ? (
-              /* Interview Video Sections */
-              <div className="flex-1 p-4 space-y-4 overflow-y-auto">
-                {/* AI Interview Video */}
-                <div className="space-y-3">
-                  <h3 className="text-sm font-semibold text-gray-900 flex items-center space-x-2">
-                    <span className="material-symbols-outlined text-purple-600" style={{ fontSize: 18 }}>
-                      smart_toy
-                    </span>
-                    <span>AI Interviewer</span>
-                  </h3>
-                  <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl aspect-video flex items-center justify-center shadow-lg border border-gray-700">
-                    <div className="text-center">
-                      <div className="w-14 h-14 bg-gradient-to-br from-purple-600 to-purple-700 rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
-                        <RiRobotLine size={28} className="text-white" />
-                      </div>
-                      <p className="text-white text-sm font-medium">AI Interviewer</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* User Video */}
-                <div className="space-y-3">
-                  <h3 className="text-sm font-semibold text-gray-900 flex items-center space-x-2">
-                    <span className="material-symbols-outlined text-purple-600" style={{ fontSize: 18 }}>
-                      videocam
-                    </span>
-                    <span>Your Video</span>
-                  </h3>
-                  <div className="bg-gray-50 rounded-xl aspect-video flex items-center justify-center border-2 border-dashed border-gray-300 hover:border-purple-400 transition-colors">
-                    <div className="text-center">
-                      <div className="w-14 h-14 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <RiUser3Fill size={28} className="text-gray-600" />
-                      </div>
-                      <p className="text-gray-600 text-sm font-medium mb-2">Camera Off</p>
-                      <button className="px-4 py-1.5 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white text-xs font-semibold rounded-lg transition-all shadow-md hover:shadow-lg">
-                        Enable Camera
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <>
-                {/* Tab Buttons */}
-                <div className="p-4 border-b border-gray-200 bg-gray-50">
-                  <div className="flex space-x-2 bg-white p-1 rounded-lg">
-                    <button
-                      onClick={() => setActiveTab("paste-jd")}
-                      className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                        activeTab === "paste-jd"
-                          ? "bg-purple-50 text-purple-700 shadow-sm"
-                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                      }`}
-                    >
-                      <RiFileCopyLine size={16} />
-                      <span>Paste JD</span>
-                    </button>
-                    <button
-                      onClick={() => setActiveTab("upload-resume")}
-                      className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                        activeTab === "upload-resume"
-                          ? "bg-purple-50 text-purple-700 shadow-sm"
-                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                      }`}
-                    >
-                      <RiUploadLine size={16} />
-                      <span>Upload Resume</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Tab Content */}
-                <div className="flex-1 p-4 overflow-y-auto">
-                  {activeTab === "paste-jd" && (
-                    <div className="space-y-4 h-full flex flex-col">
-                      <div className="flex-1">
-                        <label className="block text-sm font-semibold text-gray-900 mb-3 flex items-center space-x-2">
-                          <span className="material-symbols-outlined text-purple-600" style={{ fontSize: 18 }}>
-                            description
-                          </span>
-                          <span>Job Description</span>
-                        </label>
-                        <textarea
-                          placeholder="Paste the job description here..."
-                          value={jdContent}
-                          onChange={(e) => setJdContent(e.target.value)}
-                          className="w-full h-40 md:h-48 lg:h-56 px-4 py-3 text-[#3c4043] bg-white border-2 border-gray-200 rounded-lg shadow-sm focus:outline-none focus:border-purple-500 focus:shadow-md focus:ring-2 focus:ring-purple-100 transition-all placeholder:text-gray-400 resize-none"
-                        />
-                      </div>
-                      <div className="mt-4">
-                        <button
-                          onClick={() => setIsAnalyzed(true)}
-                          disabled={!jdContent.trim()}
-                          className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-all shadow-md hover:shadow-lg disabled:shadow-none flex items-center justify-center space-x-2"
-                        >
-                          <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
-                            auto_awesome
-                          </span>
-                          <span>Analyze JD</span>
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  {activeTab === "upload-resume" && (
-                    <div className="space-y-4">
-                      <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-purple-400 hover:bg-purple-50/30 transition-all duration-300 cursor-pointer group">
-                        <div className="flex flex-col items-center space-y-4">
-                          <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-purple-50 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <RiFileTextLine
-                              size={36}
-                              className="text-purple-600"
-                            />
-                          </div>
-                          <div>
-                            <p className="text-sm font-semibold text-gray-900 mb-1">
-                              Drop your resume here
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              or click to browse files
-                            </p>
-                          </div>
-                          <button className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white rounded-lg text-sm font-semibold transition-all shadow-md hover:shadow-lg px-6 py-2.5 flex items-center space-x-2">
-                            <RiUploadLine size={16} />
-                            <span>Choose Resume</span>
-                          </button>
-                        </div>
-                      </div>
-                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                        <p className="text-xs text-blue-700 text-center flex items-center justify-center space-x-1">
-                          <span className="material-symbols-outlined" style={{ fontSize: 14 }}>
-                            info
-                          </span>
-                          <span>Supports PDF, DOC, DOCX files up to 10MB</span>
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* Collapse button for second sidebar when closed - Always visible on laptop */}
-        {!secondSidebarOpen && (
-          <button
-            onClick={() => setSecondSidebarOpen(true)}
-            className="w-12 md:w-8 h-8 bg-white rounded-lg shadow-sm border border-gray-200 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-gray-50 mb-8 flex-shrink-0"
-            title="Show Resume Builder"
-          >
-            <span
-              className="material-symbols-outlined"
-              style={{ fontSize: 20 }}
-            >
-              dock_to_right
-            </span>
-          </button>
-        )}
+        {/* Second Sidebar - Resume Builder */}
+        <ResumeBuilderSidebar
+          isOpen={secondSidebarOpen}
+          onToggle={() => setSecondSidebarOpen(!secondSidebarOpen)}
+        />
 
         {/* Main Content - Responsive */}
-        <div className="flex-1 bg-gray-50 px-4 lg:px-6 pb-4 lg:pb-6 overflow-y-auto">
+        <div className="flex-1 px-4 lg:px-6 pb-4 lg:pb-6 overflow-y-auto" style={{ backgroundColor: "#fcfcfb" }}>
           {isInterviewStarted ? (
             <div className="h-full flex flex-col min-h-0">
               {/* Interview Header */}
@@ -678,7 +482,7 @@ export default function Resume() {
                                       performanceMessage,
                                     ]);
                                   }}
-                                  className="flex items-center justify-center space-x-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-purple-600 hover:text-purple-700 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
+                                  className="flex items-center justify-center space-x-2 px-4 py-2 bg-white hover:bg-gray-100 active:bg-black active:text-white border border-gray-300 hover:border-black text-gray-700 hover:text-black rounded-lg transition-all"
                                 >
                                   <RiBarChartBoxLine size={16} />
                                   <span>Review my performance</span>
@@ -689,7 +493,7 @@ export default function Resume() {
                                     setQuestionCount(0);
                                     setIsInterviewStarted(false);
                                   }}
-                                  className="flex items-center justify-center space-x-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-purple-600 hover:text-purple-700 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
+                                  className="flex items-center justify-center space-x-2 px-4 py-2 bg-white hover:bg-gray-100 active:bg-black active:text-white border border-gray-300 hover:border-black text-gray-700 hover:text-black rounded-lg transition-all"
                                 >
                                   <RiRefreshLine size={16} />
                                   <span>Revise again</span>
@@ -763,8 +567,8 @@ export default function Resume() {
                     <button
                       className={`w-10 h-10 rounded-full flex items-center justify-center transition-all relative group ${
                         isVoiceActive
-                          ? "bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)]"
-                          : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                          ? "bg-black hover:bg-gray-900 active:bg-black text-white border border-black"
+                          : "bg-gray-100 hover:bg-gray-200 active:bg-black active:text-white text-gray-700"
                       }`}
                       onClick={handleVoiceClick}
                       title="Voice input"
@@ -825,8 +629,8 @@ export default function Resume() {
                       }}
                       className={`w-10 h-10 rounded-full flex items-center justify-center transition-all relative group ${
                         currentMessage.trim()
-                          ? "bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)]"
-                          : "bg-gray-800 hover:bg-gray-900 text-white"
+                          ? "bg-black hover:bg-gray-900 active:bg-black text-white border border-black"
+                          : "bg-gray-800 hover:bg-gray-900 active:bg-black text-white"
                       }`}
                       title="Send message"
                     >
@@ -841,84 +645,51 @@ export default function Resume() {
               </div>
             </div>
           ) : !isAnalyzed ? (
-            <div className="flex items-center justify-center h-full">
-              <div className="text-left max-w-2xl w-full">
-                {/* Logo at the top */}
-                <div className="flex justify-start mb-8">
-                  <img
-                    src={logoSvg}
-                    alt="Mandal Minds Logo"
-                    className="w-16 h-12"
-                  />
+            <div className="flex items-center justify-center h-full py-8">
+              <div className="w-full max-w-5xl px-4">
+                {/* Greeting */}
+                <div className="mb-6 text-center">
+                  <h2 className="text-2xl font-bold mb-2" style={{ color: "#0A0A0A" }}>
+                    Hello, {localStorage.getItem("userName") || "User"} 👋
+                  </h2>
                 </div>
 
-                <div className="mb-6">
-                  <h3 className="text-2xl font-semibold text-gray-900">
-                    Hey there, I am Mandal AI.
-                  </h3>
-                  <p className="text-lg text-gray-900">
-                    I am your Assistant for interview process
-                  </p>
-                </div>
-
-                <div className="space-y-6 text-left">
-                  <h4 className="text-lg font-medium text-gray-900 mb-4">
-                    Few things to know about me:
-                  </h4>
-
-                  <div className="flex items-start space-x-4">
-                    <RiQuestionLine
-                      size={24}
-                      className="text-purple-600 mt-1 flex-shrink-0"
-                    />
-                    <div>
-                      <h5 className="font-medium text-gray-900">
-                        Curious? Just ask
-                      </h5>
-                      <p className="text-gray-900">
-                        I'm here to answer any questions you have about the
-                        interview process
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start space-x-4">
-                    <RiChatSmile3Line
-                      size={24}
-                      className="text-purple-600 mt-1 flex-shrink-0"
-                    />
-                    <div>
-                      <h5 className="font-medium text-gray-900">
-                        Chat with me about anything
-                      </h5>
-                      <p className="text-gray-900">
-                        Feel free to discuss your career goals, concerns, or get
-                        interview tips
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start space-x-4">
-                    <RiLightbulbLine
-                      size={24}
-                      className="text-purple-600 mt-1 flex-shrink-0"
-                    />
-                    <div>
-                      <h5 className="font-medium text-gray-900">
-                        Better to start with resume or JD upload
-                      </h5>
-                      <p className="text-gray-900">
-                        Upload your resume or job description to get
-                        personalized interview preparation
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                {/* AI Search Bar Component */}
+                <AISearchBar
+                  onSearch={(query) => {
+                    // Handle search query for different tabs
+                    console.log("Search:", query);
+                  }}
+                  onCompare={(jdContent) => {
+                    // Set JD content in sidebar and trigger analysis
+                    setJdContent(jdContent);
+                    // Update sidebar JD content if it's open
+                    if (secondSidebarOpen) {
+                      // The sidebar will automatically update via jdContent prop
+                    }
+                    // Trigger analysis
+                    setIsAnalyzed(true);
+                  }}
+                  savedJDs={savedJDs}
+                  onSaveJD={(jdContent) => {
+                    // Save JD to saved list
+                    const newJD = {
+                      id: Date.now(),
+                      title: `JD ${savedJDs.length + 1}`,
+                      content: jdContent,
+                      dateAdded: new Date().toISOString(),
+                    };
+                    setSavedJDs([...savedJDs, newJD]);
+                    
+                    // Also update the JD content in sidebar
+                    setJdContent(jdContent);
+                  }}
+                />
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-center h-full">
-              <div className="max-w-4xl space-y-4 lg:space-y-6 w-full">
+            <div className="flex items-start justify-center h-full gap-4 lg:gap-6">
+              <div className="max-w-4xl space-y-4 lg:space-y-6 w-full flex-1">
                 {/* JD Analysis Header */}
                 <div className="bg-white rounded-lg p-4 lg:p-6">
                   <div className="flex items-center space-x-3 mb-4">
@@ -1019,7 +790,7 @@ export default function Resume() {
                       value={newSkill}
                       onChange={(e) => setNewSkill(e.target.value)}
                       placeholder="Add a skill..."
-                      className="flex-1 px-3 py-2 text-[#3c4043] bg-white border border-[#dfe1e5] rounded-md shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b]"
+                      className="flex-1 px-3 py-2 text-[#3c4043] bg-white border border-[#dfe1e5] rounded-md focus:outline-none focus:border-black transition-all placeholder:text-[#80868b]"
                       onKeyPress={(e) => {
                         if (e.key === "Enter" && newSkill.trim()) {
                           setSkills([...skills, newSkill.trim()]);
@@ -1034,41 +805,41 @@ export default function Resume() {
                           setNewSkill("");
                         }
                       }}
-                      className="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-3xl transition-colors flex items-center space-x-2"
+                      className="px-4 py-2 bg-gray-900 hover:bg-gray-800 active:bg-black text-white rounded-3xl transition-colors flex items-center space-x-2"
                     >
                       <RiAddLine size={16} />
                       <span>Add</span>
                     </button>
                   </div>
 
-                  {/* Start Interview Button - Always Visible */}
-                  <div className="w-full sticky bottom-0 bg-white p-4 border-t border-gray-200 -mx-4 lg:-mx-6 -mb-4 lg:-mb-6 mt-4">
-                    <button
-                      onClick={() => {
-                        const initialMessage =
-                          "Hello! I'm here to conduct your interview for the Full-Stack Developer position. I've carefully reviewed the job description and your background. I'd like to approach this conversation thoughtfully, focusing on understanding both your technical capabilities and your problem-solving approach.\n\nLet's begin with something foundational: Could you walk me through your journey into software development? I'm particularly interested in what initially drew you to this field and how your perspective has evolved as you've gained experience.";
-
-                        setIsInterviewStarted(true);
-                        const aiMessage = {
-                          id: 1,
-                          type: "ai",
-                          content: initialMessage,
-                          timestamp: new Date(),
-                        };
-                        setMessages([aiMessage]);
-
-                        // Start typing animation for initial message
-                        setTimeout(() => {
-                          typeMessage(initialMessage, aiMessage.id);
-                        }, 500);
-                      }}
-                      className="w-full flex items-center justify-center space-x-3 px-6 lg:px-8 py-3 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white font-semibold rounded-lg transition-all border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)] text-sm lg:text-base"
-                    >
-                      <RiPlayFill size={20} />
-                      <span>Start AI Interview</span>
-                    </button>
-                  </div>
                 </div>
+              </div>
+              {/* Start Interview Button - Right Side */}
+              <div className="w-full lg:w-auto lg:sticky lg:top-4 lg:self-start">
+                <button
+                  onClick={() => {
+                    const initialMessage =
+                      "Hello! I'm here to conduct your interview for the Full-Stack Developer position. I've carefully reviewed the job description and your background. I'd like to approach this conversation thoughtfully, focusing on understanding both your technical capabilities and your problem-solving approach.\n\nLet's begin with something foundational: Could you walk me through your journey into software development? I'm particularly interested in what initially drew you to this field and how your perspective has evolved as you've gained experience.";
+
+                    setIsInterviewStarted(true);
+                    const aiMessage = {
+                      id: 1,
+                      type: "ai",
+                      content: initialMessage,
+                      timestamp: new Date(),
+                    };
+                    setMessages([aiMessage]);
+
+                    // Start typing animation for initial message
+                    setTimeout(() => {
+                      typeMessage(initialMessage, aiMessage.id);
+                    }, 500);
+                  }}
+                  className="w-full lg:w-auto flex items-center justify-center space-x-3 px-6 lg:px-8 py-3 bg-black hover:bg-gray-900 active:bg-black text-white font-semibold rounded-lg transition-all border border-black text-sm lg:text-base"
+                >
+                  <RiPlayFill size={20} />
+                  <span>Start AI Interview</span>
+                </button>
               </div>
             </div>
           )}

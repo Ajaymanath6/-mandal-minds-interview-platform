@@ -24,9 +24,19 @@ export default function Sidebar({ activeItem = "ai-interview" }) {
                 <img
                   src={logoSvg}
                   alt="Mandal Minds Logo"
-                  className="w-8 h-6"
+                  className="w-6 h-6"
                 />
-                <span className="font-semibold text-gray-900">
+                <span
+                  style={{
+                    fontFamily: "Body Font",
+                    fontWeight: 500,
+                    fontStyle: "normal",
+                    fontSize: "16px",
+                    lineHeight: "24px",
+                    letterSpacing: "-0.03em",
+                    color: "#1A1A1A",
+                  }}
+                >
                   Mandal Minds
                 </span>
               </div>
@@ -51,7 +61,7 @@ export default function Sidebar({ activeItem = "ai-interview" }) {
                   <img
                     src={logoSvg}
                     alt="Mandal Minds Logo"
-                    className="w-8 h-6"
+                    className="w-6 h-6"
                   />
                 )}
               </div>
@@ -63,7 +73,7 @@ export default function Sidebar({ activeItem = "ai-interview" }) {
               >
                 <span
                   className="material-symbols-outlined"
-                  style={{ fontSize: 20 }}
+                  style={{ fontSize: 20, color: "#575757" }}
                 >
                   dock_to_left
                 </span>
@@ -77,11 +87,11 @@ export default function Sidebar({ activeItem = "ai-interview" }) {
           <a
             href="#"
             className={`flex items-center ${
-              firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-            } py-1.5 text-gray-900 rounded-3xl transition-colors ${
+              firstSidebarOpen ? "space-x-3" : "justify-center"
+            } pt-1 pr-2 pb-1 pl-2 text-gray-900 rounded-[12px] transition-colors border-0 ${
               activeItem === "ai-interview"
-                ? "bg-gray-50"
-                : "hover:bg-gray-50"
+                ? "bg-[#F5F5F5]"
+                : "hover:bg-[#F5F5F5]"
             }`}
           >
             <div className="w-8 h-8 rounded-md flex items-center justify-center">
@@ -93,7 +103,17 @@ export default function Sidebar({ activeItem = "ai-interview" }) {
               />
             </div>
             {firstSidebarOpen && (
-              <span className="text-sm font-semibold text-gray-900">
+              <span
+                style={{
+                  fontFamily: "Body Font",
+                  fontWeight: 500,
+                  fontStyle: "normal",
+                  fontSize: "16px",
+                  lineHeight: "24px",
+                  letterSpacing: "-0.03em",
+                  color: "#575757",
+                }}
+              >
                 AI Interview
               </span>
             )}
@@ -102,11 +122,11 @@ export default function Sidebar({ activeItem = "ai-interview" }) {
           <button
             onClick={() => navigate("/resume-editor")}
             className={`flex items-center ${
-              firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-            } py-1.5 text-gray-900 rounded-3xl w-full transition-colors ${
+              firstSidebarOpen ? "space-x-3" : "justify-center"
+            } pt-1 pr-2 pb-1 pl-2 text-gray-900 rounded-[12px] w-full transition-colors border-0 ${
               activeItem === "get-vetted"
-                ? "bg-gray-50"
-                : "hover:bg-gray-50"
+                ? "bg-[#F5F5F5]"
+                : "hover:bg-[#F5F5F5]"
             }`}
           >
             <div className="w-8 h-8 rounded-md flex items-center justify-center">
@@ -118,7 +138,17 @@ export default function Sidebar({ activeItem = "ai-interview" }) {
               />
             </div>
             {firstSidebarOpen && (
-              <span className="text-sm font-semibold text-gray-900">
+              <span
+                style={{
+                  fontFamily: "Body Font",
+                  fontWeight: 500,
+                  fontStyle: "normal",
+                  fontSize: "16px",
+                  lineHeight: "24px",
+                  letterSpacing: "-0.03em",
+                  color: "#575757",
+                }}
+              >
                 Get Vetted
               </span>
             )}
@@ -127,11 +157,11 @@ export default function Sidebar({ activeItem = "ai-interview" }) {
           <button
             onClick={() => navigate("/manage-resume")}
             className={`flex items-center ${
-              firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-            } py-1.5 text-gray-900 rounded-3xl w-full transition-colors ${
+              firstSidebarOpen ? "space-x-3" : "justify-center"
+            } pt-1 pr-2 pb-1 pl-2 text-gray-900 rounded-[12px] w-full transition-colors border-0 ${
               activeItem === "manage-resume"
-                ? "bg-gray-50"
-                : "hover:bg-gray-50"
+                ? "bg-[#F5F5F5]"
+                : "hover:bg-[#F5F5F5]"
             }`}
           >
             <div className="w-8 h-8 rounded-md flex items-center justify-center">
@@ -143,7 +173,17 @@ export default function Sidebar({ activeItem = "ai-interview" }) {
               />
             </div>
             {firstSidebarOpen && (
-              <span className="text-sm font-semibold text-gray-900">
+              <span
+                style={{
+                  fontFamily: "Body Font",
+                  fontWeight: 500,
+                  fontStyle: "normal",
+                  fontSize: "16px",
+                  lineHeight: "24px",
+                  letterSpacing: "-0.03em",
+                  color: "#575757",
+                }}
+              >
                 Manage Resume
               </span>
             )}
@@ -152,9 +192,9 @@ export default function Sidebar({ activeItem = "ai-interview" }) {
           <button
             onClick={() => navigate("/manage-jds")}
             className={`flex items-center ${
-              firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-            } py-1.5 text-gray-900 rounded-3xl w-full transition-colors ${
-              activeItem === "manage-jds" ? "bg-gray-50" : "hover:bg-gray-50"
+              firstSidebarOpen ? "space-x-3" : "justify-center"
+            } pt-1 pr-2 pb-1 pl-2 text-gray-900 rounded-[12px] w-full transition-colors border-0 ${
+              activeItem === "manage-jds" ? "bg-[#F5F5F5]" : "hover:bg-[#F5F5F5]"
             }`}
           >
             <div className="w-8 h-8 rounded-md flex items-center justify-center">
@@ -166,7 +206,17 @@ export default function Sidebar({ activeItem = "ai-interview" }) {
               />
             </div>
             {firstSidebarOpen && (
-              <span className="text-sm font-semibold text-gray-900">
+              <span
+                style={{
+                  fontFamily: "Body Font",
+                  fontWeight: 500,
+                  fontStyle: "normal",
+                  fontSize: "16px",
+                  lineHeight: "24px",
+                  letterSpacing: "-0.03em",
+                  color: "#575757",
+                }}
+              >
                 Manage JDs
               </span>
             )}
