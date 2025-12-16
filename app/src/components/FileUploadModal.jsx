@@ -27,11 +27,16 @@ export default function FileUploadModal({ isOpen, onClose, onFileUpload }) {
     if (onFileUpload && fileArray.length > 0) {
       const file = fileArray[0];
       // For text files, read the content
-      if (file.type === "text/plain") {
+      const fileName = file.name.toLowerCase();
+      if (file.type === "text/plain" || fileName.endsWith('.txt')) {
         const reader = new FileReader();
         reader.onload = (e) => {
           const text = e.target.result;
           onFileUpload(file, text);
+        };
+        reader.onerror = () => {
+          // If reading fails, still pass the file
+          onFileUpload(file, null);
         };
         reader.readAsText(file);
       } else {
@@ -97,7 +102,7 @@ export default function FileUploadModal({ isOpen, onClose, onFileUpload }) {
             <span
               className="text-sm font-medium"
               style={{
-                fontFamily: "Body Font",
+                fontFamily: "IBM Plex Sans",
                 fontWeight: 500,
                 color: "#7c00ff",
               }}
@@ -108,7 +113,7 @@ export default function FileUploadModal({ isOpen, onClose, onFileUpload }) {
           <h2
             className="text-lg font-semibold"
             style={{
-              fontFamily: "Body Font",
+              fontFamily: "IBM Plex Sans",
               fontWeight: 600,
               color: "#575757",
             }}
@@ -143,7 +148,7 @@ export default function FileUploadModal({ isOpen, onClose, onFileUpload }) {
             <p
               className="text-sm font-medium"
               style={{
-                fontFamily: "Body Font",
+                fontFamily: "IBM Plex Sans",
                 fontWeight: 500,
                 color: "#000000",
               }}

@@ -240,10 +240,10 @@ export default function Sidebar({ activeItem = "ai-interview" }) {
                 </span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">
+                <p className="text-sm font-medium text-gray-900 truncate" style={{ fontFamily: 'Body Font' }}>
                   John Doe
                 </p>
-                <p className="text-xs text-gray-500 truncate">Designer</p>
+                <p className="text-xs text-gray-500 truncate" style={{ fontFamily: 'Body Font' }}>Designer</p>
               </div>
             </div>
           ) : (
