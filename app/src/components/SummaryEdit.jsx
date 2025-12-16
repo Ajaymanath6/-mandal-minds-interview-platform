@@ -21,6 +21,7 @@ export default function SummaryEdit({
   toggleFieldEdit,
   updateResumeData,
   activeResumeSection,
+  onScanningStateChange,
 }) {
   const navigate = useNavigate();
 
@@ -189,12 +190,24 @@ export default function SummaryEdit({
   };
 
   // Compare Resume Content Component
-  const CompareResumeContent = ({ resumeData }) => {
+  const CompareResumeContent = ({ resumeData, onScanningStateChange }) => {
+    const [matchScore, setMatchScore] = useState(null);
     const [jdText, setJdText] = useState("");
+    const [isScanning, setIsScanning] = useState(false);
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
     const handleFileUpload = (file, text) => {
       if (file) {
+        // Close the upload modal
+        setIsUploadModalOpen(false);
+        
+        // Reset states
+        setMatchScore(null);
+        setIsScanning(false);
+        if (onScanningStateChange) {
+          onScanningStateChange(false);
+        }
+
         // If text is provided (from .txt files), use it
         if (text && text.trim()) {
           setJdText(text);
@@ -227,8 +240,53 @@ export default function SummaryEdit({
     const handleTextChange = (e) => {
       const text = e.target.value;
       setJdText(text);
+      // If text is cleared, reset match score
+      if (!text.trim()) {
+        setMatchScore(null);
+        setIsScanning(false);
+        if (onScanningStateChange) {
+          onScanningStateChange(false);
+        }
+      }
     };
 
+    const handleCompareClick = () => {
+      if (!jdText.trim() || isScanning) return;
+      startScanning(jdText);
+    };
+
+    const startScanning = (text) => {
+      if (!text.trim()) return;
+      
+      setIsScanning(true);
+      setMatchScore(null);
+      if (onScanningStateChange) {
+        onScanningStateChange(true);
+      }
+
+      // Simulate scanning process (exactly 2 seconds)
+      setTimeout(() => {
+        // Calculate match score (dummy calculation)
+        const calculatedScore = Math.floor(60 + Math.random() * 30); // 60-90%
+        setMatchScore(calculatedScore);
+        setIsScanning(false);
+        if (onScanningStateChange) {
+          onScanningStateChange(false);
+        }
+      }, 2000);
+    };
+
+    const getMatchTitle = (score) => {
+      if (score >= 80) return "You're a Strong Candidate!";
+      if (score >= 60) return "A Promising Match!";
+      return "Room for Improvement";
+    };
+
+    const getMatchColor = (score) => {
+      if (score >= 80) return "#10b981"; // green
+      if (score >= 60) return "#f59e0b"; // amber
+      return "#ef4444"; // red
+    };
 
     return (
       <div className="p-4 space-y-4">
@@ -239,37 +297,114 @@ export default function SummaryEdit({
               <span style={{ fontFamily: 'IBM Plex Sans', fontWeight: 500, fontSize: '16px', lineHeight: '24px', letterSpacing: '-0.03em' }}>Job Description (JD)</span>
             </div>
           </div>
-          <div className="mt-3 p-4 bg-white rounded-xl shadow-lg">
+          <div className="mt-3 p-4 bg-white rounded-xl shadow-lg" style={{ border: '1px solid #E5E5E5' }}>
             <div className="space-y-3">
-              <div className="flex gap-2 mb-2">
-                <button
-                  onClick={() => setIsUploadModalOpen(true)}
-                  className="flex items-center gap-2 px-4 py-2 border border-[#dfe1e5] rounded-[7px] transition-all hover:bg-[#F5F5F5] cursor-pointer"
-                  style={{ fontFamily: 'IBM Plex Sans', fontWeight: 500, fontSize: '14px', color: '#1A1A1A' }}
-                >
-                  <span className="material-symbols-outlined" style={{ fontSize: 16, color: '#575757' }}>
-                    upload_file
-                  </span>
-                  Upload JD File
-                </button>
-                <FileUploadModal
-                  isOpen={isUploadModalOpen}
-                  onClose={() => setIsUploadModalOpen(false)}
-                  onFileUpload={handleFileUpload}
-                />
-              </div>
+              {!jdText.trim() && (
+                <div className="flex gap-2 mb-2">
+                  <button
+                    onClick={() => setIsUploadModalOpen(true)}
+                    className="flex items-center gap-2 px-4 py-2 border border-[#dfe1e5] rounded-[7px] transition-all hover:bg-[#F5F5F5] cursor-pointer"
+                    style={{ fontFamily: 'IBM Plex Sans', fontWeight: 500, fontSize: '14px', color: '#1A1A1A' }}
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: 16, color: '#575757' }}>
+                      upload_file
+                    </span>
+                    Upload JD File
+                  </button>
+                  <FileUploadModal
+                    isOpen={isUploadModalOpen}
+                    onClose={() => setIsUploadModalOpen(false)}
+                    onFileUpload={handleFileUpload}
+                  />
+                </div>
+              )}
               <textarea
                 value={jdText}
                 onChange={handleTextChange}
                 placeholder="Paste or upload Job Description here to compare with your resume..."
                 rows={8}
-                className="w-full px-3 py-2 text-sm text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b] hover:bg-[#F5F5F5]"
-                style={{ fontFamily: 'IBM Plex Sans' }}
+                className="w-full px-3 py-2 text-sm text-[#3c4043] bg-white border rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b] hover:bg-[#F5F5F5]"
+                style={{ fontFamily: 'IBM Plex Sans', borderColor: '#E5E5E5' }}
               />
+              {jdText.trim() && matchScore === null && (
+                <button
+                  onClick={handleCompareClick}
+                  disabled={isScanning}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] text-white rounded-[7px] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ fontFamily: 'IBM Plex Sans', fontWeight: 500, fontSize: '14px' }}
+                >
+                  {isScanning ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>Scanning</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
+                        compare_arrows
+                      </span>
+                      Compare Resume with JD
+                    </>
+                  )}
+                </button>
+              )}
             </div>
           </div>
         </div>
 
+        {/* Overall Match Score Section - Show below JD after scanning completes */}
+        {matchScore !== null && !isScanning && (
+          <div className="mb-4">
+            <div className="flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium" style={{ backgroundColor: '#F5F5F5', color: '#1A1A1A' }}>
+              <div className="flex items-center space-x-3">
+                <span style={{ fontFamily: 'IBM Plex Sans', fontWeight: 500, fontSize: '16px', lineHeight: '24px', letterSpacing: '-0.03em' }}>Overall Match Score</span>
+              </div>
+            </div>
+            <div className="mt-3 p-4 bg-white rounded-xl shadow-lg">
+              <div className="flex flex-col items-center justify-center space-y-4">
+                {/* Circular Progress */}
+                <div className="relative w-32 h-32">
+                  <svg className="transform -rotate-90 w-32 h-32">
+                    <circle
+                      cx="64"
+                      cy="64"
+                      r="56"
+                      stroke="#F5F5F5"
+                      strokeWidth="12"
+                      fill="none"
+                    />
+                    <circle
+                      cx="64"
+                      cy="64"
+                      r="56"
+                      stroke={getMatchColor(matchScore)}
+                      strokeWidth="12"
+                      fill="none"
+                      strokeDasharray={`${2 * Math.PI * 56}`}
+                      strokeDashoffset={`${2 * Math.PI * 56 * (1 - matchScore / 100)}`}
+                      strokeLinecap="round"
+                      className="transition-all duration-500"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="text-3xl font-bold" style={{ color: getMatchColor(matchScore), fontFamily: 'IBM Plex Sans' }}>
+                        {matchScore}%
+                      </div>
+                      <div className="text-xs" style={{ color: '#575757', fontFamily: 'IBM Plex Sans' }}>
+                        Match
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {/* Qualitative Title */}
+                <h3 className="text-lg font-semibold text-center" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>
+                  {getMatchTitle(matchScore)}
+                </h3>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   };

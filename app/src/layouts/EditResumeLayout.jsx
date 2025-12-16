@@ -13,6 +13,7 @@ export default function EditResumeLayout({
   activeResumeSection,
   renderResumeSection,
   ResumeSectionWrapper,
+  onScanningStateChange,
 }) {
   return (
     <div className="flex flex-col md:flex-row w-full" style={{ height: "100vh" }}>
@@ -28,6 +29,7 @@ export default function EditResumeLayout({
         toggleFieldEdit={toggleFieldEdit}
         updateResumeData={updateResumeData}
         activeResumeSection={activeResumeSection}
+        onScanningStateChange={onScanningStateChange}
       />
 
       {/* Right Side - Resume Display */}

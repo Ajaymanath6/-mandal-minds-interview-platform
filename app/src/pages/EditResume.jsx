@@ -33,6 +33,7 @@ export default function EditResume() {
   const [editingFields, setEditingFields] = useState({});
   const [hoveredResumeSection, setHoveredResumeSection] = useState(null);
   const [activeResumeSection, setActiveResumeSection] = useState(null);
+  const [isScanningResume, setIsScanningResume] = useState(false);
   const [resumeData, setResumeData] = useState({
     personal: {
       name: "John Doe",
@@ -250,6 +251,7 @@ export default function EditResume() {
           activeResumeSection={activeResumeSection}
           renderResumeSection={renderResumeSection}
           ResumeSectionWrapper={ResumeSectionWrapper}
+          onScanningStateChange={setIsScanningResume}
         />
       </div>
     </div>
