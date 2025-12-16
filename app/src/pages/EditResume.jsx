@@ -38,6 +38,7 @@ export default function EditResume() {
   const [editingFields, setEditingFields] = useState({}); // Track which fields are being edited
   const [hoveredResumeSection, setHoveredResumeSection] = useState(null);
   const [activeResumeSection, setActiveResumeSection] = useState(null);
+  const [activeTab, setActiveTab] = useState("edit-resume"); // Track active tab
   const location = useLocation();
   // Determine file type from location state or default to PDF
   const [fileType, setFileType] = useState(() => {
@@ -566,6 +567,51 @@ export default function EditResume() {
                   arrow_back
                 </span>
               </button>
+            </div>
+
+            {/* Tabs */}
+            <div className="px-4 pt-4 border-b border-gray-200">
+              <div className="flex gap-1">
+                <button
+                  onClick={() => setActiveTab("edit-resume")}
+                  className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${
+                    activeTab === "edit-resume"
+                      ? "bg-[#F5F5F5]"
+                      : "hover:bg-[#F5F5F5]"
+                  }`}
+                  style={{
+                    color: activeTab === "edit-resume" ? "#1A1A1A" : "#575757",
+                  }}
+                >
+                  Edit Resume
+                </button>
+                <button
+                  onClick={() => setActiveTab("compare-resume")}
+                  className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${
+                    activeTab === "compare-resume"
+                      ? "bg-[#F5F5F5]"
+                      : "hover:bg-[#F5F5F5]"
+                  }`}
+                  style={{
+                    color: activeTab === "compare-resume" ? "#1A1A1A" : "#575757",
+                  }}
+                >
+                  Compare Resume
+                </button>
+                <button
+                  onClick={() => setActiveTab("summarise")}
+                  className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${
+                    activeTab === "summarise"
+                      ? "bg-[#F5F5F5]"
+                      : "hover:bg-[#F5F5F5]"
+                  }`}
+                  style={{
+                    color: activeTab === "summarise" ? "#1A1A1A" : "#575757",
+                  }}
+                >
+                  Summarise
+                </button>
+              </div>
             </div>
 
             {/* Sections */}
