@@ -680,8 +680,8 @@ export default function EditResume() {
             )}
 
             {activeTab === "compare-resume" && (
-              <div className="flex-1 p-4 overflow-y-auto thin-scrollbar">
-                {/* Blank section for Compare Resume */}
+              <div className="flex-1 p-4 overflow-y-auto thin-scrollbar" style={{ backgroundColor: '#000000' }}>
+                {/* Black screen for Compare Resume */}
               </div>
             )}
 
