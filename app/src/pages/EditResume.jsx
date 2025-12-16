@@ -570,16 +570,16 @@ export default function EditResume() {
             </div>
 
             {/* Tabs */}
-            <div className="px-4 pt-4 border-b border-gray-200">
+            <div className="px-4 pt-4 pb-4">
               <div className="flex gap-2">
                 <button
                   onClick={() => setActiveTab("edit-resume")}
-                  className="transition-colors hover:bg-[#F5F5F5]"
+                  className="transition-colors hover:bg-[#F5F5F5] text-sm font-medium"
                   style={{
                     padding: "4px 6px",
                     borderRadius: "10px",
                     fontFamily: "Body Font",
-                    fontWeight: 600,
+                    fontWeight: 500,
                     fontStyle: "normal",
                     fontSize: "16px",
                     lineHeight: "24px",
@@ -592,12 +592,12 @@ export default function EditResume() {
                 </button>
                 <button
                   onClick={() => setActiveTab("compare-resume")}
-                  className="transition-colors hover:bg-[#F5F5F5]"
+                  className="transition-colors hover:bg-[#F5F5F5] text-sm font-medium"
                   style={{
                     padding: "4px 6px",
                     borderRadius: "10px",
                     fontFamily: "Body Font",
-                    fontWeight: 600,
+                    fontWeight: 500,
                     fontStyle: "normal",
                     fontSize: "16px",
                     lineHeight: "24px",
@@ -610,12 +610,12 @@ export default function EditResume() {
                 </button>
                 <button
                   onClick={() => setActiveTab("summarise")}
-                  className="transition-colors hover:bg-[#F5F5F5]"
+                  className="transition-colors hover:bg-[#F5F5F5] text-sm font-medium"
                   style={{
                     padding: "4px 6px",
                     borderRadius: "10px",
                     fontFamily: "Body Font",
-                    fontWeight: 600,
+                    fontWeight: 500,
                     fontStyle: "normal",
                     fontSize: "16px",
                     lineHeight: "24px",
@@ -629,13 +629,14 @@ export default function EditResume() {
               </div>
             </div>
 
-            {/* Sections */}
-            <Reorder.Group
-              axis="y"
-              values={sections}
-              onReorder={setSections}
-              className="flex-1 p-4 space-y-4 overflow-y-auto thin-scrollbar"
-            >
+            {/* Content based on active tab */}
+            {activeTab === "edit-resume" && (
+              <Reorder.Group
+                axis="y"
+                values={sections}
+                onReorder={setSections}
+                className="flex-1 p-4 space-y-4 overflow-y-auto thin-scrollbar"
+              >
               {sections.map((section) => {
                 const Icon = section.icon;
                 const dragControls = useDragControls();
@@ -652,7 +653,7 @@ export default function EditResume() {
                     <div className="flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium" style={{ backgroundColor: '#F5F5F5', color: '#1A1A1A' }}>
                       <div className="flex items-center space-x-3">
                         <Icon size={16} style={{ color: '#575757' }} />
-                        <span>{section.name}</span>
+                        <span style={{ fontFamily: 'Body Font', fontWeight: 500, fontSize: '16px', lineHeight: '24px', letterSpacing: '-0.03em' }}>{section.name}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <button className="text-gray-500 hover:text-gray-700 hover:bg-white p-1 rounded">
@@ -675,7 +676,44 @@ export default function EditResume() {
                   </Reorder.Item>
                 );
               })}
-            </Reorder.Group>
+              </Reorder.Group>
+            )}
+
+            {activeTab === "compare-resume" && (
+              <div className="flex-1 p-4 overflow-y-auto thin-scrollbar">
+                {/* Blank section for Compare Resume */}
+              </div>
+            )}
+
+            {activeTab === "summarise" && (
+              <div className="flex-1 p-4 overflow-y-auto thin-scrollbar">
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h3 className="text-lg font-semibold mb-4" style={{ color: '#1A1A1A' }}>
+                    Resume Summary
+                  </h3>
+                  <div className="space-y-4">
+                    <p style={{ color: '#1A1A1A', lineHeight: '1.6' }}>
+                      {resumeData.personal.name} is a {resumeData.work[0]?.title || 'professional'} with experience at {resumeData.work[0]?.company || 'various companies'}. 
+                      Currently working as {resumeData.work[0]?.title || 'a professional'} at {resumeData.work[0]?.company || 'their current organization'} since {resumeData.work[0]?.startDate || 'recently'}. 
+                      {resumeData.work[0]?.description || 'Has a strong background in software development and technology.'}
+                    </p>
+                    <div>
+                      <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A' }}>Education:</h4>
+                      <p style={{ color: '#1A1A1A' }}>
+                        {resumeData.education.degree} from {resumeData.education.institution} ({resumeData.education.startYear} - {resumeData.education.endYear})
+                        {resumeData.education.gpa && `, GPA: ${resumeData.education.gpa}`}
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A' }}>Contact:</h4>
+                      <p style={{ color: '#1A1A1A' }}>
+                        {resumeData.personal.email} | {resumeData.personal.phone} | {resumeData.personal.location}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
