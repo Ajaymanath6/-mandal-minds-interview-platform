@@ -571,42 +571,57 @@ export default function EditResume() {
 
             {/* Tabs */}
             <div className="px-4 pt-4 border-b border-gray-200">
-              <div className="flex gap-1">
+              <div className="flex gap-2">
                 <button
                   onClick={() => setActiveTab("edit-resume")}
-                  className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${
-                    activeTab === "edit-resume"
-                      ? "bg-[#F5F5F5]"
-                      : "hover:bg-[#F5F5F5]"
-                  }`}
+                  className="transition-colors hover:bg-[#F5F5F5]"
                   style={{
-                    color: activeTab === "edit-resume" ? "#1A1A1A" : "#575757",
+                    padding: "4px 6px",
+                    borderRadius: "10px",
+                    fontFamily: "Body Font",
+                    fontWeight: 600,
+                    fontStyle: "normal",
+                    fontSize: "16px",
+                    lineHeight: "24px",
+                    letterSpacing: "-0.03em",
+                    color: "#1A1A1A",
+                    backgroundColor: activeTab === "edit-resume" ? "#F5F5F5" : "transparent",
                   }}
                 >
                   Edit Resume
                 </button>
                 <button
                   onClick={() => setActiveTab("compare-resume")}
-                  className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${
-                    activeTab === "compare-resume"
-                      ? "bg-[#F5F5F5]"
-                      : "hover:bg-[#F5F5F5]"
-                  }`}
+                  className="transition-colors hover:bg-[#F5F5F5]"
                   style={{
-                    color: activeTab === "compare-resume" ? "#1A1A1A" : "#575757",
+                    padding: "4px 6px",
+                    borderRadius: "10px",
+                    fontFamily: "Body Font",
+                    fontWeight: 600,
+                    fontStyle: "normal",
+                    fontSize: "16px",
+                    lineHeight: "24px",
+                    letterSpacing: "-0.03em",
+                    color: "#1A1A1A",
+                    backgroundColor: activeTab === "compare-resume" ? "#F5F5F5" : "transparent",
                   }}
                 >
                   Compare Resume
                 </button>
                 <button
                   onClick={() => setActiveTab("summarise")}
-                  className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${
-                    activeTab === "summarise"
-                      ? "bg-[#F5F5F5]"
-                      : "hover:bg-[#F5F5F5]"
-                  }`}
+                  className="transition-colors hover:bg-[#F5F5F5]"
                   style={{
-                    color: activeTab === "summarise" ? "#1A1A1A" : "#575757",
+                    padding: "4px 6px",
+                    borderRadius: "10px",
+                    fontFamily: "Body Font",
+                    fontWeight: 600,
+                    fontStyle: "normal",
+                    fontSize: "16px",
+                    lineHeight: "24px",
+                    letterSpacing: "-0.03em",
+                    color: "#1A1A1A",
+                    backgroundColor: activeTab === "summarise" ? "#F5F5F5" : "transparent",
                   }}
                 >
                   Summarise
