@@ -49,10 +49,10 @@ export default function Sidebar({ activeItem = "ai-interview" }) {
                 onClick={() => setFirstSidebarOpen(true)}
               >
                 {isLogoHovered ? (
-                  <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                  <div className="w-full h-full flex items-center justify-center" style={{ backgroundColor: "#F5F5F5" }}>
                     <span
-                      className="material-symbols-outlined text-gray-600"
-                      style={{ fontSize: 20 }}
+                      className="material-symbols-outlined"
+                      style={{ fontSize: 20, color: "#575757" }}
                     >
                       dock_to_right
                     </span>
@@ -69,7 +69,7 @@ export default function Sidebar({ activeItem = "ai-interview" }) {
             {firstSidebarOpen && (
               <button
                 onClick={() => setFirstSidebarOpen(false)}
-                className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded"
+                className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 bg-[#F5F5F5] hover:bg-[#F5F5F5] rounded"
               >
                 <span
                   className="material-symbols-outlined"
@@ -227,7 +227,7 @@ export default function Sidebar({ activeItem = "ai-interview" }) {
         <div className="p-3 border-t border-gray-200">
           {firstSidebarOpen ? (
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-[#F5F5F5] rounded-full flex items-center justify-center">
                 <span
                   className="material-symbols-outlined text-purple-600"
                   style={{

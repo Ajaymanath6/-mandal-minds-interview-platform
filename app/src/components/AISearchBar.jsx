@@ -1,67 +1,56 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
-  RiSearchLine,
   RiFileTextLine,
-  RiUploadLine,
-  RiBookmarkLine,
-  RiBarChartBoxLine,
   RiArrowRightLine,
   RiArrowLeftLine,
   RiSaveLine,
+  RiCloseLine,
+  RiSearchLine,
 } from "@remixicon/react";
+import { IbmWatsonDiscovery, Chat, IbmWatsonOpenscale } from "@carbon/icons-react";
+import FileUploadModal from "./FileUploadModal";
 
 export default function AISearchBar({
-  onSearch,
   onCompare,
-  savedJDs = [],
   onSaveJD,
+  onJDUploaded,
+  externalJDFile,
 }) {
-  const [activeTab, setActiveTab] = useState("compare");
+  const [activeTab, setActiveTab] = useState("upload");
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
+  const [jdUploadStatus, setJdUploadStatus] = useState("idle"); // idle, uploading, loaded
+  const [jdImage, setJdImage] = useState(null);
+  const textareaRef = useRef(null);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const tabs = [
     {
-      id: "compare",
-      label: "Compare with JD",
-      icon: RiSearchLine,
+      id: "upload",
+      label: "AI job Search",
+      icon: IbmWatsonDiscovery,
     },
     {
       id: "analyze",
-      label: "Analyze Resume",
-      icon: RiFileTextLine,
+      label: "Chat with Resume",
+      icon: Chat,
+      disabled: false,
     },
     {
-      id: "match",
-      label: "Match Score",
-      icon: RiBarChartBoxLine,
-    },
-    {
-      id: "upload",
-      label: "Upload JD",
-      icon: RiUploadLine,
-    },
-    {
-      id: "saved",
-      label: "Saved Comparisons",
-      icon: RiBookmarkLine,
+      id: "interview",
+      label: "AI Interview",
+      icon: IbmWatsonOpenscale,
+      disabled: false,
     },
   ];
 
   const handleSearch = () => {
     if (!searchQuery.trim()) return;
 
-    setIsSearching(true);
-
     // Trigger comparison
     if (onCompare) {
       onCompare(searchQuery);
     }
-
-    // Simulate search delay
-    setTimeout(() => {
-      setIsSearching(false);
-    }, 1000);
   };
 
   const handleKeyPress = (e) => {
@@ -71,120 +60,331 @@ export default function AISearchBar({
     }
   };
 
+  const handleFileSelect = (file) => {
+    setJdUploadStatus("uploading");
+    setJdImage("/jd1.png");
+
+    // Simulate file processing (2-3 seconds)
+    setTimeout(() => {
+      setJdUploadStatus("loaded");
+      // Extract text from file (simulate for now)
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target.result;
+        setSearchQuery(text);
+        if (onCompare) {
+          onCompare(text);
+        }
+        if (onJDUploaded) {
+          onJDUploaded(text, file.name);
+        }
+      };
+      if (file.type === "text/plain") {
+        reader.readAsText(file);
+      } else {
+        // For PDF/DOCX, simulate text extraction
+        setTimeout(() => {
+          const simulatedText = `Job Description extracted from ${file.name}`;
+          setSearchQuery(simulatedText);
+          if (onCompare) {
+            onCompare(simulatedText);
+          }
+          if (onJDUploaded) {
+            onJDUploaded(simulatedText, file.name);
+          }
+        }, 500);
+      }
+    }, 2000);
+  };
+
+
+  const handleRemoveJD = () => {
+    setJdUploadStatus("idle");
+    setJdImage(null);
+    setSearchQuery("");
+  };
+
+  // Handle drag and drop for Chat with Resume tab and AI Interview tab
+  const handleDragOver = (e) => {
+    if (activeTab === "analyze" || activeTab === "interview") {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDragging(true);
+    }
+  };
+
+  const handleDragLeave = (e) => {
+    if (activeTab === "analyze" || activeTab === "interview") {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDragging(false);
+    }
+  };
+
+  const handleDrop = (e) => {
+    if (activeTab === "analyze" || activeTab === "interview") {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDragging(false);
+
+      const files = e.dataTransfer.files;
+      if (files && files.length > 0) {
+        handleFileSelect(files[0]);
+      }
+    }
+  };
+
+  const handleFileInput = (e) => {
+    if ((activeTab === "analyze" || activeTab === "interview") && e.target.files && e.target.files.length > 0) {
+      handleFileSelect(e.target.files[0]);
+    }
+  };
+
+  // Update placeholder based on JD upload status
+  const getPlaceholder = () => {
+    if (activeTab === "analyze") {
+      return "Ask questions about your resume or get analysis...";
+    }
+    if (activeTab === "interview") {
+      return "Select JD or upload JD or write JD copy paste JD to text area";
+    }
+    if (jdUploadStatus === "loaded") {
+      return "JD uploaded successfully! Now upload your resume or select from existing resumes to start interview.";
+    }
+    return "Click 'Upload JD File' button to upload, or paste job description here...";
+  };
+
+  // Handle external JD file uploads
+  useEffect(() => {
+    if (externalJDFile) {
+      handleFileSelect(externalJDFile);
+      // Reset external file after processing to allow re-uploads
+      // Note: The parent component should reset this
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [externalJDFile]);
+
+  useEffect(() => {
+    if ((activeTab === "upload" || activeTab === "interview") && jdUploadStatus === "idle") {
+      const textarea = textareaRef.current;
+      if (textarea) {
+        const pasteHandler = (e) => {
+          if ((activeTab === "upload" || activeTab === "interview") && jdUploadStatus === "idle") {
+            const pastedText = e.clipboardData.getText();
+            if (pastedText.trim()) {
+              setJdUploadStatus("uploading");
+              setJdImage("/jd1.png");
+              
+              setTimeout(() => {
+                setJdUploadStatus("loaded");
+                setSearchQuery(pastedText);
+                if (onCompare) {
+                  onCompare(pastedText);
+                }
+                if (onJDUploaded) {
+                  onJDUploaded(pastedText, "Pasted JD");
+                }
+              }, 2000);
+            }
+          }
+        };
+        textarea.addEventListener("paste", pasteHandler);
+        return () => {
+          textarea.removeEventListener("paste", pasteHandler);
+        };
+      }
+    }
+  }, [activeTab, jdUploadStatus, onCompare, onJDUploaded]);
+
   return (
     <div className="w-full max-w-4xl mx-auto">
       {/* Search Bar Container */}
       <div className="bg-[#F5F5F5] rounded-xl border border-[#E5E5E5] shadow-sm pt-[23px] pb-[23px] px-6">
         {/* Tabs - Inside search bar at the top */}
-        <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2">
+        <div className="flex items-center gap-2 mb-3 overflow-x-auto pb-2">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
-            const isMatchTab = tab.id === "match";
+            const isDisabled = tab.disabled === true;
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => {
+                  if (!isDisabled) {
+                    setActiveTab(tab.id);
+                  }
+                }}
+                disabled={isDisabled}
                 className={`flex items-center space-x-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-                  isActive
+                  isDisabled
+                    ? "bg-transparent text-[#A5A5A5] cursor-not-allowed opacity-50"
+                    : isActive
                     ? "bg-[#0A0A0A] text-white shadow-md"
-                    : "bg-transparent text-[#1A1A1A] hover:bg-[#F5F5F5]"
+                    : "bg-[#E5E5E5] text-[#1A1A1A] hover:bg-[#E5E5E5]"
                 }`}
+                title={isDisabled ? "Please upload JD first" : ""}
               >
                 <Icon size={18} />
                 <span className="hidden sm:inline">{tab.label}</span>
-                {isMatchTab && (
-                  <RiArrowRightLine size={16} className="ml-1" />
-                )}
               </button>
             );
           })}
         </div>
         {/* Search Input Area */}
-        <div className="relative">
+        <div 
+          className="relative"
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        >
+          
+          {/* JD Image Preview with Loading Spinner */}
+          {jdUploadStatus !== "idle" && jdImage && (
+            <div className="absolute inset-0 bg-white rounded-lg flex items-center justify-center z-10">
+              <div className="relative">
+                <img
+                  src={jdImage}
+                  alt="JD Preview"
+                  className="max-w-full max-h-[140px] object-contain rounded-lg"
+                />
+                {/* Loading Spinner Overlay */}
+                {jdUploadStatus === "uploading" && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-80 rounded-lg">
+                    <div className="relative">
+                      <div className="w-12 h-12 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
+                    </div>
+                  </div>
+                )}
+                {/* Remove button when loaded */}
+                {jdUploadStatus === "loaded" && (
+                  <button
+                    onClick={handleRemoveJD}
+                    className="absolute top-2 right-2 w-8 h-8 bg-gray-800 hover:bg-gray-900 text-white rounded-full flex items-center justify-center transition-colors"
+                    aria-label="Remove JD"
+                  >
+                    <RiCloseLine size={16} />
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+          
+          {/* Dotted border overlay for Chat with Resume tab */}
+          {activeTab === "analyze" && jdUploadStatus === "idle" && (
+            <div 
+              className="absolute inset-0 border-2 border-dashed rounded-lg z-10 flex items-center justify-center transition-colors bg-white"
+              style={{
+                borderColor: isDragging ? '#E5E5E5' : '#E5E5E5'
+              }}
+            >
+              <div className="text-center">
+                <p className="text-base font-medium">
+                  <button
+                    onClick={() => setIsUploadModalOpen(true)}
+                    className="text-purple-600 hover:text-purple-700 underline cursor-pointer"
+                  >
+                    Select
+                  </button> or drop files here
+                </p>
+                <input
+                  type="file"
+                  id="resume-file-input"
+                  className="hidden"
+                  onChange={handleFileInput}
+                  accept=".pdf,.doc,.docx,.txt"
+                />
+              </div>
+            </div>
+          )}
+          
+          {/* Dotted border overlay for AI Interview tab */}
+          {activeTab === "interview" && jdUploadStatus === "idle" && (
+            <div 
+              className="absolute inset-0 border-2 border-dashed rounded-lg z-10 flex items-center justify-center transition-colors bg-white"
+              style={{
+                borderColor: isDragging ? '#E5E5E5' : '#E5E5E5'
+              }}
+            >
+              <div className="text-center">
+                <p className="text-base font-medium">
+                  <button
+                    onClick={() => setIsUploadModalOpen(true)}
+                    className="text-purple-600 hover:text-purple-700 underline cursor-pointer"
+                  >
+                    Select
+                  </button> JD or <button
+                    onClick={() => setIsUploadModalOpen(true)}
+                    className="text-purple-600 hover:text-purple-700 underline cursor-pointer"
+                  >
+                    upload
+                  </button> JD or write JD copy paste JD to text area
+                </p>
+                <input
+                  type="file"
+                  id="interview-file-input"
+                  className="hidden"
+                  onChange={handleFileInput}
+                  accept=".pdf,.doc,.docx,.txt"
+                />
+              </div>
+            </div>
+          )}
+          
           <textarea
+            ref={textareaRef}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder={
-              activeTab === "compare"
-                ? "Paste job description here and press Enter to compare with your resume..."
-                : activeTab === "analyze"
-                ? "Ask questions about your resume or get analysis..."
-                : activeTab === "match"
-                ? "Enter job description to see match score..."
-                : activeTab === "upload"
-                ? "Paste or type job description to upload..."
-                : "Search your saved comparisons..."
-            }
-            className="w-full min-h-[140px] px-4 py-4 pr-12 text-gray-900 bg-white border-0 rounded-lg focus:outline-none resize-none placeholder:text-[#A5A5A5] text-base"
+            placeholder={getPlaceholder()}
+            className={`w-full min-h-[140px] px-6 py-4 pr-16 text-gray-900 bg-white border rounded-lg focus:outline-none resize-none placeholder:text-[#A5A5A5] text-base m-0 ${
+              jdUploadStatus !== "idle" ? "opacity-0 pointer-events-none" : ""
+            } ${(activeTab === "analyze" || activeTab === "interview") && jdUploadStatus === "idle" ? "opacity-0 pointer-events-none" : ""}`}
             rows={5}
+            disabled={jdUploadStatus === "uploading"}
+            style={{ marginLeft: 0, marginRight: 0, marginTop: 0, borderColor: '#E5E5E5' }}
           />
-          {/* Save Job Button - Left Bottom Corner */}
-          <div className="absolute bottom-4 left-4 flex items-center gap-2">
+          
+          {/* Save Job Button - Left Bottom Corner (only show when JD is loaded) */}
+          {jdUploadStatus === "loaded" && (
+            <div className="absolute bottom-4 left-4 flex items-center gap-2 z-20">
+              <button
+                className="flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-transparent text-[#A5A5A5] hover:text-[#1A1A1A] hover:bg-[#F5F5F5]"
+                style={{ boxSizing: 'content-box' }}
+                onClick={() => {
+                  if (searchQuery.trim() && onSaveJD) {
+                    onSaveJD(searchQuery);
+                  }
+                }}
+                aria-label="Save Job"
+              >
+                <RiSaveLine size={18} />
+                <span>Save Job</span>
+              </button>
+            </div>
+          )}
+          {/* Back Arrow Button (only show when JD is loaded) */}
+          {jdUploadStatus === "loaded" && (
             <button
-              className="flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-transparent text-[#A5A5A5] hover:text-[#1A1A1A] hover:bg-[#F5F5F5]"
-              style={{ boxSizing: 'content-box' }}
+              className="absolute bottom-4 right-4 p-2 bg-[#0A0A0A] text-white rounded-lg transition-colors hover:bg-[#1A1A1A] shadow-md z-20"
               onClick={() => {
-                if (searchQuery.trim() && onSaveJD) {
-                  onSaveJD(searchQuery);
-                }
+                handleRemoveJD();
               }}
-              aria-label="Save Job"
+              aria-label="Clear"
             >
-              <RiSaveLine size={18} />
-              <span>Save Job</span>
+              <RiArrowRightLine size={20} />
             </button>
-          </div>
-          {/* Back Arrow Button */}
-          <button
-            className="absolute bottom-4 right-4 p-2 bg-[#0A0A0A] text-white rounded-lg transition-colors hover:bg-[#1A1A1A] shadow-md"
-            onClick={() => {
-              // Add back navigation logic here if needed
-              setSearchQuery("");
-            }}
-            aria-label="Back"
-          >
-            <RiArrowRightLine size={20} />
-          </button>
+          )}
         </div>
       </div>
 
-      {/* Saved JDs Quick Access */}
-      {savedJDs.length > 0 && activeTab === "saved" && (
-        <div className="mt-6 space-y-2">
-          <h3 className="text-sm font-semibold text-gray-900 mb-3">
-            Your Saved Job Descriptions
-          </h3>
-          <div className="grid gap-3">
-            {savedJDs.map((jd, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow cursor-pointer"
-                onClick={() => {
-                  setSearchQuery(jd.content || jd);
-                  setActiveTab("compare");
-                }}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <h4 className="text-sm font-medium text-gray-900">
-                      {jd.title || `JD ${index + 1}`}
-                    </h4>
-                    <p className="text-xs text-gray-500 mt-1 line-clamp-2">
-                      {jd.content || jd}
-                    </p>
-                  </div>
-                  <RiArrowRightLine
-                    size={20}
-                    className="text-gray-400 ml-4"
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* File Upload Modal */}
+      <FileUploadModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        onFileUpload={(file, text) => {
+          handleFileSelect(file);
+        }}
+      />
     </div>
   );
 }

@@ -23,6 +23,8 @@ import {
   RiGraduationCapLine,
   RiStarLine,
   RiArrowRightLine,
+  RiUploadLine,
+  RiFileTextLine,
 } from "@remixicon/react";
 import Sidebar from "./Sidebar";
 import ResumeBuilderSidebar from "./ResumeBuilderSidebar";
@@ -58,6 +60,34 @@ export default function Resume() {
   const [questionCount, setQuestionCount] = useState(0);
   const [showPerformanceReview, setShowPerformanceReview] = useState(false);
   const [savedJDs, setSavedJDs] = useState([]);
+  const [jdUploaded, setJdUploaded] = useState(false);
+  const [selectedResume, setSelectedResume] = useState(null);
+  const [resumeSelectionModal, setResumeSelectionModal] = useState(false);
+  const [resumeFile, setResumeFile] = useState(null);
+  const resumeFileInputRef = useRef(null);
+  const [externalJDFile, setExternalJDFile] = useState(null);
+
+  // Sample resumes - in real app this would come from API
+  const SAMPLE_RESUMES = [
+    {
+      id: 1,
+      resumeName: "Frontend Developer Resume",
+      created: "2024-01-15",
+      lastEdited: "2024-01-20",
+    },
+    {
+      id: 2,
+      resumeName: "Full-Stack Developer Resume",
+      created: "2024-01-10",
+      lastEdited: "2024-01-18",
+    },
+    {
+      id: 3,
+      resumeName: "Backend Developer Resume",
+      created: "2024-01-08",
+      lastEdited: "2024-01-15",
+    },
+  ];
 
   // Custom User Chat Card Component with Layered Effect - Responsive
   const UserChatCard = ({ content }) => {
@@ -390,6 +420,16 @@ export default function Resume() {
         <ResumeBuilderSidebar
           isOpen={secondSidebarOpen}
           onToggle={() => setSecondSidebarOpen(!secondSidebarOpen)}
+          onJDUploaded={(file, text) => {
+            // Set the external JD file to trigger AISearchBar upload
+            setExternalJDFile(file);
+            // Reset after a short delay to allow re-uploads
+            setTimeout(() => {
+              setExternalJDFile(null);
+            }, 100);
+            // Also update JD content
+            setJdContent(text);
+          }}
         />
 
         {/* Main Content - Responsive */}
@@ -656,10 +696,6 @@ export default function Resume() {
 
                 {/* AI Search Bar Component */}
                 <AISearchBar
-                  onSearch={(query) => {
-                    // Handle search query for different tabs
-                    console.log("Search:", query);
-                  }}
                   onCompare={(jdContent) => {
                     // Set JD content in sidebar and trigger analysis
                     setJdContent(jdContent);
@@ -667,10 +703,7 @@ export default function Resume() {
                     if (secondSidebarOpen) {
                       // The sidebar will automatically update via jdContent prop
                     }
-                    // Trigger analysis
-                    setIsAnalyzed(true);
                   }}
-                  savedJDs={savedJDs}
                   onSaveJD={(jdContent) => {
                     // Save JD to saved list
                     const newJD = {
@@ -684,7 +717,114 @@ export default function Resume() {
                     // Also update the JD content in sidebar
                     setJdContent(jdContent);
                   }}
+                  externalJDFile={externalJDFile}
+                  onJDUploaded={(jdContent, fileName) => {
+                    // JD has been uploaded successfully
+                    setJdContent(jdContent);
+                    setJdUploaded(true);
+                  }}
                 />
+
+                {/* Resume Upload/Selection Section - Appears after JD is loaded */}
+                {jdUploaded && (
+                  <div className="mt-6 w-full max-w-4xl mx-auto">
+                    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                        Upload your resume or select your resume from existing resumes and start interview
+                      </h3>
+                      
+                      <div className="flex flex-col sm:flex-row gap-4 mb-4">
+                        {/* Upload Resume Button */}
+                        <label
+                          htmlFor="resume-file-upload"
+                          className="flex items-center justify-center gap-2 px-6 py-3 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-2xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] cursor-pointer text-sm font-medium"
+                        >
+                          <RiUploadLine size={18} />
+                          <span>Upload Resume</span>
+                        </label>
+                        <input
+                          type="file"
+                          ref={resumeFileInputRef}
+                          onChange={(e) => {
+                            const file = e.target.files[0];
+                            if (file) {
+                              setResumeFile(file);
+                              setSelectedResume({
+                                id: Date.now(),
+                                resumeName: file.name,
+                                isFile: true,
+                              });
+                            }
+                          }}
+                          accept=".pdf,.doc,.docx,.txt"
+                          className="hidden"
+                          id="resume-file-upload"
+                        />
+
+                        {/* Select from Existing Resumes Button */}
+                        <button
+                          onClick={() => setResumeSelectionModal(true)}
+                          className="flex items-center justify-center gap-2 px-6 py-3 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-2xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] text-sm font-medium"
+                        >
+                          <RiFileList3Line size={18} />
+                          <span>Select from Existing</span>
+                        </button>
+                      </div>
+
+                      {/* Selected Resume Display */}
+                      {selectedResume && (
+                        <div className="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <RiFileTextLine size={24} className="text-purple-600" />
+                              <div>
+                                <p className="font-medium text-gray-900">
+                                  {selectedResume.resumeName}
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                  {selectedResume.isFile ? "Uploaded file" : "Existing resume"}
+                                </p>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => {
+                                setSelectedResume(null);
+                                setResumeFile(null);
+                                if (resumeFileInputRef.current) {
+                                  resumeFileInputRef.current.value = "";
+                                }
+                              }}
+                              className="text-gray-500 hover:text-gray-700"
+                            >
+                              <RiCloseLine size={20} />
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Start Interview Button */}
+                      <button
+                        onClick={() => {
+                          if (!selectedResume) {
+                            alert("Please upload or select a resume first");
+                            return;
+                          }
+                          // Set JD content and trigger analysis
+                          setIsAnalyzed(true);
+                        }}
+                        disabled={!selectedResume}
+                        className={`w-full flex items-center justify-center gap-2 px-6 py-3 rounded-2xl transition-all font-medium text-sm ${
+                          selectedResume
+                            ? "bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)]"
+                            : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        }`}
+                      >
+                        <RiPlayFill size={20} />
+                        <span>Start Interview</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           ) : (
@@ -845,6 +985,90 @@ export default function Resume() {
           )}
         </div>
       </div>
+
+      {/* Resume Selection Modal */}
+      {resumeSelectionModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Select Resume from Existing
+              </h3>
+              <button
+                onClick={() => setResumeSelectionModal(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <RiCloseLine size={24} />
+              </button>
+            </div>
+
+            <p className="text-sm text-gray-600 mb-4">
+              Choose a resume from your existing resumes to use for the interview
+            </p>
+
+            <div className="space-y-3 mb-6">
+              {SAMPLE_RESUMES.map((resume) => {
+                const isSelected = selectedResume?.id === resume.id && !selectedResume?.isFile;
+                return (
+                  <div
+                    key={resume.id}
+                    onClick={() => {
+                      setSelectedResume(resume);
+                    }}
+                    className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                      isSelected
+                        ? "border-purple-500 bg-purple-50"
+                        : "border-gray-300 hover:bg-gray-50"
+                    }`}
+                  >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <RiFileTextLine size={24} className="text-purple-600" />
+                      <div>
+                        <h4 className="font-medium text-gray-900">
+                          {resume.resumeName}
+                        </h4>
+                        <p className="text-sm text-gray-500">
+                          Last edited: {new Date(resume.lastEdited).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                    {isSelected && (
+                      <div className="w-5 h-5 bg-purple-600 rounded-full flex items-center justify-center">
+                        <span className="text-white text-xs">✓</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                );
+              })}
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  // The resume is already selected when clicking on it in the list
+                  // This button is just for confirmation/closing
+                  setResumeSelectionModal(false);
+                }}
+                className="flex-1 px-6 py-3 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)] rounded-lg transition-all font-medium"
+              >
+                Done
+              </button>
+              <button
+                onClick={() => setResumeSelectionModal(false)}
+                className="px-6 py-3 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-lg transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -7,6 +7,7 @@ import UploadStatusModal from "./UploadStatusModal";
 export default function ResumeBuilderSidebar({
   isOpen,
   onToggle,
+  onJDUploaded,
 }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -90,6 +91,26 @@ export default function ResumeBuilderSidebar({
 
     // Add new uploads to the list
     setUploads((prev) => [...prev, ...newUploads]);
+
+    // If onJDUploaded callback is provided, process the first file as JD
+    if (onJDUploaded && fileArray.length > 0) {
+      const jdFile = fileArray[0];
+      // Simulate file processing
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target.result;
+        onJDUploaded(jdFile, text);
+      };
+      if (jdFile.type === "text/plain") {
+        reader.readAsText(jdFile);
+      } else {
+        // For PDF/DOCX, simulate text extraction
+        setTimeout(() => {
+          const simulatedText = `Job Description extracted from ${jdFile.name}`;
+          onJDUploaded(jdFile, simulatedText);
+        }, 500);
+      }
+    }
 
     // Simulate upload process
     newUploads.forEach((upload) => {
@@ -491,7 +512,7 @@ export default function ResumeBuilderSidebar({
                             color: "#000000",
                           }}
                         >
-                          <span style={{ color: "#7c00ff" }}>Select</span> or drop file here
+                          job description
                         </p>
                       </div>
                     </div>
@@ -567,7 +588,7 @@ export default function ResumeBuilderSidebar({
       <UploadStatusModal
         uploads={uploads}
         onClose={() => setUploads([])}
-        onCollapse={(collapsed) => {
+        onCollapse={() => {
           // Handle collapse state if needed
         }}
       />
