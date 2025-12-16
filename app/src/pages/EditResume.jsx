@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Reorder, useDragControls } from "framer-motion";
 import {
   RiBriefcaseLine,
@@ -11,6 +11,7 @@ import {
   RiEditLine,
   RiArrowUpDownFill,
 } from "@remixicon/react";
+import { DocumentPdf, Document } from "@carbon/icons-react";
 import Sidebar from "../components/Sidebar";
 import "material-symbols/outlined.css";
 
@@ -37,6 +38,22 @@ export default function EditResume() {
   const [editingFields, setEditingFields] = useState({}); // Track which fields are being edited
   const [hoveredResumeSection, setHoveredResumeSection] = useState(null);
   const [activeResumeSection, setActiveResumeSection] = useState(null);
+  const location = useLocation();
+  // Determine file type from location state or default to PDF
+  const [fileType, setFileType] = useState(() => {
+    // Check if file type is passed via location state
+    if (location.state?.fileType) {
+      return location.state.fileType;
+    }
+    // Check if file name suggests Word document
+    if (location.state?.fileName) {
+      const fileName = location.state.fileName.toLowerCase();
+      if (fileName.endsWith('.doc') || fileName.endsWith('.docx')) {
+        return 'word';
+      }
+    }
+    return 'pdf'; // Default to PDF
+  });
   const [resumeData, setResumeData] = useState({
     personal: {
       name: "John Doe",
@@ -120,10 +137,10 @@ export default function EditResume() {
             sectionName="Personal Information"
           >
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-3xl font-bold mb-2" style={{ color: '#1A1A1A' }}>
                 {resumeData.personal.name}
               </h1>
-              <p className="text-gray-600">
+              <p style={{ color: '#1A1A1A' }}>
                 {resumeData.personal.email} | {resumeData.personal.phone} |{" "}
                 {resumeData.personal.location}
               </p>
@@ -138,23 +155,23 @@ export default function EditResume() {
             sectionName="Work Experience"
           >
             <div className="mb-8">
-              <h2 className="text-xl font-bold text-gray-900 mb-3 border-b-2 border-gray-300 pb-2">
+              <h2 className="text-xl font-bold mb-3 border-b-2 border-gray-300 pb-2" style={{ color: '#1A1A1A' }}>
                 WORK EXPERIENCE
               </h2>
               {resumeData.work.map((workItem, index) => (
                 <div key={workItem.id} className="mb-6">
                   <div className="flex justify-between items-start mb-2">
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900">
+                      <h3 className="text-lg font-semibold" style={{ color: '#1A1A1A' }}>
                         {workItem.title}
                       </h3>
-                      <p className="text-gray-700">{workItem.company}</p>
+                      <p style={{ color: '#1A1A1A' }}>{workItem.company}</p>
                     </div>
-                    <p className="text-gray-600">
+                    <p style={{ color: '#1A1A1A' }}>
                       {workItem.startDate} - {workItem.endDate}
                     </p>
                   </div>
-                  <p className="text-gray-700">{workItem.description}</p>
+                  <p style={{ color: '#1A1A1A' }}>{workItem.description}</p>
                 </div>
               ))}
             </div>
@@ -168,25 +185,25 @@ export default function EditResume() {
             sectionName="Education"
           >
             <div className="mb-8">
-              <h2 className="text-xl font-bold text-gray-900 mb-3 border-b-2 border-gray-300 pb-2">
+              <h2 className="text-xl font-bold mb-3 border-b-2 border-gray-300 pb-2" style={{ color: '#1A1A1A' }}>
                 EDUCATION
               </h2>
               <div className="mb-4">
                 <div className="flex justify-between items-start mb-2">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
+                    <h3 className="text-lg font-semibold" style={{ color: '#1A1A1A' }}>
                       {resumeData.education.degree}
                     </h3>
-                    <p className="text-gray-700">
+                    <p style={{ color: '#1A1A1A' }}>
                       {resumeData.education.institution}
                     </p>
                   </div>
-                  <p className="text-gray-600">
+                  <p style={{ color: '#1A1A1A' }}>
                     {resumeData.education.startYear} -{" "}
                     {resumeData.education.endYear}
                   </p>
                 </div>
-                <p className="text-gray-700">GPA: {resumeData.education.gpa}</p>
+                <p style={{ color: '#1A1A1A' }}>GPA: {resumeData.education.gpa}</p>
               </div>
             </div>
           </ResumeSectionWrapper>
@@ -305,7 +322,7 @@ export default function EditResume() {
         onMouseEnter={() => setHoveredField(fieldId)}
         onMouseLeave={() => setHoveredField(null)}
       >
-        <span className="text-gray-900">{value}</span>
+        <span style={{ color: '#1A1A1A' }}>{value}</span>
         {hoveredField === fieldId && (
           <button
             onClick={() => toggleFieldEdit(fieldId)}
@@ -381,11 +398,11 @@ export default function EditResume() {
                 className="p-4 bg-white rounded-xl shadow-lg"
               >
                 <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-medium text-purple-900">
+                  <h4 className="font-medium" style={{ color: '#1A1A1A' }}>
                     Work Experience {workIndex + 1}
                   </h4>
                   <div className="text-gray-400">
-                    <RiArrowUpDownFill size={16} />
+                    <RiArrowUpDownFill size={16} style={{ color: '#575757' }} />
                   </div>
                 </div>
                 <div className="space-y-3">
@@ -523,27 +540,25 @@ export default function EditResume() {
               style={{ height: "65px" }}
             >
               <div className="flex items-center gap-2">
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: "20px",
-                    fontVariationSettings:
-                      '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 20',
-                  }}
-                >
-                  picture_as_pdf
-                </span>
-                <h2 className="text-base font-bold text-gray-900">PDF View</h2>
+                {fileType === 'pdf' ? (
+                  <DocumentPdf size={20} style={{ color: '#575757' }} />
+                ) : (
+                  <Document size={20} style={{ color: '#575757' }} />
+                )}
+                <h2 className="text-base font-bold" style={{ color: '#1A1A1A' }}>
+                  {fileType === 'pdf' ? 'PDF View' : 'Word Document'}
+                </h2>
               </div>
               <button
                 onClick={() => navigate("/manage-resume")}
-                className="flex items-center justify-center p-2 text-gray-900 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                className="flex items-center justify-center p-2 rounded-lg transition-colors hover:bg-[#F5F5F5]"
                 title="Back to Resume List"
               >
                 <span
                   className="material-symbols-outlined"
                   style={{
                     fontSize: "20px",
+                    color: "#575757",
                     fontVariationSettings:
                       '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 20',
                   }}
@@ -573,23 +588,23 @@ export default function EditResume() {
                     dragControls={dragControls}
                   >
                     {/* Header Section - Always Active */}
-                    <div className="flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium text-purple-900" style={{ backgroundColor: '#F5F5F5' }}>
+                    <div className="flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium" style={{ backgroundColor: '#F5F5F5', color: '#1A1A1A' }}>
                       <div className="flex items-center space-x-3">
-                        <Icon size={16} style={{ color: '#7c00ff' }} />
+                        <Icon size={16} style={{ color: '#575757' }} />
                         <span>{section.name}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <button className="text-gray-500 hover:text-gray-700 hover:bg-white p-1 rounded">
-                          <RiQuestionLine size={16} />
+                          <RiQuestionLine size={16} style={{ color: '#575757' }} />
                         </button>
                         <button
                           className="text-gray-500 hover:text-gray-700 hover:bg-white p-1 rounded cursor-move"
                           onPointerDown={(e) => dragControls.start(e)}
                         >
-                          <RiArrowUpDownFill size={16} />
+                          <RiArrowUpDownFill size={16} style={{ color: '#575757' }} />
                         </button>
                         <button className="text-gray-500 hover:text-red-600 hover:bg-white p-1 rounded">
-                          <RiDeleteBinLine size={16} />
+                          <RiDeleteBinLine size={16} style={{ color: '#575757' }} />
                         </button>
                       </div>
                     </div>
@@ -609,8 +624,11 @@ export default function EditResume() {
             <div className="max-w-4xl mx-auto">
               {/* Plain Resume Box */}
               <div
-                className="bg-white rounded-lg p-12 min-h-[11in] shadow-sm"
-                style={{ width: "8.5in" }}
+                className="bg-white rounded-lg p-12 min-h-[11in]"
+                style={{ 
+                  width: "8.5in",
+                  boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)"
+                }}
               >
                 {/* Render sections in the order defined by sidebar */}
                 {sections.map((section) => renderResumeSection(section))}
@@ -621,39 +639,39 @@ export default function EditResume() {
                   sectionName="Technical Skills"
                 >
                   <div className="mb-8">
-                    <h2 className="text-xl font-bold text-gray-900 mb-3 border-b-2 border-gray-300 pb-2">
+                    <h2 className="text-xl font-bold mb-3 border-b-2 border-gray-300 pb-2" style={{ color: '#1A1A1A' }}>
                       TECHNICAL SKILLS
                     </h2>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">
+                        <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A' }}>
                           Frontend:
                         </h4>
-                        <p className="text-gray-700">
+                        <p style={{ color: '#1A1A1A' }}>
                           React, Vue.js, TypeScript, HTML5, CSS3, Tailwind CSS
                         </p>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">
+                        <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A' }}>
                           Backend:
                         </h4>
-                        <p className="text-gray-700">
+                        <p style={{ color: '#1A1A1A' }}>
                           Node.js, Express.js, Python, Django, RESTful APIs
                         </p>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">
+                        <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A' }}>
                           Database:
                         </h4>
-                        <p className="text-gray-700">
+                        <p style={{ color: '#1A1A1A' }}>
                           MongoDB, PostgreSQL, MySQL, Redis
                         </p>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">
+                        <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A' }}>
                           Tools:
                         </h4>
-                        <p className="text-gray-700">
+                        <p style={{ color: '#1A1A1A' }}>
                           Git, Docker, AWS, CI/CD, Agile/Scrum
                         </p>
                       </div>
