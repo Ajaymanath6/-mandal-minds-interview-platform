@@ -18,3 +18,28 @@
 .animate-slide-up {
   animation: slide-up 0.3s ease-out;
 }
+
+/* Modern thin scrollbar styles */
+.thin-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Firefox scrollbar */
+.thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent;
+}

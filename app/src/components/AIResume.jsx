@@ -73,9 +73,9 @@ function SectionItem({
       }}
     >
       {/* Header Section - Always Active, No Animation */}
-      <div className="flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium text-gray-900 bg-gray-50">
+      <div className="flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium text-gray-900" style={{ backgroundColor: '#F5F5F5' }}>
         <div className="flex items-center space-x-3">
-          <Icon size={16} />
+          <Icon size={16} style={{ color: '#7c00ff' }} />
           <span>{section.name}</span>
         </div>
         <div className="flex items-center gap-2">
@@ -901,7 +901,7 @@ export default function AIResume() {
             rows={rows}
             defaultValue={value}
             placeholder={placeholder}
-            className="w-full px-3 py-2 text-sm text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b]"
+            className="w-full px-3 py-2 text-sm text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b] hover:bg-[#F5F5F5]"
             autoFocus
             onBlur={(e) => handleValueChange(e.target.value)}
           />
@@ -912,7 +912,7 @@ export default function AIResume() {
           type={type}
           defaultValue={value}
           placeholder={placeholder}
-          className="w-full px-3 py-2 text-sm text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b]"
+          className="w-full px-3 py-2 text-sm text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b] hover:bg-[#F5F5F5]"
           autoFocus
           onBlur={(e) => handleValueChange(e.target.value)}
         />
@@ -1144,7 +1144,7 @@ export default function AIResume() {
             rows={rows}
             defaultValue={value}
             placeholder={placeholder}
-            className="w-full px-3 py-2 text-sm text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b]"
+            className="w-full px-3 py-2 text-sm text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b] hover:bg-[#F5F5F5]"
             autoFocus
             onBlur={(e) => handleValueChange(e.target.value)}
           />
@@ -1155,7 +1155,7 @@ export default function AIResume() {
           type={type}
           defaultValue={value}
           placeholder={placeholder}
-          className="w-full px-3 py-2 text-sm text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b]"
+          className="w-full px-3 py-2 text-sm text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b] hover:bg-[#F5F5F5]"
           autoFocus
           onBlur={(e) => handleValueChange(e.target.value)}
         />

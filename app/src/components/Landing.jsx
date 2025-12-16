@@ -110,7 +110,7 @@ export default function Landing() {
                   onFocus={() => setIsEmailFocused(true)}
                   onBlur={() => setIsEmailFocused(false)}
                   placeholder="Enter your email"
-                  className={`w-full px-4 py-3 text-[#3c4043] bg-white border rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none transition-all placeholder:text-[#80868b] ${
+                  className={`w-full px-4 py-3 text-[#3c4043] bg-white border rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none transition-all placeholder:text-[#80868b] hover:bg-[#F5F5F5] ${
                     isEmailFocused ? 'border-[#a854ff] shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)]' : 'border-[#dfe1e5]'
                   }`}
                 />
@@ -126,7 +126,7 @@ export default function Landing() {
                   onFocus={() => setIsPasswordFocused(true)}
                   onBlur={() => setIsPasswordFocused(false)}
                   placeholder="Enter your password"
-                  className={`w-full px-4 py-3 text-[#3c4043] bg-white border rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none transition-all placeholder:text-[#80868b] ${
+                  className={`w-full px-4 py-3 text-[#3c4043] bg-white border rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none transition-all placeholder:text-[#80868b] hover:bg-[#F5F5F5] ${
                     isPasswordFocused ? 'border-[#a854ff] shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)]' : 'border-[#dfe1e5]'
                   }`}
                 />

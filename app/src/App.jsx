@@ -9,7 +9,7 @@ import Resume from "./components/Resume";
 import ManageJDs from "./components/ManageJDs";
 import ManageResume from "./components/ManageResume";
 import AnalyzeResume from "./components/AnalyzeResume";
-import EditResume from "./components/EditResume";
+import EditResume from "./pages/EditResume";
 import ResumeEditor from "./components/ResumeEditor";
 import AIResume from "./components/AIResume";
 

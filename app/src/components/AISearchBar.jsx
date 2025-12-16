@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   RiFileTextLine,
   RiArrowRightLine,
@@ -9,6 +10,7 @@ import {
 } from "@remixicon/react";
 import { IbmWatsonDiscovery, Chat, IbmWatsonOpenscale } from "@carbon/icons-react";
 import FileUploadModal from "./FileUploadModal";
+import "material-symbols/outlined.css";
 
 export default function AISearchBar({
   onCompare,
@@ -20,9 +22,11 @@ export default function AISearchBar({
   const [searchQuery, setSearchQuery] = useState("");
   const [jdUploadStatus, setJdUploadStatus] = useState("idle"); // idle, uploading, loaded
   const [jdImage, setJdImage] = useState(null);
+  const [jdFileName, setJdFileName] = useState(null);
   const textareaRef = useRef(null);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const navigate = useNavigate();
 
   const tabs = [
     {
@@ -63,6 +67,7 @@ export default function AISearchBar({
   const handleFileSelect = (file) => {
     setJdUploadStatus("uploading");
     setJdImage("/jd1.png");
+    setJdFileName(file.name);
 
     // Simulate file processing (2-3 seconds)
     setTimeout(() => {
@@ -101,6 +106,7 @@ export default function AISearchBar({
   const handleRemoveJD = () => {
     setJdUploadStatus("idle");
     setJdImage(null);
+    setJdFileName(null);
     setSearchQuery("");
   };
 
@@ -140,18 +146,28 @@ export default function AISearchBar({
     }
   };
 
-  // Update placeholder based on JD upload status
+  // Update placeholder based on active tab
   const getPlaceholder = () => {
-    if (activeTab === "analyze") {
-      return "Ask questions about your resume or get analysis...";
-    }
-    if (activeTab === "interview") {
-      return "Select JD or upload JD or write JD copy paste JD to text area";
-    }
     if (jdUploadStatus === "loaded") {
       return "JD uploaded successfully! Now upload your resume or select from existing resumes to start interview.";
     }
-    return "Click 'Upload JD File' button to upload, or paste job description here...";
+    
+    if (activeTab === "upload") {
+      // AI job Search tab
+      return "Search for keywords, product design, frontend developer...";
+    }
+    
+    if (activeTab === "analyze") {
+      // Chat with Resume tab
+      return "Ask questions about your resume or get analysis...";
+    }
+    
+    if (activeTab === "interview") {
+      // AI Interview tab
+      return "Paste job description here or upload JD file to start AI interview...";
+    }
+    
+    return "Paste job description here or upload JD file...";
   };
 
   // Handle external JD file uploads
@@ -174,6 +190,7 @@ export default function AISearchBar({
             if (pastedText.trim()) {
               setJdUploadStatus("uploading");
               setJdImage("/jd1.png");
+              setJdFileName("Pasted JD");
               
               setTimeout(() => {
                 setJdUploadStatus("loaded");
@@ -240,30 +257,53 @@ export default function AISearchBar({
           
           {/* JD Image Preview with Loading Spinner */}
           {jdUploadStatus !== "idle" && jdImage && (
-            <div className="absolute inset-0 bg-white rounded-lg flex items-center justify-center z-10">
-              <div className="relative">
-                <img
-                  src={jdImage}
-                  alt="JD Preview"
-                  className="max-w-full max-h-[140px] object-contain rounded-lg"
-                />
-                {/* Loading Spinner Overlay */}
-                {jdUploadStatus === "uploading" && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-80 rounded-lg">
-                    <div className="relative">
-                      <div className="w-12 h-12 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
+            <div className="absolute inset-0 bg-white rounded-lg flex items-end justify-center z-10 px-4 pb-4">
+              <div className="flex items-end gap-3">
+                <div className="relative overflow-hidden" style={{ maxHeight: '120px' }}>
+                  <img
+                    src={jdImage}
+                    alt="JD Preview"
+                    className="max-w-full max-h-[120px] object-cover object-bottom rounded-lg"
+                    style={{ objectPosition: 'center bottom' }}
+                  />
+                  {/* Loading Spinner Overlay */}
+                  {jdUploadStatus === "uploading" && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-80 rounded-lg">
+                      <div className="relative">
+                        <div className="w-12 h-12 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
+                      </div>
                     </div>
+                  )}
+                  {/* Remove button when loaded */}
+                  {jdUploadStatus === "loaded" && (
+                    <button
+                      onClick={handleRemoveJD}
+                      className="absolute top-2 right-2 w-8 h-8 bg-gray-800 hover:bg-gray-900 text-white rounded-full flex items-center justify-center transition-colors"
+                      aria-label="Remove JD"
+                    >
+                      <RiCloseLine size={16} />
+                    </button>
+                  )}
+                </div>
+                {/* Document Name Display - Aligned to bottom of image */}
+                {jdFileName && (
+                  <div className="flex items-center gap-2">
+                    {jdUploadStatus === "loaded" && (
+                      <span
+                        className="material-symbols-outlined flex-shrink-0"
+                        style={{
+                          fontSize: 20,
+                          color: "#22c55e",
+                          fontVariationSettings: '"FILL" 1',
+                        }}
+                      >
+                        check_circle
+                      </span>
+                    )}
+                    <p className="text-sm font-normal text-[#1A1A1A] truncate max-w-[120px]" title={jdFileName}>
+                      {jdFileName.length > 8 ? `${jdFileName.substring(0, 8)}...` : jdFileName}
+                    </p>
                   </div>
-                )}
-                {/* Remove button when loaded */}
-                {jdUploadStatus === "loaded" && (
-                  <button
-                    onClick={handleRemoveJD}
-                    className="absolute top-2 right-2 w-8 h-8 bg-gray-800 hover:bg-gray-900 text-white rounded-full flex items-center justify-center transition-colors"
-                    aria-label="Remove JD"
-                  >
-                    <RiCloseLine size={16} />
-                  </button>
                 )}
               </div>
             </div>
@@ -336,7 +376,7 @@ export default function AISearchBar({
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder={getPlaceholder()}
-            className={`w-full min-h-[140px] px-6 py-4 pr-16 text-gray-900 bg-white border rounded-lg focus:outline-none resize-none placeholder:text-[#A5A5A5] text-base m-0 ${
+            className={`w-full min-h-[140px] px-6 py-4 pr-16 text-gray-900 bg-white border rounded-lg focus:outline-none resize-none placeholder:text-[#A5A5A5] text-base m-0 hover:bg-[#F5F5F5] ${
               jdUploadStatus !== "idle" ? "opacity-0 pointer-events-none" : ""
             } ${(activeTab === "analyze" || activeTab === "interview") && jdUploadStatus === "idle" ? "opacity-0 pointer-events-none" : ""}`}
             rows={5}
@@ -344,8 +384,8 @@ export default function AISearchBar({
             style={{ marginLeft: 0, marginRight: 0, marginTop: 0, borderColor: '#E5E5E5' }}
           />
           
-          {/* Save Job Button - Left Bottom Corner (only show when JD is loaded) */}
-          {jdUploadStatus === "loaded" && (
+          {/* Save Job Button - Left Bottom Corner (only show when JD is loaded, but not in Chat with Resume tab) */}
+          {jdUploadStatus === "loaded" && activeTab !== "analyze" && (
             <div className="absolute bottom-4 left-4 flex items-center gap-2 z-20">
               <button
                 className="flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-transparent text-[#A5A5A5] hover:text-[#1A1A1A] hover:bg-[#F5F5F5]"
@@ -362,16 +402,17 @@ export default function AISearchBar({
               </button>
             </div>
           )}
-          {/* Back Arrow Button (only show when JD is loaded) */}
+          {/* Proceed Button (only show when JD is loaded) */}
           {jdUploadStatus === "loaded" && (
             <button
-              className="absolute bottom-4 right-4 p-2 bg-[#0A0A0A] text-white rounded-lg transition-colors hover:bg-[#1A1A1A] shadow-md z-20"
+              className="absolute bottom-4 right-4 flex items-center gap-2 px-4 py-2 bg-[#0A0A0A] text-white rounded-lg transition-colors hover:bg-[#1A1A1A] shadow-md z-20"
               onClick={() => {
-                handleRemoveJD();
+                navigate("/edit-resume");
               }}
-              aria-label="Clear"
+              aria-label="Proceed"
             >
-              <RiArrowRightLine size={20} />
+              <span className="text-sm font-medium">Proceed</span>
+              <RiArrowRightLine size={18} />
             </button>
           )}
         </div>

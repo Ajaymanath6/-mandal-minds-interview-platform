@@ -725,104 +725,85 @@ export default function Resume() {
                   }}
                 />
 
-                {/* Resume Upload/Selection Section - Appears after JD is loaded */}
+                {/* Resume Upload Badge - Appears below text area after JD is loaded */}
                 {jdUploaded && (
-                  <div className="mt-6 w-full max-w-4xl mx-auto">
-                    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                        Upload your resume or select your resume from existing resumes and start interview
-                      </h3>
-                      
-                      <div className="flex flex-col sm:flex-row gap-4 mb-4">
-                        {/* Upload Resume Button */}
-                        <label
-                          htmlFor="resume-file-upload"
-                          className="flex items-center justify-center gap-2 px-6 py-3 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-2xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] cursor-pointer text-sm font-medium"
+                  <div className="mt-4 w-full max-w-4xl mx-auto">
+                    {/* Hidden file input for resume upload */}
+                    <input
+                      type="file"
+                      ref={resumeFileInputRef}
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          setResumeFile(file);
+                          setSelectedResume({
+                            id: Date.now(),
+                            resumeName: file.name,
+                            isFile: true,
+                          });
+                        }
+                      }}
+                      accept=".pdf,.doc,.docx,.txt"
+                      className="hidden"
+                      id="resume-file-upload"
+                    />
+
+                    {/* Resume Badge - Shows below text area */}
+                    {selectedResume && (
+                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-lg">
+                        {/* Green Check Icon */}
+                        <svg
+                          className="w-5 h-5 text-green-600 flex-shrink-0"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
                         >
-                          <RiUploadLine size={18} />
-                          <span>Upload Resume</span>
-                        </label>
-                        <input
-                          type="file"
-                          ref={resumeFileInputRef}
-                          onChange={(e) => {
-                            const file = e.target.files[0];
-                            if (file) {
-                              setResumeFile(file);
-                              setSelectedResume({
-                                id: Date.now(),
-                                resumeName: file.name,
-                                isFile: true,
-                              });
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                        {/* File Name */}
+                        <span className="text-sm font-medium text-gray-900">
+                          {selectedResume.resumeName}
+                        </span>
+                        {/* Cross Icon */}
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setSelectedResume(null);
+                            setResumeFile(null);
+                            if (resumeFileInputRef.current) {
+                              resumeFileInputRef.current.value = "";
                             }
                           }}
-                          accept=".pdf,.doc,.docx,.txt"
-                          className="hidden"
-                          id="resume-file-upload"
-                        />
-
-                        {/* Select from Existing Resumes Button */}
-                        <button
-                          onClick={() => setResumeSelectionModal(true)}
-                          className="flex items-center justify-center gap-2 px-6 py-3 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-2xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] text-sm font-medium"
+                          className="ml-1 text-gray-500 hover:text-gray-700 transition-colors flex-shrink-0"
+                          aria-label="Remove file"
+                          type="button"
                         >
-                          <RiFileList3Line size={18} />
-                          <span>Select from Existing</span>
+                          <RiCloseLine size={18} />
                         </button>
                       </div>
+                    )}
 
-                      {/* Selected Resume Display */}
-                      {selectedResume && (
-                        <div className="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <RiFileTextLine size={24} className="text-purple-600" />
-                              <div>
-                                <p className="font-medium text-gray-900">
-                                  {selectedResume.resumeName}
-                                </p>
-                                <p className="text-sm text-gray-600">
-                                  {selectedResume.isFile ? "Uploaded file" : "Existing resume"}
-                                </p>
-                              </div>
-                            </div>
-                            <button
-                              onClick={() => {
-                                setSelectedResume(null);
-                                setResumeFile(null);
-                                if (resumeFileInputRef.current) {
-                                  resumeFileInputRef.current.value = "";
-                                }
-                              }}
-                              className="text-gray-500 hover:text-gray-700"
-                            >
-                              <RiCloseLine size={20} />
-                            </button>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Start Interview Button */}
-                      <button
-                        onClick={() => {
-                          if (!selectedResume) {
-                            alert("Please upload or select a resume first");
-                            return;
-                          }
-                          // Set JD content and trigger analysis
-                          setIsAnalyzed(true);
-                        }}
-                        disabled={!selectedResume}
-                        className={`w-full flex items-center justify-center gap-2 px-6 py-3 rounded-2xl transition-all font-medium text-sm ${
-                          selectedResume
-                            ? "bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)]"
-                            : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                        }`}
-                      >
-                        <RiPlayFill size={20} />
-                        <span>Start Interview</span>
-                      </button>
-                    </div>
+                    {/* Start Interview Button */}
+                    {selectedResume && (
+                      <div className="mt-4">
+                        <button
+                          onClick={() => {
+                            // Set JD content and trigger analysis
+                            setIsAnalyzed(true);
+                          }}
+                          className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)] rounded-2xl transition-all font-medium text-sm"
+                        >
+                          <RiPlayFill size={20} />
+                          <span>Start Interview</span>
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
