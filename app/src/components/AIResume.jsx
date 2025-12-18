@@ -6,16 +6,10 @@ import {
   RiGraduationCapLine,
   RiUserLine,
   RiDeleteBinLine,
-  RiQuestionLine,
-  RiArrowUpSLine,
-  RiArrowDownSLine,
-  RiEditLine,
   RiArrowUpDownFill,
-  RiSparklingFill,
-  RiArrowLeftLine,
-  RiAddLine,
 } from "@remixicon/react";
-import logoSvg from "../assets/logo.svg";
+import Sidebar from "./Sidebar";
+import AISidebar from "./AISidebar";
 import "material-symbols/outlined.css";
 
 // Add Google Fonts Material Icons
@@ -27,110 +21,8 @@ if (!document.head.querySelector('link[href*="material+symbols"]')) {
   document.head.appendChild(link);
 }
 
-// Section Item Component with Drag Controls
-function SectionItem({
-  section,
-  renderSectionForm,
-  onAdd,
-  isCollapsed,
-  onToggleCollapse,
-}) {
-  const dragControls = useDragControls();
-  const Icon = section.icon;
-
-  const handleAddClick = () => {
-    if (onAdd) {
-      onAdd(section.id);
-    }
-  };
-
-  const handleToggleCollapse = () => {
-    if (onToggleCollapse) {
-      onToggleCollapse(section.id);
-    }
-  };
-
-  return (
-    <Reorder.Item
-      key={section.id}
-      value={section}
-      className="mb-4"
-      dragListener={false}
-      dragControls={dragControls}
-      layout="position"
-      initial={{ rotate: 0 }}
-      animate={{ rotate: 0 }}
-      transition={{
-        type: "spring",
-        stiffness: 200,
-        damping: 25,
-        mass: 0.8,
-      }}
-      whileDrag={{
-        scale: 1.02,
-        rotate: 2,
-        zIndex: 50,
-      }}
-    >
-      {/* Header Section - Always Active, No Animation */}
-      <div className="flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium text-gray-900" style={{ backgroundColor: '#F5F5F5' }}>
-        <div className="flex items-center space-x-3">
-          <Icon size={16} style={{ color: '#7c00ff' }} />
-          <span>{section.name}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            className="text-gray-500 hover:text-gray-900 hover:bg-white p-1 rounded"
-            title="Help"
-          >
-            <RiQuestionLine size={16} />
-          </button>
-          <button
-            onClick={handleAddClick}
-            className="text-gray-500 hover:text-gray-900 hover:bg-white p-1 rounded"
-            title="Add new entry"
-          >
-            <RiAddLine size={16} />
-          </button>
-          <button
-            className="text-gray-500 hover:text-gray-900 hover:bg-white p-1 rounded cursor-grab active:cursor-grabbing"
-            onPointerDown={(e) => {
-              e.preventDefault();
-              dragControls.start(e);
-            }}
-            title="Drag to reorder"
-          >
-            <RiArrowUpDownFill size={16} />
-          </button>
-          <button
-            onClick={handleToggleCollapse}
-            className="text-gray-500 hover:text-gray-900 hover:bg-white p-1 rounded"
-            title={isCollapsed ? "Expand" : "Collapse"}
-          >
-            {isCollapsed ? (
-              <RiArrowDownSLine size={16} />
-            ) : (
-              <RiArrowUpSLine size={16} />
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* Form Section - Conditionally Rendered, Simple Show/Hide */}
-      {!isCollapsed && <div>{renderSectionForm(section.id)}</div>}
-    </Reorder.Item>
-  );
-}
 
 export default function AIResume() {
-  const [firstSidebarOpen, setFirstSidebarOpen] = useState(true);
-  const [isLogoHovered, setIsLogoHovered] = useState(false);
-  // const [activeSections, setActiveSections] = useState([
-  //   "personal",
-  //   "work",
-  //   "education",
-  // ]); // All sections open by default
-  const [logoModalOpen, setLogoModalOpen] = useState(false);
   const [sections, setSections] = useState([
     { id: "personal", name: "Personal Information", icon: RiUserLine },
     { id: "work", name: "Work Experience", icon: RiBriefcaseLine },
@@ -345,10 +237,10 @@ export default function AIResume() {
             sectionName="Personal Information"
           >
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-3xl font-bold mb-2" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                 {resumeData.personal.name}
               </h1>
-              <p className="text-gray-900">
+              <p style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                 {resumeData.personal.email} | {resumeData.personal.phone} |{" "}
                 {resumeData.personal.location}
               </p>
@@ -363,24 +255,24 @@ export default function AIResume() {
             sectionName="Work Experience"
           >
             <div className="mb-8 relative">
-              <h2 className="text-xl font-bold text-gray-900 mb-3 border-b-2 border-gray-300 pb-2">
+              <h2 className="text-xl font-bold mb-3 border-b-2 border-gray-300 pb-2" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                 WORK EXPERIENCE
               </h2>
               {resumeData.work.map((workItem) => (
                 <div key={workItem.id} className="mb-6 relative">
                   <div className="flex justify-between items-start mb-2">
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900">
+                      <h3 className="text-lg font-semibold" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                         {workItem.title}
                       </h3>
-                      <p className="text-gray-900">{workItem.company}</p>
+                      <p style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>{workItem.company}</p>
                     </div>
-                    <p className="text-gray-900">
+                    <p style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                       {workItem.startDate} - {workItem.endDate}
                     </p>
                   </div>
                   <div className="relative">
-                    <p className="text-gray-900">{workItem.description}</p>
+                    <p style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>{workItem.description}</p>
                   </div>
                 </div>
               ))}
@@ -395,7 +287,7 @@ export default function AIResume() {
             sectionName="Education"
           >
             <div className="mb-8 relative">
-              <h2 className="text-xl font-bold text-gray-900 mb-3 border-b-2 border-gray-300 pb-2">
+              <h2 className="text-xl font-bold mb-3 border-b-2 border-gray-300 pb-2" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                 EDUCATION
               </h2>
               {resumeData.education.map((eduItem) => (
@@ -403,18 +295,18 @@ export default function AIResume() {
                   <div className="flex justify-between items-start mb-2">
                     <div>
                       <div className="relative">
-                        <h3 className="text-lg font-semibold text-gray-900">
+                        <h3 className="text-lg font-semibold" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                           {eduItem.degree}
                         </h3>
                       </div>
-                      <p className="text-gray-900">{eduItem.institution}</p>
+                      <p style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>{eduItem.institution}</p>
                     </div>
-                    <p className="text-gray-900">
+                    <p style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                       {eduItem.startYear} - {eduItem.endYear}
                     </p>
                   </div>
                   {eduItem.gpa && (
-                    <p className="text-gray-900">GPA: {eduItem.gpa}</p>
+                    <p style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>GPA: {eduItem.gpa}</p>
                   )}
                 </div>
               ))}
@@ -429,40 +321,40 @@ export default function AIResume() {
             sectionName="Technical Skills"
           >
             <div className="mb-8 relative">
-              <h2 className="text-xl font-bold text-gray-900 mb-3 border-b-2 border-gray-300 pb-2">
+              <h2 className="text-xl font-bold mb-3 border-b-2 border-gray-300 pb-2" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                 TECHNICAL SKILLS
               </h2>
               <div className="grid grid-cols-2 gap-4">
                 <div className="relative">
-                  <h4 className="font-semibold text-gray-900 mb-2">
+                  <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                     Frontend:
                   </h4>
                   <div className="relative">
-                    <p className="text-gray-900">
+                    <p style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                       {resumeData.skills.frontend}
                     </p>
                   </div>
                 </div>
                 <div className="relative">
-                  <h4 className="font-semibold text-gray-900 mb-2">Backend:</h4>
+                  <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>Backend:</h4>
                   <div className="relative">
-                    <p className="text-gray-900">{resumeData.skills.backend}</p>
+                    <p style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>{resumeData.skills.backend}</p>
                   </div>
                 </div>
                 <div className="relative">
-                  <h4 className="font-semibold text-gray-900 mb-2">
+                  <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                     Database:
                   </h4>
                   <div className="relative">
-                    <p className="text-gray-900">
+                    <p style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                       {resumeData.skills.database}
                     </p>
                   </div>
                 </div>
                 <div className="relative">
-                  <h4 className="font-semibold text-gray-900 mb-2">Tools:</h4>
+                  <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>Tools:</h4>
                   <div className="relative">
-                    <p className="text-gray-900">{resumeData.skills.tools}</p>
+                    <p style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>{resumeData.skills.tools}</p>
                   </div>
                 </div>
               </div>
@@ -926,7 +818,7 @@ export default function AIResume() {
             isHighlighted
               ? "border-purple-300 bg-purple-50"
               : hoveredField === fieldId
-              ? "border-gray-300 bg-gray-50"
+              ? "border-gray-300 bg-[#F5F5F5]"
               : "border-gray-300 bg-white"
           }`}
           onMouseEnter={() => setHoveredField(fieldId)}
@@ -1169,7 +1061,7 @@ export default function AIResume() {
             isHighlighted
               ? "border-purple-300 bg-purple-50"
               : hoveredField === fieldId
-              ? "border-gray-300 bg-gray-50"
+              ? "border-gray-300 bg-[#F5F5F5]"
               : "border-gray-300 bg-white"
           }`}
           onMouseEnter={() => setHoveredField(fieldId)}
@@ -1606,274 +1498,24 @@ export default function AIResume() {
         style={{ height: "100vh" }}
       >
         {/* First Sidebar - Navigation */}
-        <div
-          className={`${
-            firstSidebarOpen ? "w-52" : "w-16"
-          } bg-white transition-all duration-300 flex-shrink-0 h-auto md:h-full hidden md:flex`}
-        >
-          <div className="flex flex-col h-full">
-            {/* Logo and Toggle */}
-            <div className="p-4 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                {firstSidebarOpen && (
-                  <div
-                    className="flex items-center space-x-2 cursor-pointer"
-                    onClick={() => setLogoModalOpen(true)}
-                  >
-                    <img
-                      src={logoSvg}
-                      alt="Mandal Minds Logo"
-                      className="w-8 h-6"
-                    />
-                    <span className="font-semibold text-gray-900">
-                      Mandal Minds
-                    </span>
-                  </div>
-                )}
-                {!firstSidebarOpen && (
-                  <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center mx-auto cursor-pointer relative overflow-hidden"
-                    onMouseEnter={() => setIsLogoHovered(true)}
-                    onMouseLeave={() => setIsLogoHovered(false)}
-                    onClick={() => setFirstSidebarOpen(true)}
-                  >
-                    {isLogoHovered ? (
-                      <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                        <span
-                          className="material-symbols-outlined text-gray-600"
-                          style={{ fontSize: 20 }}
-                        >
-                          dock_to_right
-                        </span>
-                      </div>
-                    ) : (
-                      <img
-                        src={logoSvg}
-                        alt="Mandal Minds Logo"
-                        className="w-8 h-6"
-                      />
-                    )}
-                  </div>
-                )}
-                {firstSidebarOpen && (
-                  <button
-                    onClick={() => setFirstSidebarOpen(false)}
-                    className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded"
-                  >
-                    <span
-                      className="material-symbols-outlined"
-                      style={{ fontSize: 20 }}
-                    >
-                      dock_to_left
-                    </span>
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* Navigation */}
-            <nav className="flex-1 p-2 space-y-2">
-              <button
-                onClick={() => navigate("/resume")}
-                className={`flex items-center ${
-                  firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-1.5 text-gray-900 hover:bg-gray-50 rounded-3xl w-full transition-colors`}
-              >
-                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
-                  <span
-                    className="material-symbols-outlined"
-                    style={{
-                      fontSize: "24px",
-                      fontVariationSettings:
-                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                      color: "#5b748e",
-                    }}
-                  >
-                    auto_awesome
-                  </span>
-                </div>
-                {firstSidebarOpen && (
-                  <span className="text-sm font-semibold text-gray-900">
-                    AI Interview
-                  </span>
-                )}
-              </button>
-
-              <button
-                onClick={() => navigate("/resume-editor")}
-                className={`flex items-center ${
-                  firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-1.5 text-gray-900 hover:bg-gray-50 rounded-3xl w-full transition-colors`}
-              >
-                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
-                  <span
-                    className="material-symbols-outlined"
-                    style={{
-                      fontSize: "24px",
-                      fontVariationSettings:
-                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                      color: "#5b748e",
-                    }}
-                  >
-                    edit_note
-                  </span>
-                </div>
-                {firstSidebarOpen && (
-                  <span className="text-sm font-semibold text-gray-900">
-                    Get Vetted
-                  </span>
-                )}
-              </button>
-
-              <button
-                onClick={() => navigate("/manage-resume")}
-                className={`flex items-center ${
-                  firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-1.5 text-gray-900 hover:bg-gray-50 rounded-3xl w-full transition-colors`}
-              >
-                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
-                  <span
-                    className="material-symbols-outlined"
-                    style={{
-                      fontSize: "24px",
-                      fontVariationSettings:
-                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                      color: "#5b748e",
-                    }}
-                  >
-                    content_copy
-                  </span>
-                </div>
-                {firstSidebarOpen && (
-                  <span className="text-sm font-semibold text-gray-900">
-                    Manage Resume
-                  </span>
-                )}
-              </button>
-
-              <button
-                onClick={() => navigate("/manage-jds")}
-                className={`flex items-center ${
-                  firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
-                } py-1.5 text-gray-900 bg-gray-50 rounded-3xl w-full transition-colors`}
-              >
-                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
-                  <span
-                    className="material-symbols-outlined"
-                    style={{
-                      fontSize: "24px",
-                      fontVariationSettings:
-                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                      color: "#7c00ff",
-                      filter:
-                        "drop-shadow(0 4px 12px rgba(124, 0, 255, 0.3)) drop-shadow(inset 0 1px 0 rgba(255, 255, 255, 0.25))",
-                    }}
-                  >
-                    description
-                  </span>
-                </div>
-                {firstSidebarOpen && (
-                  <span className="text-sm font-semibold text-gray-900">
-                    Manage JDs
-                  </span>
-                )}
-              </button>
-            </nav>
-
-            {/* User Profile - Bottom */}
-            <div className="p-3 border-t border-gray-200">
-              {firstSidebarOpen ? (
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                    <span
-                      className="material-symbols-outlined text-purple-600"
-                      style={{
-                        fontSize: "18px",
-                        fontVariationSettings:
-                          '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 18',
-                      }}
-                    >
-                      person
-                    </span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">
-                      John Doe
-                    </p>
-                    <p className="text-xs text-gray-900 truncate">Designer</p>
-                  </div>
-                </div>
-              ) : (
-                <button
-                  onClick={() => navigate("/")}
-                  className="w-full p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors flex items-center justify-center"
-                  title="Logout"
-                >
-                  <span
-                    className="material-symbols-outlined"
-                    style={{
-                      fontSize: "24px",
-                      fontVariationSettings:
-                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                    }}
-                  >
-                    logout
-                  </span>
-                </button>
-              )}
-            </div>
-          </div>
+        <div className="hidden md:flex">
+          <Sidebar activeItem="get-vetted" />
         </div>
 
         {/* Second Sidebar - Resume Sections */}
-        <div className="w-full md:w-1/5 lg:w-[30%] bg-white border-t md:border-t-0 md:border-l border-gray-200 flex-shrink-0 h-1/2 md:h-full">
-          <div className="flex flex-col h-full">
-            {/* Header */}
-            <div
-              className="px-4 border-b border-gray-200 flex items-center justify-between"
-              style={{ height: "65px" }}
-            >
-              <h2 className="text-base font-bold text-gray-900">
-                AI Resume Optimizer
-              </h2>
-              <button
-                onClick={() => navigate("/manage-jds")}
-                className="flex items-center justify-center p-2 text-gray-900 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-                title="Back to JDs"
-              >
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: "20px",
-                    fontVariationSettings:
-                      '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 20',
-                  }}
-                >
-                  arrow_back
-                </span>
-              </button>
-            </div>
-
-            {/* Sections */}
-            <Reorder.Group
-              axis="y"
-              values={sections}
-              onReorder={setSections}
-              className="flex-1 p-4 space-y-4 overflow-y-auto"
-            >
-              {sections.map((section) => (
-                <SectionItem
-                  key={section.id}
-                  section={section}
-                  renderSectionForm={renderSectionForm}
-                  onAdd={handleAddEntry}
-                  isCollapsed={collapsedSections.has(section.id)}
-                  onToggleCollapse={handleToggleCollapse}
-                />
-              ))}
-            </Reorder.Group>
-          </div>
-        </div>
+        <AISidebar
+          sections={sections}
+          setSections={setSections}
+          resumeData={resumeData}
+          editingFields={editingFields}
+          toggleFieldEdit={toggleFieldEdit}
+          updateResumeData={updateResumeData}
+          activeResumeSection={activeResumeSection}
+          collapsedSections={collapsedSections}
+          handleToggleCollapse={handleToggleCollapse}
+          handleAddEntry={handleAddEntry}
+          renderSectionForm={renderSectionForm}
+        />
 
         {/* Main Content - Resume Display */}
         <div className="flex-1 w-full md:w-4/5 lg:w-[70%] flex flex-col overflow-hidden h-1/2 md:h-full">
@@ -1882,7 +1524,7 @@ export default function AIResume() {
               {/* Plain Resume Box */}
               <div
                 className="bg-white rounded-lg p-12 min-h-[11in] shadow-sm"
-                style={{ width: "8.5in" }}
+                style={{ width: "8.5in", fontFamily: 'Open Sans', color: '#1A1A1A' }}
               >
                 {/* Render sections in the order defined by sidebar */}
                 {sections.map((section) => renderResumeSection(section))}
@@ -1892,127 +1534,6 @@ export default function AIResume() {
         </div>
       </div>
 
-      {/* Logo Modal - Navigation */}
-      {logoModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Navigate To
-              </h3>
-              <button
-                onClick={() => setLogoModalOpen(false)}
-                className="text-gray-500 hover:text-gray-900"
-              >
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: "24px",
-                    fontVariationSettings:
-                      '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24',
-                  }}
-                >
-                  close
-                </span>
-              </button>
-            </div>
-
-            <div className="space-y-2">
-              <button
-                onClick={() => {
-                  navigate("/");
-                  setLogoModalOpen(false);
-                }}
-                className="w-full flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-left"
-              >
-                <span className="text-gray-900 font-medium">Landing Page</span>
-              </button>
-              <button
-                onClick={() => {
-                  navigate("/resume");
-                  setLogoModalOpen(false);
-                }}
-                className="w-full flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-left"
-              >
-                <span
-                  className="material-symbols-outlined text-purple-600"
-                  style={{
-                    fontSize: "20px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20',
-                  }}
-                >
-                  auto_awesome
-                </span>
-                <span className="text-gray-900 font-medium">AI Interview</span>
-              </button>
-              <button
-                onClick={() => {
-                  navigate("/manage-jds");
-                  setLogoModalOpen(false);
-                }}
-                className="w-full flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-left"
-              >
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: "20px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20',
-                  }}
-                >
-                  description
-                </span>
-                <span className="text-gray-900 font-medium">Manage JDs</span>
-              </button>
-              <button
-                onClick={() => {
-                  navigate("/manage-resume");
-                  setLogoModalOpen(false);
-                }}
-                className="w-full flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-left"
-              >
-                <span
-                  className="material-symbols-outlined"
-                  style={{
-                    fontSize: "20px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20',
-                  }}
-                >
-                  content_copy
-                </span>
-                <span className="text-gray-900 font-medium">Manage Resume</span>
-              </button>
-              <button
-                onClick={() => {
-                  setLogoModalOpen(false);
-                }}
-                className="w-full flex items-center gap-3 p-3 border border-gray-300 rounded-lg bg-purple-50 text-left"
-              >
-                <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center">
-                  <span
-                    className="material-symbols-outlined"
-                    style={{
-                      fontSize: "20px",
-                      fontVariationSettings:
-                        '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20',
-                      color: "#7c00ff",
-                      filter:
-                        "drop-shadow(0 4px 12px rgba(124, 0, 255, 0.3)) drop-shadow(inset 0 1px 0 rgba(255, 255, 255, 0.25))",
-                    }}
-                  >
-                    verified_user
-                  </span>
-                </div>
-                <span className="text-gray-900 font-medium">
-                  Get Vetted (Current)
-                </span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

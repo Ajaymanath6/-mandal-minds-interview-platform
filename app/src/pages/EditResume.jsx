@@ -33,7 +33,7 @@ export default function EditResume() {
   const [editingFields, setEditingFields] = useState({});
   const [hoveredResumeSection, setHoveredResumeSection] = useState(null);
   const [activeResumeSection, setActiveResumeSection] = useState(null);
-  const [isScanningResume, setIsScanningResume] = useState(false);
+  const [_isScanningResume, setIsScanningResume] = useState(false);
   const [resumeData, setResumeData] = useState({
     personal: {
       name: "John Doe",
@@ -89,6 +89,67 @@ export default function EditResume() {
           },
         };
       }
+    });
+  };
+
+  // Handler to delete work experience item
+  const handleDeleteWork = (workId) => {
+    setResumeData((prev) => ({
+      ...prev,
+      work: prev.work.filter((item) => item.id !== workId),
+    }));
+  };
+
+  // Handler to add new entry to a section
+  const handleAddEntry = (sectionId) => {
+    setResumeData((prev) => {
+      if (sectionId === "work") {
+        // Add new work experience entry
+        const maxId =
+          prev.work && prev.work.length > 0 ? Math.max(...prev.work.map((w) => w.id)) : 0;
+        const newWorkEntry = {
+          id: maxId + 1,
+          title: "",
+          company: "",
+          startDate: "",
+          endDate: "",
+          description: "",
+        };
+        return {
+          ...prev,
+          work: [...(prev.work || []), newWorkEntry],
+        };
+      } else if (sectionId === "education") {
+        // For education, if it's an object, convert to array
+        if (!Array.isArray(prev.education)) {
+          // Convert single education object to array
+          const eduArray = prev.education ? [{ ...prev.education, id: 1 }] : [];
+          return {
+            ...prev,
+            education: eduArray,
+          };
+        } else {
+          // Add new education entry
+          const maxId =
+            prev.education.length > 0
+              ? Math.max(...prev.education.map((e) => e.id || 0))
+              : 0;
+          const newEducationEntry = {
+            id: maxId + 1,
+            degree: "",
+            institution: "",
+            startYear: "",
+            endYear: "",
+            gpa: "",
+          };
+          return {
+            ...prev,
+            education: [...prev.education, newEducationEntry],
+          };
+        }
+      }
+      // For other sections (personal, skills), don't add duplicates
+      return prev;
     });
   };
 
@@ -248,6 +309,8 @@ export default function EditResume() {
           editingFields={editingFields}
           toggleFieldEdit={toggleFieldEdit}
           updateResumeData={updateResumeData}
+          handleAddEntry={handleAddEntry}
+          handleDeleteWork={handleDeleteWork}
           activeResumeSection={activeResumeSection}
           renderResumeSection={renderResumeSection}
           ResumeSectionWrapper={ResumeSectionWrapper}

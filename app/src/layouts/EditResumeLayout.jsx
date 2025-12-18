@@ -10,11 +10,16 @@ export default function EditResumeLayout({
   editingFields,
   toggleFieldEdit,
   updateResumeData,
+  handleAddEntry,
+  handleDeleteWork,
   activeResumeSection,
   renderResumeSection,
   ResumeSectionWrapper,
   onScanningStateChange,
 }) {
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/4864df2a-28d6-48bd-b6d5-087622789fe4',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'EditResumeLayout.jsx:17',message:'Layout rendered',data:{activeTab,hasOnScanning:!!onScanningStateChange},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+  // #endregion
   return (
     <div className="flex flex-col md:flex-row w-full" style={{ height: "100vh" }}>
       {/* Left Side - SummaryEdit Component */}
@@ -28,6 +33,8 @@ export default function EditResumeLayout({
         editingFields={editingFields}
         toggleFieldEdit={toggleFieldEdit}
         updateResumeData={updateResumeData}
+        handleAddEntry={handleAddEntry}
+        handleDeleteWork={handleDeleteWork}
         activeResumeSection={activeResumeSection}
         onScanningStateChange={onScanningStateChange}
       />
