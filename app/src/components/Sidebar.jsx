@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { IbmWatsonOpenscale, Document, Archive } from "@carbon/icons-react";
+import { Home, Document, Archive } from "@carbon/icons-react";
 import { ThumbUp } from "@mui/icons-material";
 import logoSvg from "../assets/logo.svg";
 
-export default function Sidebar({ activeItem = "ai-interview" }) {
+export default function Sidebar({ activeItem = "home" }) {
   const [firstSidebarOpen, setFirstSidebarOpen] = useState(true);
   const [isLogoHovered, setIsLogoHovered] = useState(false);
   const navigate = useNavigate();
@@ -84,18 +84,18 @@ export default function Sidebar({ activeItem = "ai-interview" }) {
 
         {/* Navigation */}
         <nav className="flex-1 p-2 space-y-2">
-          <a
-            href="#"
+          <button
+            onClick={() => navigate("/home")}
             className={`flex items-center ${
               firstSidebarOpen ? "space-x-3" : "justify-center"
-            } pt-1 pr-2 pb-1 pl-2 text-gray-900 rounded-[12px] transition-colors border-0 ${
-              activeItem === "ai-interview"
+            } pt-1 pr-2 pb-1 pl-2 text-gray-900 rounded-[12px] transition-colors border-0 w-full ${
+              activeItem === "home"
                 ? "bg-[#F5F5F5]"
                 : "hover:bg-[#F5F5F5]"
             }`}
           >
             <div className="w-8 h-8 rounded-md flex items-center justify-center">
-              <IbmWatsonOpenscale
+              <Home
                 size={24}
                 style={{
                   color: "rgba(87, 87, 87, 1)",
@@ -114,10 +114,10 @@ export default function Sidebar({ activeItem = "ai-interview" }) {
                   color: "#575757",
                 }}
               >
-                AI Interview
+                Home
               </span>
             )}
-          </a>
+          </button>
 
           <button
             onClick={() => navigate("/get-vetted")}

@@ -16,7 +16,7 @@ export default function Landing() {
     // Simulate authentication process
     setTimeout(() => {
       // Firebase authentication would go here
-      navigate('/resume')
+      navigate('/home')
     }, 1500)
   }
 

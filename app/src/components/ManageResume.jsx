@@ -373,7 +373,7 @@ export default function ManageResume() {
             {/* Navigation */}
             <nav className="flex-1 p-2 space-y-2">
               <button
-                onClick={() => navigate("/resume")}
+                onClick={() => navigate("/home")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
                 } py-1.5 text-gray-900 hover:bg-gray-50 rounded-3xl w-full transition-colors`}
@@ -392,7 +392,7 @@ export default function ManageResume() {
                   </span>
                 </div>
                 {firstSidebarOpen && (
-                  <span className="text-sm font-semibold text-gray-900">AI Interview</span>
+                  <span className="text-sm font-semibold text-gray-900">Home</span>
                 )}
               </button>
 
