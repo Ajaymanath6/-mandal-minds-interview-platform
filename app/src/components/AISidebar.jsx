@@ -126,7 +126,7 @@ export default function AISidebar({
   scoreChange,
   getScoreColor,
   getScoreTitle,
-  initialScore,
+  initialScore: _initialScore,
 }) {
   const navigate = useNavigate();
 
