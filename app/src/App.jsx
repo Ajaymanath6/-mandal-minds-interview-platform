@@ -6,11 +6,11 @@ import {
 } from "react-router-dom";
 import Landing from "./components/Landing";
 import Resume from "./components/Resume";
-import ManageJDs from "./components/ManageJDs";
-import ManageResume from "./components/ManageResume";
+import GetVetted from "./pages/GetVetted";
+import ManageJDsPage from "./pages/ManageJDsPage";
+import ManageResumePage from "./pages/ManageResumePage";
 import AnalyzeResume from "./components/AnalyzeResume";
 import EditResume from "./pages/EditResume";
-import ResumeEditor from "./components/ResumeEditor";
 import AIResume from "./components/AIResume";
 
 function App() {
@@ -25,11 +25,11 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/resume" element={<Resume />} />
-        <Route path="/manage-jds" element={<ManageJDs />} />
-        <Route path="/manage-resume" element={<ManageResume />} />
+        <Route path="/resume-editor" element={<GetVetted />} />
+        <Route path="/manage-jds" element={<ManageJDsPage />} />
+        <Route path="/manage-resume" element={<ManageResumePage />} />
         <Route path="/analyze-resume" element={<AnalyzeResume />} />
         <Route path="/edit-resume" element={<EditResume />} />
-        <Route path="/resume-editor" element={<ResumeEditor />} />
         <Route path="/ai-resume" element={<AIResume />} />
       </Routes>
     </RouterComponent>

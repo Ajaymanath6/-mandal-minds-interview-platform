@@ -6,7 +6,7 @@ import {
   RiQuestionLine,
   RiArrowUpDownFill,
 } from "@remixicon/react";
-import { DocumentPdf, Document, CircleDash } from "@carbon/icons-react";
+import { DocumentPdf, Document, CircleDash, TextLongParagraph, Restart } from "@carbon/icons-react";
 import AISidebar from "./AISidebar";
 import "material-symbols/outlined.css";
 
@@ -32,6 +32,9 @@ export default function SummaryEdit({
   const [_addedAISkills, setAddedAISkills] = useState([]); // Track AI-added skills (for future use)
   const [fieldAIAdditions, setFieldAIAdditions] = useState({});
   const [jdText, setJdText] = useState(""); // Store JD text for AI analysis
+  // Store rephrased versions of fields (only for resume preview, not input fields)
+  // TODO: Pass this to resume preview to show rephrased text while keeping original in input field
+  const [_rephrasedFields, setRephrasedFields] = useState({});
   
   // Calculate current match score based on resume data and JD
   // This recalculates whenever resumeData or jdText changes
@@ -122,7 +125,7 @@ export default function SummaryEdit({
             defaultValue={value}
             placeholder={placeholder}
             className="w-full px-3 py-2 text-sm text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b] hover:bg-[#F5F5F5]"
-            style={{ fontFamily: 'IBM Plex Sans' }}
+            style={{ fontFamily: 'Open Sans' }}
             autoFocus
             onBlur={(e) => handleValueChange(e.target.value)}
           />
@@ -134,7 +137,7 @@ export default function SummaryEdit({
           defaultValue={value}
           placeholder={placeholder}
           className="w-full px-3 py-2 text-sm text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b] hover:bg-[#F5F5F5]"
-          style={{ fontFamily: 'IBM Plex Sans' }}
+                style={{ fontFamily: 'Open Sans' }}
           autoFocus
           onBlur={(e) => handleValueChange(e.target.value)}
         />
@@ -153,7 +156,7 @@ export default function SummaryEdit({
         onMouseEnter={() => setHoveredField(fieldId)}
         onMouseLeave={() => setHoveredField(null)}
       >
-        <span style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>{value}</span>
+          <span style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>{value}</span>
         {hoveredField === fieldId && (
           <button
             onClick={() => toggleFieldEdit(fieldId)}
@@ -509,8 +512,14 @@ export default function SummaryEdit({
     hideAISuggestions = false,
   }) => {
     const [hoveredField, setHoveredField] = useState(null);
+    const [editableValue, setEditableValue] = useState(value);
     const isEditing = editingFields[fieldId];
     const aiSuggestions = getAISuggestions(fieldId, value);
+    
+    // Update editableValue when value changes
+    useEffect(() => {
+      setEditableValue(value);
+    }, [value]);
 
     const handleValueChange = (newValue) => {
       if (section && field) {
@@ -579,13 +588,38 @@ export default function SummaryEdit({
       }));
     };
 
+    // Function to highlight keywords in text for contenteditable
+    const highlightKeywordsInText = (text) => {
+      const fieldAdditions = fieldAIAdditions[fieldId] || [];
+      if (fieldAdditions.length === 0) return text;
+      
+      let highlighted = text;
+      fieldAdditions.forEach((addition) => {
+        const { text: addedText, suggestion } = addition;
+        const escapedText = addedText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        const regex = new RegExp(`(${escapedText})`, "gi");
+        highlighted = highlighted.replace(
+          regex,
+          `<span style="background-color: #fef3c7; color: #92400e; padding: 2px 4px; border-radius: 4px; border: 1px solid #fbbf24; cursor: pointer; display: inline-block;" class="highlighted-keyword-input" data-skill="${suggestion}" title="Double-click to remove">$1</span>`
+        );
+      });
+      return highlighted;
+    };
+
+    // Function to get plain text from contenteditable
+    const getPlainText = (html) => {
+      const div = document.createElement('div');
+      div.innerHTML = html;
+      return div.textContent || div.innerText || '';
+    };
+
     // Function to render text with AI-added portions as badges
     const renderTextWithInlineBadges = () => {
       const fieldAdditions = fieldAIAdditions[fieldId] || [];
 
       if (!value || fieldAdditions.length === 0) {
         return (
-          <span style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>
+          <span style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
             {value || (
               <span className="text-gray-400 italic">{placeholder}</span>
             )}
@@ -629,13 +663,81 @@ export default function SummaryEdit({
 
       return (
         <div
-          style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}
+          style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}
           dangerouslySetInnerHTML={{ __html: processedText }}
         />
       );
     };
 
     if (isEditing) {
+      const fieldAdditions = fieldAIAdditions[fieldId] || [];
+      const hasHighlights = fieldAdditions.length > 0;
+      
+      if (hasHighlights) {
+        // Use contenteditable div to support highlighted keywords in orange/yellow
+        return (
+          <div className="relative">
+            <div
+              contentEditable
+              suppressContentEditableWarning
+              onInput={(e) => {
+                const plainText = getPlainText(e.target.innerHTML);
+                setEditableValue(plainText);
+              }}
+              onBlur={(e) => {
+                const plainText = getPlainText(e.target.innerHTML);
+                handleValueChange(plainText);
+              }}
+              onKeyDown={(e) => {
+                // Handle backspace/delete on highlighted keywords
+                if (e.key === 'Backspace' || e.key === 'Delete') {
+                  const selection = window.getSelection();
+                  if (selection.rangeCount > 0) {
+                    const range = selection.getRangeAt(0);
+                    const highlightedElement = range.startContainer.parentElement?.closest('.highlighted-keyword-input');
+                    if (highlightedElement) {
+                      e.preventDefault();
+                      const skill = highlightedElement.getAttribute('data-skill');
+                      if (skill) {
+                        removeSkillFromField(skill);
+                      }
+                    }
+                  }
+                }
+              }}
+              onClick={(e) => {
+                const target = e.target.closest('.highlighted-keyword-input');
+                if (target && e.detail === 2) { // Double click to remove
+                  const skill = target.getAttribute('data-skill');
+                  if (skill) {
+                    removeSkillFromField(skill);
+                  }
+                }
+              }}
+              dangerouslySetInnerHTML={{ __html: highlightKeywordsInText(editableValue || value) }}
+              className="w-full px-3 py-2 text-sm text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b] hover:bg-[#F5F5F5]"
+              style={{ 
+                fontFamily: 'IBM Plex Sans',
+                minHeight: type === "textarea" ? `${rows * 1.5}rem` : '2.5rem',
+                whiteSpace: type === "textarea" ? 'pre-wrap' : 'nowrap',
+                overflow: type === "textarea" ? 'auto' : 'hidden',
+                wordBreak: 'break-word'
+              }}
+              autoFocus
+            />
+            {!editableValue && !value && (
+              <div 
+                className="absolute left-3 top-2 text-[#80868b] pointer-events-none"
+                style={{ fontFamily: 'Open Sans' }}
+              >
+                {placeholder}
+              </div>
+            )}
+          </div>
+        );
+      }
+      
+      // No highlights, use regular input/textarea
       if (type === "textarea") {
         return (
           <textarea
@@ -643,7 +745,7 @@ export default function SummaryEdit({
             defaultValue={value}
             placeholder={placeholder}
             className="w-full px-3 py-2 text-sm text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b] hover:bg-[#F5F5F5]"
-            style={{ fontFamily: 'IBM Plex Sans' }}
+            style={{ fontFamily: 'Open Sans' }}
             autoFocus
             onBlur={(e) => handleValueChange(e.target.value)}
           />
@@ -655,7 +757,7 @@ export default function SummaryEdit({
           defaultValue={value}
           placeholder={placeholder}
           className="w-full px-3 py-2 text-sm text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b] hover:bg-[#F5F5F5]"
-          style={{ fontFamily: 'IBM Plex Sans' }}
+                style={{ fontFamily: 'Open Sans' }}
           autoFocus
           onBlur={(e) => handleValueChange(e.target.value)}
         />
@@ -699,7 +801,8 @@ export default function SummaryEdit({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  // Rephrase this specific field
+                  // Rephrase this specific field - only update resume preview, NOT input field
+                  // This preserves highlighted keywords in the input field
                   const currentText = value;
                   const rephrasedText = rephraseWithAI(
                     currentText,
@@ -707,12 +810,15 @@ export default function SummaryEdit({
                       ? "work-description"
                       : "default"
                   );
-                  if (section && field) {
-                    updateResumeData(section, field, rephrasedText, index);
-                  }
+                  // Store rephrased version for resume preview only
+                  // Don't update resumeData - keep original text with highlighted keywords in input field
+                  setRephrasedFields(prev => ({
+                    ...prev,
+                    [fieldId]: rephrasedText
+                  }));
                 }}
                 className="w-8 h-8 flex items-center justify-center bg-[#f59e0b] text-white rounded-[7px] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.3)] transition-all hover:opacity-90"
-                title="AI Rephrase content"
+                title="AI Rephrase content (resume preview only)"
               >
                 <span
                   className="material-symbols-outlined"
@@ -751,7 +857,7 @@ export default function SummaryEdit({
                 onClick={() => addSuggestionToField(suggestion)}
                 className="group px-2 py-1 bg-orange-100 hover:bg-orange-200 text-orange-800 text-xs rounded-md transition-colors flex items-center gap-1 font-medium shadow-sm"
                 title={`Add "${suggestion}" to this field`}
-                style={{ fontFamily: 'IBM Plex Sans' }}
+                style={{ fontFamily: 'Open Sans' }}
               >
                 <span
                   className="material-symbols-outlined"
@@ -828,7 +934,7 @@ export default function SummaryEdit({
         <div className="flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium" style={{ backgroundColor: '#F5F5F5', color: '#1A1A1A' }}>
           <div className="flex items-center space-x-3">
             <Icon size={16} style={{ color: '#575757' }} />
-            <span style={{ fontFamily: 'IBM Plex Sans', fontWeight: 500, fontSize: '16px', lineHeight: '24px', letterSpacing: '-0.03em' }}>{section.name}</span>
+              <span style={{ fontFamily: 'Open Sans', fontWeight: 500, fontSize: '16px', lineHeight: '24px', letterSpacing: '-0.03em' }}>{section.name}</span>
           </div>
           <div className="flex items-center gap-2">
             <button className="text-gray-500 hover:text-gray-700 hover:bg-white p-1 rounded">
@@ -877,6 +983,11 @@ export default function SummaryEdit({
       }
     };
 
+    const handleCompare = () => {
+      if (!localJdText.trim() || isScanning) return;
+      startScanning();
+    };
+
     const startScanning = () => {
       if (!localJdText.trim() || isScanning) return;
       
@@ -922,13 +1033,15 @@ export default function SummaryEdit({
                   onKeyDown={handleKeyDown}
                   placeholder="Paste or upload Job Description here to compare with your resume..."
                   rows={8}
-                  className="w-full px-3 py-2 text-sm text-[#3c4043] bg-white border rounded-lg focus:outline-none focus:border-[#a854ff] transition-all placeholder:text-[#80868b]"
+                  className="w-full px-3 py-2 text-sm text-[#3c4043] bg-white border rounded-lg focus:outline-none transition-all placeholder:text-[#80868b]"
                   style={{ 
-                    fontFamily: 'IBM Plex Sans', 
-                    borderColor: '#E5E5E5', 
+                    fontFamily: 'Open Sans', 
+                    borderColor: localJdText.trim().length > 0 ? '#A5A5A5' : '#dfe1e5',
                     backgroundColor: '#ffffff',
                     opacity: isScanning ? 0.5 : 1
                   }}
+                  onFocus={(e) => e.target.style.borderColor = '#A5A5A5'}
+                  onBlur={(e) => e.target.style.borderColor = localJdText.trim().length > 0 ? '#A5A5A5' : '#dfe1e5'}
                   disabled={isScanning}
                 />
                 {/* Spinner overlay on textarea - CircleDash icon only */}
@@ -936,7 +1049,7 @@ export default function SummaryEdit({
                   <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                     <CircleDash size={32} className="animate-spin mb-3" style={{ color: '#7c00ff' }} />
                     <p style={{ 
-                      fontFamily: 'IBM Plex Sans', 
+                      fontFamily: 'Open Sans', 
                       fontSize: '10px', 
                       color: '#575757',
                       textAlign: 'center'
@@ -946,6 +1059,19 @@ export default function SummaryEdit({
                   </div>
                 )}
               </div>
+              {/* Button outside textarea - appears when user types, takes max width */}
+              {localJdText.trim().length > 0 && !isScanning && (
+                <button
+                  onClick={handleCompare}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] text-white rounded-[7px] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] transition-all hover:opacity-90"
+                  style={{ fontFamily: 'IBM Plex Sans', fontWeight: 500, fontSize: '14px' }}
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
+                    compare_arrows
+                  </span>
+                  Compare
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -1018,44 +1144,190 @@ export default function SummaryEdit({
     );
   };
 
+  // Text Skeleton Loader Component
+  const TextSkeletonLoader = ({ lines = 3 }) => {
+    return (
+      <div className="space-y-2 animate-pulse">
+        {Array.from({ length: lines }).map((_, index) => (
+          <div
+            key={index}
+            className="h-4 rounded"
+            style={{
+              backgroundColor: '#E5E5E5',
+              width: index === lines - 1 ? '75%' : '100%',
+            }}
+          />
+        ))}
+      </div>
+    );
+  };
+
   // Summarise Resume Content Component
   const SummariseResumeContent = ({ resumeData }) => {
-    const summaryText = `Results-driven ${resumeData.work[0]?.title || 'professional'} with ${resumeData.work.length || 1}+ years of experience in React and Node.js. Proven ability to ${resumeData.work[0]?.description?.split('.')[0] || 'lead development of scalable web applications'}, seeking to leverage expertise in full-stack development to contribute to a dynamic team.`;
+    const [isRephrasing, setIsRephrasing] = useState(false);
+    const [isInitialLoading, setIsInitialLoading] = useState(true);
+    const [summaryText, setSummaryText] = useState("");
+    // Generate summary on first load
+    useEffect(() => {
+      if (isInitialLoading) {
+        // Simulate AI summary generation (2 seconds)
+        setTimeout(() => {
+          const generatedSummary = `Results-driven ${resumeData.work[0]?.title || 'professional'} with ${resumeData.work.length || 1}+ years of experience in React and Node.js. Proven ability to ${resumeData.work[0]?.description?.split('.')[0] || 'lead development of scalable web applications'}, seeking to leverage expertise in full-stack development to contribute to a dynamic team.`;
+          setSummaryText(generatedSummary);
+          setIsInitialLoading(false);
+        }, 2000);
+      }
+    }, [isInitialLoading, resumeData]);
+    
+
+    // Rephrase summary with better grammar
+    const rephraseSummary = (text) => {
+      let rephrased = text;
+      
+      // Fix grammar issues
+      rephrased = rephrased
+        .replace(/Led development/g, 'Led the development')
+        .replace(/Proven ability to Led/g, 'Proven ability to lead')
+        .replace(/React and Node/g, 'React and Node.js')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      // Improve sentence structure
+      if (rephrased.includes('Proven ability to lead')) {
+        rephrased = rephrased.replace(
+          /Proven ability to lead development of scalable web applications/,
+          'Proven track record of leading the development of scalable web applications'
+        );
+      }
+
+      // Ensure proper capitalization
+      rephrased = rephrased.charAt(0).toUpperCase() + rephrased.slice(1);
+      
+      // Ensure proper punctuation
+      if (!rephrased.endsWith('.') && !rephrased.endsWith('!') && !rephrased.endsWith('?')) {
+        rephrased += '.';
+      }
+
+      return rephrased;
+    };
+
+    const handleRestart = () => {
+      setIsRephrasing(true);
+      
+      // Simulate AI rephrasing with 4 second delay
+      setTimeout(() => {
+        const rephrased = rephraseSummary(summaryText);
+        setSummaryText(rephrased);
+        setIsRephrasing(false);
+      }, 4000);
+    };
 
     return (
       <div className="p-4">
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          <h3 className="text-lg font-semibold mb-4" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>
-            Resume Summary
-          </h3>
-          <div className="space-y-4">
-            {/* Professional Summary Section */}
-            <div>
-              <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>Professional Summary:</h4>
-              <p style={{ color: '#1A1A1A', lineHeight: '1.6', fontFamily: 'IBM Plex Sans' }}>
-                {summaryText}
-              </p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>Education:</h4>
-              <p style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>
-                {resumeData.education.degree} from {resumeData.education.institution} ({resumeData.education.startYear} - {resumeData.education.endYear})
-                {resumeData.education.gpa && `, GPA: ${resumeData.education.gpa}`}
-              </p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>Key Skills:</h4>
-              <p style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>
-                React, Node.js, TypeScript, MongoDB, PostgreSQL, AWS, Docker
-              </p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>Contact Information:</h4>
-              <p style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>
-                {resumeData.personal.email} | {resumeData.personal.phone} | {resumeData.personal.location}
-              </p>
-            </div>
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4 px-3 py-2 rounded-md" style={{ backgroundColor: '#F5F5F5' }}>
+          <div className="flex items-center gap-2">
+            <TextLongParagraph size={20} style={{ color: "#575757" }} />
+            <span style={{ fontFamily: 'IBM Plex Sans', fontWeight: 500, fontSize: '16px', lineHeight: '24px', letterSpacing: '-0.03em', color: '#1A1A1A' }}>
+              AI summary
+            </span>
           </div>
+          <button
+            onClick={handleRestart}
+            disabled={isRephrasing || isInitialLoading}
+            className="flex items-center justify-center p-1 rounded transition-colors hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+            title="Regenerate summary"
+          >
+            <Restart size={20} style={{ color: "#575757" }} />
+          </button>
+        </div>
+
+        {/* Content - Div with background starting below header, all textareas white */}
+        <div className="p-4 rounded-lg" style={{ backgroundColor: '#fcfcfb' }}>
+          {isInitialLoading || isRephrasing ? (
+            <div className="bg-white p-4 rounded-lg space-y-4">
+              <div>
+                <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>Professional Summary:</h4>
+                <TextSkeletonLoader lines={4} />
+              </div>
+              <div>
+                <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>Education:</h4>
+                <TextSkeletonLoader lines={1} />
+              </div>
+              <div>
+                <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>Key Skills:</h4>
+                <TextSkeletonLoader lines={1} />
+              </div>
+              <div>
+                <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>Contact Information:</h4>
+                <TextSkeletonLoader lines={1} />
+              </div>
+            </div>
+          ) : (
+            <div className="bg-white p-4 rounded-lg space-y-4">
+              {/* Professional Summary Section */}
+              <div>
+                <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>Professional Summary:</h4>
+                <p
+                  style={{ 
+                    fontFamily: 'Open Sans', 
+                    lineHeight: '1.6',
+                    color: '#1A1A1A',
+                    fontSize: '14px'
+                  }}
+                >
+                  {summaryText}
+                </p>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>Education:</h4>
+                <p
+                  style={{ 
+                    fontFamily: 'Open Sans',
+                    color: '#1A1A1A',
+                    fontSize: '14px'
+                  }}
+                >
+                  {`${resumeData.education.degree} from ${resumeData.education.institution} (${resumeData.education.startYear} - ${resumeData.education.endYear})${resumeData.education.gpa ? `, GPA: ${resumeData.education.gpa}` : ''}`}
+                </p>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>Key Skills:</h4>
+                <p
+                  style={{ 
+                    fontFamily: 'Open Sans',
+                    color: '#1A1A1A',
+                    fontSize: '14px'
+                  }}
+                >
+                  React, Node.js, TypeScript, MongoDB, PostgreSQL, AWS, Docker
+                </p>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>Contact Information:</h4>
+                <p
+                  style={{ 
+                    fontFamily: 'Open Sans',
+                    color: '#1A1A1A',
+                    fontSize: '14px'
+                  }}
+                >
+                  <a 
+                    href={`mailto:${resumeData.personal.email}`}
+                    style={{ color: '#2563eb', textDecoration: 'none' }}
+                    onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
+                    onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
+                  >
+                    {resumeData.personal.email}
+                  </a>
+                  {' | '}
+                  {resumeData.personal.phone}
+                  {' | '}
+                  {resumeData.personal.location}
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -1320,7 +1592,7 @@ export default function SummaryEdit({
   };
 
   return (
-    <div className="w-full md:w-1/5 lg:w-[30%] bg-white flex-shrink-0 h-1/2 md:h-full" style={{ minWidth: '380px' }}>
+    <div className="w-full md:w-1/5 lg:w-[30%] bg-white border-r border-gray-200 flex-shrink-0 h-1/2 md:h-full" style={{ minWidth: '380px' }}>
       <div className="flex flex-col h-full">
         {/* Header */}
         <div

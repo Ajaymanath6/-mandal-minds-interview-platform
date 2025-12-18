@@ -28,7 +28,7 @@ export default function Sidebar({ activeItem = "ai-interview" }) {
                 />
                 <span
                   style={{
-                    fontFamily: "Body Font",
+                    fontFamily: "Open Sans",
                     fontWeight: 500,
                     fontStyle: "normal",
                     fontSize: "16px",
@@ -105,7 +105,7 @@ export default function Sidebar({ activeItem = "ai-interview" }) {
             {firstSidebarOpen && (
               <span
                 style={{
-                  fontFamily: "Body Font",
+                  fontFamily: "Open Sans",
                   fontWeight: 500,
                   fontStyle: "normal",
                   fontSize: "16px",
@@ -140,7 +140,7 @@ export default function Sidebar({ activeItem = "ai-interview" }) {
             {firstSidebarOpen && (
               <span
                 style={{
-                  fontFamily: "Body Font",
+                  fontFamily: "Open Sans",
                   fontWeight: 500,
                   fontStyle: "normal",
                   fontSize: "16px",
@@ -175,7 +175,7 @@ export default function Sidebar({ activeItem = "ai-interview" }) {
             {firstSidebarOpen && (
               <span
                 style={{
-                  fontFamily: "Body Font",
+                  fontFamily: "Open Sans",
                   fontWeight: 500,
                   fontStyle: "normal",
                   fontSize: "16px",
@@ -208,7 +208,7 @@ export default function Sidebar({ activeItem = "ai-interview" }) {
             {firstSidebarOpen && (
               <span
                 style={{
-                  fontFamily: "Body Font",
+                  fontFamily: "Open Sans",
                   fontWeight: 500,
                   fontStyle: "normal",
                   fontSize: "16px",
@@ -240,10 +240,10 @@ export default function Sidebar({ activeItem = "ai-interview" }) {
                 </span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate" style={{ fontFamily: 'Body Font' }}>
+                <p className="text-sm font-medium text-gray-900 truncate" style={{ fontFamily: 'Open Sans' }}>
                   John Doe
                 </p>
-                <p className="text-xs text-gray-500 truncate" style={{ fontFamily: 'Body Font' }}>Designer</p>
+                <p className="text-xs text-gray-500 truncate" style={{ fontFamily: 'Open Sans' }}>Designer</p>
               </div>
             </div>
           ) : (

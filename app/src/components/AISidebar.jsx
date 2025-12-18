@@ -62,7 +62,7 @@ function SectionItem({
       <div className="flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium" style={{ backgroundColor: '#F5F5F5', color: '#1A1A1A' }}>
         <div className="flex items-center space-x-3">
           <Icon size={16} style={{ color: '#575757' }} />
-          <span style={{ fontFamily: 'IBM Plex Sans', fontWeight: 500, fontSize: '16px', lineHeight: '24px', letterSpacing: '-0.03em' }}>{section.name}</span>
+          <span style={{ fontFamily: 'Open Sans', fontWeight: 500, fontSize: '16px', lineHeight: '24px', letterSpacing: '-0.03em' }}>{section.name}</span>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -167,7 +167,7 @@ export default function AISidebar({
                     <div className="text-center">
                       <div className="text-lg font-bold" style={{ 
                         color: getScoreColor ? getScoreColor(currentScore) : "#f59e0b",
-                        fontFamily: 'IBM Plex Sans'
+                        fontFamily: 'Open Sans'
                       }}>
                         {currentScore}%
                       </div>
@@ -175,11 +175,11 @@ export default function AISidebar({
                   </div>
                 </div>
                 <div>
-                  <div className="text-sm font-semibold" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>
+                  <div className="text-sm font-semibold" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                     {getScoreTitle ? getScoreTitle(currentScore) : 'Match Score'}
                   </div>
                   {scoreChange > 0 && (
-                    <div className="text-xs flex items-center gap-1" style={{ color: '#10b981', fontFamily: 'IBM Plex Sans' }}>
+                    <div className="text-xs flex items-center gap-1" style={{ color: '#10b981', fontFamily: 'Open Sans' }}>
                       <span className="material-symbols-outlined" style={{ fontSize: 14 }}>
                         trending_up
                       </span>
@@ -187,7 +187,7 @@ export default function AISidebar({
                     </div>
                   )}
                   {currentScore < 100 && (
-                    <div className="text-xs mt-1" style={{ color: '#575757', fontFamily: 'IBM Plex Sans' }}>
+                    <div className="text-xs mt-1" style={{ color: '#575757', fontFamily: 'Open Sans' }}>
                       Add, edit, remove & rephrase to match JD
                     </div>
                   )}
@@ -230,7 +230,7 @@ export default function AISidebar({
 
   // Default view with header and sections (used in AIResume.jsx)
   return (
-    <div className="w-full md:w-1/5 lg:w-[30%] bg-white border-t md:border-t-0 md:border-l border-gray-200 flex-shrink-0 h-1/2 md:h-full">
+    <div className="w-full md:w-1/5 lg:w-[30%] bg-white border-t md:border-t-0 md:border-l md:border-r border-gray-200 flex-shrink-0 h-1/2 md:h-full">
       <div className="flex flex-col h-full">
         {/* Header */}
         <div
@@ -249,7 +249,7 @@ export default function AISidebar({
             >
               auto_awesome
             </span>
-            <h2 className="text-base font-bold" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>
+            <h2 className="text-base font-bold" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
               AI Resume Optimizer
             </h2>
           </div>
