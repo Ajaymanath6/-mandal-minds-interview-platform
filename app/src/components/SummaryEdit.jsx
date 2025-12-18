@@ -264,9 +264,10 @@ export default function SummaryEdit({
     updateResumeData(sectionId, field, newText, index);
   };
 
-  // AI rephrasing function
+  // AI rephrasing function - improves grammar and flow
   const rephraseWithAI = (text, type) => {
-    // Clean up text first - remove orphaned phrases and fix grammar
+    if (!text || !text.trim()) return text;
+    
     let cleanedText = text;
 
     // Remove orphaned AI-added phrases that might be left after skill removal
@@ -284,7 +285,7 @@ export default function SummaryEdit({
       cleanedText = cleanedText.replace(phrase, "");
     });
 
-    // Fix grammar issues after removal
+    // Fix grammar issues
     cleanedText = cleanedText
       .replace(/\.\s*\./g, ".") // Remove double periods
       .replace(/\s+/g, " ") // Remove extra spaces
@@ -295,29 +296,69 @@ export default function SummaryEdit({
       .trim();
 
     if (type === "work-description") {
-      // Improve grammar and flow while keeping remaining keywords
-      if (cleanedText.includes("Microservices")) {
-        cleanedText = cleanedText.replace(
-          /Designed and implemented microservices architecture/gi,
-          "Architected and deployed robust microservices solutions to enhance system scalability and maintainability"
-        );
-      }
-      if (cleanedText.includes("Kubernetes")) {
-        cleanedText = cleanedText.replace(
-          /Deployed applications using Kubernetes orchestration/gi,
-          "Orchestrated containerized applications using Kubernetes for improved deployment efficiency and resource management"
-        );
-      }
-      if (cleanedText.includes("GraphQL")) {
-        cleanedText = cleanedText.replace(
-          /Built efficient APIs using GraphQL/gi,
-          "Developed high-performance GraphQL APIs to optimize data fetching and improve client-server communication"
-        );
-      }
+      // Improve grammar and flow while keeping keywords
+      // Convert simple phrases to more professional descriptions
+      const improvements = [
+        {
+          pattern: /Designed and implemented microservices architecture/gi,
+          replacement: "Architected and deployed robust microservices solutions to enhance system scalability and maintainability"
+        },
+        {
+          pattern: /Deployed applications using Kubernetes orchestration/gi,
+          replacement: "Orchestrated containerized applications using Kubernetes for improved deployment efficiency and resource management"
+        },
+        {
+          pattern: /Built efficient APIs using GraphQL/gi,
+          replacement: "Developed high-performance GraphQL APIs to optimize data fetching and improve client-server communication"
+        },
+        {
+          pattern: /Implemented CI\/CD pipelines for automated deployment/gi,
+          replacement: "Established comprehensive CI/CD pipelines to automate deployment processes and ensure consistent delivery"
+        },
+        {
+          pattern: /Applied DevOps practices for streamlined development/gi,
+          replacement: "Implemented DevOps best practices to streamline development workflows and accelerate time-to-market"
+        },
+        {
+          pattern: /Containerized applications using Docker/gi,
+          replacement: "Containerized applications using Docker to improve portability and simplify deployment across environments"
+        },
+        {
+          pattern: /Developed serverless functions with AWS Lambda/gi,
+          replacement: "Built scalable serverless functions using AWS Lambda to reduce infrastructure costs and improve performance"
+        }
+      ];
 
-      // Ensure proper sentence structure
-      if (cleanedText && !cleanedText.endsWith(".")) {
-        cleanedText += ".";
+      improvements.forEach(({ pattern, replacement }) => {
+        if (cleanedText.match(pattern)) {
+          cleanedText = cleanedText.replace(pattern, replacement);
+        }
+      });
+
+      // Improve sentence structure - capitalize first letter, ensure proper punctuation
+      if (cleanedText) {
+        cleanedText = cleanedText.charAt(0).toUpperCase() + cleanedText.slice(1);
+        
+        // Split into sentences and improve each
+        const sentences = cleanedText.split(/[.!?]+/).filter(s => s.trim());
+        cleanedText = sentences
+          .map(sentence => {
+            let s = sentence.trim();
+            if (s) {
+              s = s.charAt(0).toUpperCase() + s.slice(1);
+              // Ensure proper spacing
+              s = s.replace(/\s+/g, " ");
+            }
+            return s;
+          })
+          .filter(s => s)
+          .join(". ") + (cleanedText.match(/[.!?]$/) ? "" : ".");
+      }
+    } else {
+      // For other field types, just ensure proper capitalization and spacing
+      if (cleanedText) {
+        cleanedText = cleanedText.charAt(0).toUpperCase() + cleanedText.slice(1);
+        cleanedText = cleanedText.replace(/\s+/g, " ").trim();
       }
     }
 
@@ -449,13 +490,8 @@ export default function SummaryEdit({
       (skill) => !currentText.includes(skill.toLowerCase())
     );
 
-    // Always return top 3 suggestions (or all if less than 3)
-    // If no missing skills but we have required skills, still show them (user might want to add emphasis)
-    if (missingSkills.length === 0 && requiredSkills.length > 0) {
-      // Return first 3 required skills even if they're in the text (for emphasis/context)
-      return requiredSkills.slice(0, 3);
-    }
-    
+    // Only return missing skills - don't show suggestions for keywords already added
+    // They will only reappear if user removes the keyword from the field
     return missingSkills.slice(0, 3);
   };
 
@@ -1284,7 +1320,7 @@ export default function SummaryEdit({
   };
 
   return (
-    <div className="w-full md:w-1/5 lg:w-[30%] bg-white flex-shrink-0 h-1/2 md:h-full" style={{ minWidth: '320px' }}>
+    <div className="w-full md:w-1/5 lg:w-[30%] bg-white flex-shrink-0 h-1/2 md:h-full" style={{ minWidth: '380px' }}>
       <div className="flex flex-col h-full">
         {/* Header */}
         <div
@@ -1322,7 +1358,7 @@ export default function SummaryEdit({
 
         {/* Tabs */}
         <div className="px-4 pt-4 pb-4">
-          <div className="flex gap-2 overflow-x-auto" style={{ minWidth: 0, flexWrap: 'nowrap' }}>
+          <div className="flex gap-2" style={{ flexWrap: 'nowrap' }}>
             <button
               onClick={() => {
                 // #region agent log
