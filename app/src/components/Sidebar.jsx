@@ -120,7 +120,7 @@ export default function Sidebar({ activeItem = "ai-interview" }) {
           </a>
 
           <button
-            onClick={() => navigate("/resume-editor")}
+            onClick={() => navigate("/get-vetted")}
             className={`flex items-center ${
               firstSidebarOpen ? "space-x-3" : "justify-center"
             } pt-1 pr-2 pb-1 pl-2 text-gray-900 rounded-[12px] w-full transition-colors border-0 ${

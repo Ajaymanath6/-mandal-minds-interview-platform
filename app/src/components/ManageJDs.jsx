@@ -492,7 +492,7 @@ export default function ManageJDs() {
               </button>
 
               <button
-                onClick={() => navigate("/resume-editor")}
+                onClick={() => navigate("/get-vetted")}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3 px-3" : "justify-center px-2"
                 } py-1.5 text-gray-900 hover:bg-gray-50 rounded-3xl w-full transition-colors`}

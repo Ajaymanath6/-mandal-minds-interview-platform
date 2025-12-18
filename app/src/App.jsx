@@ -25,7 +25,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/resume" element={<Resume />} />
-        <Route path="/resume-editor" element={<GetVetted />} />
+        <Route path="/get-vetted" element={<GetVetted />} />
         <Route path="/manage-jds" element={<ManageJDsPage />} />
         <Route path="/manage-resume" element={<ManageResumePage />} />
         <Route path="/analyze-resume" element={<AnalyzeResume />} />
