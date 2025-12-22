@@ -11,6 +11,7 @@ import {
   RiArrowUpDownFill,
   RiAddLine,
 } from "@remixicon/react";
+import { ArrowLeft } from "@carbon/icons-react";
 
 // Section Item Component with Drag Controls
 function SectionItem({
@@ -257,17 +258,10 @@ export default function AISidebar({
             className="flex items-center justify-center p-2 rounded-lg transition-colors hover:bg-[#F5F5F5]"
             title="Back to JDs"
           >
-            <span
-              className="material-symbols-outlined"
-              style={{
-                fontSize: "20px",
-                color: "#575757",
-                fontVariationSettings:
-                  '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 20',
-              }}
-            >
-              arrow_back
-            </span>
+            <ArrowLeft
+              size={20}
+              style={{ color: "#575757" }}
+            />
           </button>
         </div>
 

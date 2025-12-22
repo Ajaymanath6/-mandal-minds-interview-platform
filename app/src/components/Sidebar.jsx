@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Home, Document, Archive, SidePanelClose, SidePanelOpen, User, Logout } from "@carbon/icons-react";
-import { ThumbUp } from "@mui/icons-material";
+import { Home, Document, Archive, SidePanelClose, SidePanelOpen, User, Logout, ThumbsUpDouble } from "@carbon/icons-react";
 import logoSvg from "../assets/logo.svg";
 
 export default function Sidebar({ activeItem = "home" }) {
@@ -126,9 +125,9 @@ export default function Sidebar({ activeItem = "home" }) {
             }`}
           >
             <div className="w-8 h-8 rounded-md flex items-center justify-center">
-              <ThumbUp
+              <ThumbsUpDouble
+                size={24}
                 style={{
-                  fontSize: "24px",
                   color: "rgba(87, 87, 87, 1)",
                 }}
               />

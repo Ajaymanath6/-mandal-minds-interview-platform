@@ -6,7 +6,7 @@ import {
   RiQuestionLine,
   RiArrowUpDownFill,
 } from "@remixicon/react";
-import { DocumentPdf, Document, CircleDash, TextLongParagraph, Restart } from "@carbon/icons-react";
+import { DocumentPdf, Document, CircleDash, TextLongParagraph, Restart, ArrowLeft, Compare, RequestQuote, Add, Close, Edit, CheckmarkFilled } from "@carbon/icons-react";
 import AISidebar from "./AISidebar";
 
 export default function SummaryEdit({
@@ -162,12 +162,7 @@ export default function SummaryEdit({
             className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] text-white rounded-[7px] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] transition-all hover:opacity-90"
             title="Edit this field"
           >
-            <span
-              className="material-symbols-outlined"
-              style={{ fontSize: 16 }}
-            >
-              edit
-            </span>
+            <Edit size={16} style={{ color: 'white' }} />
           </button>
         )}
       </div>
@@ -656,7 +651,14 @@ export default function SummaryEdit({
         const beforeText = processedText.substring(0, start);
         const afterText = processedText.substring(end);
 
-        const badgeHtml = `<button class="inline-badge" data-skill="${skill}" data-phrase="${phrase}">${phrase}</button>`;
+        const badgeHtml = `<button class="inline-badge" data-skill="${skill}" data-phrase="${phrase}">
+          <span>${phrase}</span>
+          <span class="inline-badge-close" style="display: none;">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 3L3 9M3 3L9 9" stroke="#ef4444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </button>`;
         processedText = beforeText + badgeHtml + afterText;
       });
 
@@ -858,12 +860,7 @@ export default function SummaryEdit({
                 title={`Add "${suggestion}" to this field`}
                 style={{ fontFamily: 'Open Sans' }}
               >
-                <span
-                  className="material-symbols-outlined"
-                  style={{ fontSize: 12, fontWeight: 'bold' }}
-                >
-                  add
-                </span>
+                <Add size={12} style={{ color: '#92400e', fontWeight: 'bold' }} />
                 {suggestion}
               </button>
             ))}
@@ -892,23 +889,23 @@ export default function SummaryEdit({
             border-color: #f59e0b;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
           }
-          .inline-badge:hover::after {
-            content: "close";
+          .inline-badge {
+            position: relative;
+          }
+          .inline-badge:hover .inline-badge-close {
+            display: flex !important;
             position: absolute;
             top: -8px;
             right: -8px;
             background: white;
-            color: #ef4444;
             border-radius: 50%;
             width: 20px;
             height: 20px;
-            display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
             border: 2px solid #ef4444;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-            font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20;
+            cursor: pointer;
           }
         `}</style>
       </div>
@@ -1061,12 +1058,10 @@ export default function SummaryEdit({
               {localJdText.trim().length > 0 && !isScanning && (
                 <button
                   onClick={handleCompare}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] text-white rounded-[7px] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] transition-all hover:opacity-90"
-                  style={{ fontFamily: 'Open Sans', fontWeight: 500, fontSize: '14px' }}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-[7px] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] transition-all hover:opacity-90"
+                  style={{ fontFamily: 'Open Sans', fontWeight: 500, fontSize: '14px', backgroundColor: '#0A0A0A', color: 'white' }}
                 >
-                  <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
-                    compare_arrows
-                  </span>
+                  <Compare size={16} style={{ color: 'white' }} />
                   Compare
                 </button>
               )}
@@ -1129,9 +1124,7 @@ export default function SummaryEdit({
                   className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] text-white rounded-[7px] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] transition-all hover:opacity-90"
                   style={{ fontFamily: 'Open Sans', fontWeight: 500, fontSize: '14px', marginTop: '16px' }}
                 >
-                  <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
-                    auto_fix_high
-                  </span>
+                  <RequestQuote size={16} style={{ color: 'white' }} />
                   Smart Edit Resume
                 </button>
               </div>
@@ -1612,17 +1605,10 @@ export default function SummaryEdit({
             className="flex items-center justify-center p-2 rounded-lg transition-colors hover:bg-[#F5F5F5]"
             title="Back to Resume List"
           >
-            <span
-              className="material-symbols-outlined"
-              style={{
-                fontSize: "20px",
-                color: "#575757",
-                fontVariationSettings:
-                  '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 20',
-              }}
-            >
-              arrow_back
-            </span>
+            <ArrowLeft
+              size={20}
+              style={{ color: "#575757" }}
+            />
           </button>
         </div>
 

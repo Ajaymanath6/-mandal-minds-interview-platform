@@ -8,7 +8,7 @@ import {
   RiCloseLine,
   RiSearchLine,
 } from "@remixicon/react";
-import { IbmWatsonDiscovery, Chat, IbmWatsonOpenscale } from "@carbon/icons-react";
+import { IbmWatsonDiscovery, Chat, IbmWatsonOpenscale, CheckmarkFilled } from "@carbon/icons-react";
 import FileUploadModal from "./FileUploadModal";
 
 export default function AISearchBar({
@@ -288,16 +288,11 @@ export default function AISearchBar({
                 {jdFileName && (
                   <div className="flex items-center gap-2">
                     {jdUploadStatus === "loaded" && (
-                      <span
-                        className="material-symbols-outlined flex-shrink-0"
-                        style={{
-                          fontSize: 20,
-                          color: "#22c55e",
-                          fontVariationSettings: '"FILL" 1',
-                        }}
-                      >
-                        check_circle
-                      </span>
+                      <CheckmarkFilled
+                        size={20}
+                        className="flex-shrink-0"
+                        style={{ color: "#22c55e" }}
+                      />
                     )}
                     <p className="text-sm font-normal text-[#1A1A1A] truncate max-w-[120px]" title={jdFileName}>
                       {jdFileName.length > 8 ? `${jdFileName.substring(0, 8)}...` : jdFileName}
@@ -375,7 +370,7 @@ export default function AISearchBar({
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder={getPlaceholder()}
-            className={`w-full min-h-[140px] px-6 py-4 pr-16 text-gray-900 bg-white border rounded-lg focus:outline-none resize-none placeholder:text-[#A5A5A5] text-base m-0 hover:bg-[#F5F5F5] ${
+            className={`w-full min-h-[140px] px-6 py-4 pr-16 text-gray-900 bg-white border rounded-lg focus:outline-none resize-none placeholder:text-[#A5A5A5] text-base m-0 ${
               jdUploadStatus !== "idle" ? "opacity-0 pointer-events-none" : ""
             } ${(activeTab === "analyze" || activeTab === "interview") && jdUploadStatus === "idle" ? "opacity-0 pointer-events-none" : ""}`}
             rows={5}
