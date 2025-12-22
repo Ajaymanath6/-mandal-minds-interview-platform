@@ -413,7 +413,7 @@ export default function Resume() {
         style={{ height: "100vh" }}
       >
         {/* First Sidebar - Always Visible */}
-        <Sidebar activeItem="ai-interview" />
+          <Sidebar activeItem="home" />
 
         {/* Second Sidebar - Resume Builder */}
         <ResumeBuilderSidebar

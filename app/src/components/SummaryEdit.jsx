@@ -1,12 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Reorder, useDragControls } from "framer-motion";
 import {
   RiDeleteBinLine,
   RiQuestionLine,
   RiArrowUpDownFill,
+  RiAddLine,
+  RiLinkedinFill,
 } from "@remixicon/react";
-import { DocumentPdf, Document, CircleDash, TextLongParagraph, Restart, ArrowLeft, Compare, RequestQuote, Add, Close, Edit, CheckmarkFilled } from "@carbon/icons-react";
+import { DocumentPdf, Document, CircleDash, TextLongParagraph, Restart, ArrowLeft, Compare, RequestQuote, Add, Close, Edit, CheckmarkFilled, Link, DocumentExport } from "@carbon/icons-react";
 import AISidebar from "./AISidebar";
 
 export default function SummaryEdit({
@@ -26,6 +28,9 @@ export default function SummaryEdit({
   const navigate = useNavigate();
   const [matchScore, setMatchScore] = useState(null);
   const [initialScore, setInitialScore] = useState(null); // Store initial score when entering AI Resume tab
+  const [isAddDropdownOpen, setIsAddDropdownOpen] = useState(false);
+  const addDropdownRef = useRef(null);
+  const addButtonRef = useRef(null);
   
   // AI-related state for tracking suggestions and additions
   const [_addedAISkills, setAddedAISkills] = useState([]); // Track AI-added skills (for future use)
@@ -80,6 +85,28 @@ export default function SummaryEdit({
       setInitialScore(null);
     }
   }, [activeTab, matchScore, initialScore]);
+
+  // Close add dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        addDropdownRef.current &&
+        !addDropdownRef.current.contains(event.target) &&
+        addButtonRef.current &&
+        !addButtonRef.current.contains(event.target)
+      ) {
+        setIsAddDropdownOpen(false);
+      }
+    };
+
+    if (isAddDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isAddDropdownOpen]);
   
   // Get score color and title
   const getScoreColor = (score) => {
@@ -1587,29 +1614,99 @@ export default function SummaryEdit({
       <div className="flex flex-col h-full">
         {/* Header */}
         <div
-          className="px-4 border-b border-gray-200 flex items-center justify-between"
-          style={{ height: "65px" }}
+          className="px-4 border-b border-gray-200"
+          style={{ minHeight: "65px" }}
         >
-          <div className="flex items-center gap-2">
-            {fileType === 'pdf' ? (
-              <DocumentPdf size={20} style={{ color: '#575757' }} />
-            ) : (
-              <Document size={20} style={{ color: '#575757' }} />
-            )}
-            <h2 className="text-base font-bold" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
-              {fileType === 'pdf' ? 'PDF View' : 'Word Document'}
-            </h2>
+          {/* Add Button with Dropdown */}
+          <div className="py-2 mb-2">
+            <div className="relative" ref={addDropdownRef}>
+              <button
+                ref={addButtonRef}
+                onClick={() => setIsAddDropdownOpen(!isAddDropdownOpen)}
+                className="flex items-center space-x-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-3xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] w-full"
+              >
+                <RiAddLine size={16} />
+                <span>Add</span>
+              </button>
+              
+              {/* Add Dropdown */}
+              {isAddDropdownOpen && (
+                <div
+                  className="absolute left-0 top-full mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
+                  style={{
+                    minWidth: '200px',
+                    width: '100%',
+                  }}
+                >
+                  <div className="py-1">
+                    <button
+                      onClick={() => {
+                        // Handle upload resume file
+                        setIsAddDropdownOpen(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-[#F5F5F5] transition-colors"
+                      style={{ fontFamily: 'Open Sans' }}
+                    >
+                      <DocumentExport size={18} style={{ color: '#575757' }} />
+                      <span className="text-sm font-medium" style={{ color: '#1A1A1A' }}>
+                        Upload Resume File
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        // Handle upload from URL
+                        setIsAddDropdownOpen(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-[#F5F5F5] transition-colors"
+                      style={{ fontFamily: 'Open Sans' }}
+                    >
+                      <Link size={18} style={{ color: '#575757' }} />
+                      <span className="text-sm font-medium" style={{ color: '#1A1A1A' }}>
+                        Upload from URL
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        // Handle LinkedIn import
+                        setIsAddDropdownOpen(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-[#F5F5F5] transition-colors"
+                      style={{ fontFamily: 'Open Sans' }}
+                    >
+                      <RiLinkedinFill size={18} style={{ color: '#575757' }} />
+                      <span className="text-sm font-medium" style={{ color: '#1A1A1A' }}>
+                        Import from LinkedIn
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-          <button
-            onClick={() => navigate("/manage-resume")}
-            className="flex items-center justify-center p-2 rounded-lg transition-colors hover:bg-[#F5F5F5]"
-            title="Back to Resume List"
-          >
-            <ArrowLeft
-              size={20}
-              style={{ color: "#575757" }}
-            />
-          </button>
+
+          {/* File Name */}
+          <div className="flex items-center justify-between pb-2">
+            <div className="flex items-center gap-2">
+              {fileType === 'pdf' ? (
+                <DocumentPdf size={20} style={{ color: '#575757' }} />
+              ) : (
+                <Document size={20} style={{ color: '#575757' }} />
+              )}
+              <h2 className="text-base font-bold" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
+                Document_Resume_2024
+              </h2>
+            </div>
+            <button
+              onClick={() => navigate("/manage-resume")}
+              className="flex items-center justify-center p-2 rounded-lg transition-colors hover:bg-[#F5F5F5]"
+              title="Back to Resume List"
+            >
+              <ArrowLeft
+                size={20}
+                style={{ color: "#575757" }}
+              />
+            </button>
+          </div>
         </div>
 
         {/* Tabs */}

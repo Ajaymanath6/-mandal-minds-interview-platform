@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Home, Document, Archive, SidePanelClose, SidePanelOpen, User, Logout, ThumbsUpDouble, Settings } from "@carbon/icons-react";
+import { Home, Document, Archive, SidePanelClose, SidePanelOpen, User, Logout, ThumbsUpDouble, Settings, Bullhorn } from "@carbon/icons-react";
 import logoSvg from "../assets/logo.svg";
 
 export default function Sidebar({ activeItem = "home" }) {
@@ -237,35 +237,91 @@ export default function Sidebar({ activeItem = "home" }) {
           </button>
         </nav>
 
+        {/* What's New Option */}
+        <div className="p-2">
+          <button
+            onClick={() => {
+              // Handle What's New action
+            }}
+            className={`flex items-center ${
+              firstSidebarOpen ? "space-x-3" : "justify-center"
+            } pt-1 pr-2 pb-1 pl-2 text-gray-900 rounded-[12px] w-full transition-colors border-0 ${
+              activeItem === "whats-new"
+                ? "bg-[#F5F5F5]"
+                : "hover:bg-[#F5F5F5]"
+            }`}
+          >
+            <div className="w-8 h-8 rounded-md flex items-center justify-center">
+              <Bullhorn
+                size={24}
+                style={{
+                  color: "rgba(87, 87, 87, 1)",
+                }}
+              />
+            </div>
+            {firstSidebarOpen && (
+              <span
+                style={{
+                  fontFamily: "Open Sans",
+                  fontWeight: 500,
+                  fontStyle: "normal",
+                  fontSize: "16px",
+                  lineHeight: "24px",
+                  letterSpacing: "-0.03em",
+                  color: "#575757",
+                }}
+              >
+                What's New
+              </span>
+            )}
+          </button>
+        </div>
+
         {/* User Profile - Bottom */}
-        <div className="p-3 border-t border-gray-200 relative">
+        <div className="p-2 relative">
           {firstSidebarOpen ? (
             <div className="relative" ref={userDropdownRef}>
-              <div 
-                className="flex items-center gap-3 cursor-pointer"
+              <button
                 onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
+                className={`flex items-center ${
+                  firstSidebarOpen ? "space-x-3" : "justify-center"
+                } pt-1 pr-2 pb-1 pl-2 text-gray-900 rounded-[12px] w-full transition-colors border-0 ${
+                  isUserDropdownOpen
+                    ? "bg-[#F5F5F5]"
+                    : "hover:bg-[#F5F5F5]"
+                }`}
               >
-                <div className="w-8 h-8 bg-[#F5F5F5] rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 rounded-md flex items-center justify-center">
                   <User
-                    size={18}
-                    style={{ color: "#7C00FF" }}
+                    size={24}
+                    style={{
+                      color: "rgba(87, 87, 87, 1)",
+                    }}
                   />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate" style={{ fontFamily: 'Open Sans' }}>
+                {firstSidebarOpen && (
+                  <span
+                    style={{
+                      fontFamily: "Open Sans",
+                      fontWeight: 500,
+                      fontStyle: "normal",
+                      fontSize: "16px",
+                      lineHeight: "24px",
+                      letterSpacing: "-0.03em",
+                      color: "#575757",
+                    }}
+                  >
                     John Doe
-                  </p>
-                  <p className="text-xs text-gray-500 truncate" style={{ fontFamily: 'Open Sans' }}>Designer</p>
-                </div>
-              </div>
+                  </span>
+                )}
+              </button>
               
               {/* User Dropdown - Opens upward */}
               {isUserDropdownOpen && (
                 <div
-                  className="absolute bottom-full left-0 mb-2 bg-white rounded-lg border z-50"
+                  className="absolute bottom-full left-0 mb-2 bg-white rounded-lg border z-50 flex flex-col"
                   style={{
-                    width: '248px',
-                    height: '264px',
+                    width: '208px',
                     padding: '6px',
                     gap: '4px',
                     borderColor: '#E5E5E5',

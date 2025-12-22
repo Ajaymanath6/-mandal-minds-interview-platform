@@ -122,7 +122,8 @@ export default function EditResumeLayout({
               ref={dropdownRef}
               className="absolute top-full mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
               style={{
-                left: '519px',
+                left: '665px',
+                top: '57px',
                 minWidth: '320px',
                 maxWidth: '400px',
               }}

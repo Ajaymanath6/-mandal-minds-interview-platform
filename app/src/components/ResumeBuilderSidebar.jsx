@@ -170,246 +170,6 @@ export default function ResumeBuilderSidebar({
         <div className="w-[220px] flex flex-col h-full">
           {/* Empty content area */}
           <div className="flex-1 p-4 overflow-y-auto space-y-2 relative">
-            {/* Add Files Button */}
-            <button
-              ref={buttonRef}
-              onClick={toggleDropdown}
-              className="w-full flex items-center gap-2 px-4 py-2 rounded-[6px] transition-colors border bg-white hover:bg-white"
-              style={{
-                color: '#575757',
-                borderColor: '#E5E5E5',
-              }}
-            >
-              <Add
-                size={20}
-                style={{ color: '#575757' }}
-              />
-              <span className="text-sm font-medium">Add Files</span>
-            </button>
-
-            {/* Dropdown Menu - Rendered via Portal to avoid overflow clipping */}
-            {isDropdownOpen &&
-              createPortal(
-                <div
-                  ref={dropdownRef}
-                  className="fixed bg-white rounded-[6px] border z-[9999] min-w-[320px]"
-                  style={{
-                    top: `${dropdownPosition.top}px`,
-                    left: `${dropdownPosition.left}px`,
-                    borderColor: "#E5E5E5",
-                    boxShadow: "0px 10px 10px -5px #0000000A, 0px 20px 25px -5px #0000001A",
-                  }}
-                >
-                <div className="py-2">
-                  {/* Upload JD from URL */}
-                  <button
-                    className="w-full flex items-center px-4 py-3 text-left hover:bg-[#F5F5F5] transition-colors group"
-                    onClick={() => {
-                      setIsDropdownOpen(false);
-                    }}
-                  >
-                    <Link
-                      size={20}
-                      className="mr-3 flex-shrink-0"
-                      style={{ color: "#575757" }}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div
-                        className="text-sm font-medium"
-                        style={{
-                          fontFamily: "Body Font",
-                          fontWeight: 500,
-                          color: "#575757",
-                        }}
-                      >
-                        Upload JD from URL
-                      </div>
-                      <div
-                        className="text-xs mt-0.5"
-                        style={{
-                          fontFamily: "Body Font",
-                          fontWeight: 400,
-                          color: "#9CA3AF",
-                        }}
-                      >
-                        Import job description from URL
-                      </div>
-                    </div>
-                    <ChevronRight
-                      size={18}
-                      className="ml-2 flex-shrink-0"
-                      style={{ color: "#9CA3AF" }}
-                    />
-                  </button>
-
-                  {/* Search Job Postings Online */}
-                  <button
-                    className="w-full flex items-center px-4 py-3 text-left hover:bg-[#F5F5F5] transition-colors group"
-                    onClick={() => {
-                      setIsDropdownOpen(false);
-                    }}
-                  >
-                    <Search
-                      size={20}
-                      className="mr-3 flex-shrink-0"
-                      style={{ color: "#575757" }}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div
-                        className="text-sm font-medium"
-                        style={{
-                          fontFamily: "Body Font",
-                          fontWeight: 500,
-                          color: "#575757",
-                        }}
-                      >
-                        Search Job Postings Online
-                      </div>
-                      <div
-                        className="text-xs mt-0.5"
-                        style={{
-                          fontFamily: "Body Font",
-                          fontWeight: 400,
-                          color: "#9CA3AF",
-                        }}
-                      >
-                        Search job postings across the web
-                      </div>
-                    </div>
-                    <ChevronRight
-                      size={18}
-                      className="ml-2 flex-shrink-0"
-                      style={{ color: "#9CA3AF" }}
-                    />
-                  </button>
-
-                  {/* Upload Resume/JD File */}
-                  <button
-                    className="w-full flex items-center px-4 py-3 text-left hover:bg-[#F5F5F5] transition-colors group"
-                    onClick={() => {
-                      setIsDropdownOpen(false);
-                      setIsUploadModalOpen(true);
-                    }}
-                  >
-                    <DocumentExport
-                      size={20}
-                      className="mr-3 flex-shrink-0"
-                      style={{ color: "#575757" }}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div
-                        className="text-sm font-medium"
-                        style={{
-                          fontFamily: "Body Font",
-                          fontWeight: 500,
-                          color: "#575757",
-                        }}
-                      >
-                        Upload Resume/JD File
-                      </div>
-                      <div
-                        className="text-xs mt-0.5"
-                        style={{
-                          fontFamily: "Body Font",
-                          fontWeight: 400,
-                          color: "#9CA3AF",
-                        }}
-                      >
-                        Import PDF, DOCX formats
-                      </div>
-                    </div>
-                    <ChevronRight
-                      size={18}
-                      className="ml-2 flex-shrink-0"
-                      style={{ color: "#9CA3AF" }}
-                    />
-                  </button>
-
-                  {/* Import from LinkedIn */}
-                  <button
-                    className="w-full flex items-center px-4 py-3 text-left hover:bg-[#F5F5F5] transition-colors group"
-                    onClick={() => {
-                      setIsDropdownOpen(false);
-                    }}
-                  >
-                    <LogoLinkedin
-                      size={20}
-                      className="mr-3 flex-shrink-0"
-                      style={{ color: "#575757" }}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div
-                        className="text-sm font-medium"
-                        style={{
-                          fontFamily: "Body Font",
-                          fontWeight: 500,
-                          color: "#575757",
-                        }}
-                      >
-                        Import from LinkedIn
-                      </div>
-                      <div
-                        className="text-xs mt-0.5"
-                        style={{
-                          fontFamily: "Body Font",
-                          fontWeight: 400,
-                          color: "#9CA3AF",
-                        }}
-                      >
-                        Import resume or job posting from LinkedIn
-                      </div>
-                    </div>
-                    <ChevronRight
-                      size={18}
-                      className="ml-2 flex-shrink-0"
-                      style={{ color: "#9CA3AF" }}
-                    />
-                  </button>
-
-                  {/* Add JD/Resume Manually */}
-                  <button
-                    className="w-full flex items-center px-4 py-3 text-left hover:bg-[#F5F5F5] transition-colors group"
-                    onClick={() => {
-                      setIsDropdownOpen(false);
-                    }}
-                  >
-                    <Edit
-                      size={20}
-                      className="mr-3 flex-shrink-0"
-                      style={{ color: "#575757" }}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div
-                        className="text-sm font-medium"
-                        style={{
-                          fontFamily: "Body Font",
-                          fontWeight: 500,
-                          color: "#575757",
-                        }}
-                      >
-                        Add JD/Resume Manually
-                      </div>
-                      <div
-                        className="text-xs mt-0.5"
-                        style={{
-                          fontFamily: "Body Font",
-                          fontWeight: 400,
-                          color: "#9CA3AF",
-                        }}
-                      >
-                        Create job description or resume manually
-                      </div>
-                    </div>
-                    <ChevronRight
-                      size={18}
-                      className="ml-2 flex-shrink-0"
-                      style={{ color: "#9CA3AF" }}
-                    />
-                  </button>
-                </div>
-              </div>,
-              document.body
-            )}
 
             {/* Upload Modal */}
             {isUploadModalOpen &&
@@ -507,6 +267,92 @@ export default function ResumeBuilderSidebar({
                 </div>,
                 document.body
               )}
+
+            {/* Add Files Button */}
+            <div className="mb-2">
+              <button
+                ref={buttonRef}
+                onClick={toggleDropdown}
+                className="w-full flex items-center gap-2 pt-1 pr-2 pb-1 pl-2 text-gray-900 rounded-[12px] transition-colors border-0 hover:bg-[#F5F5F5]"
+                style={{
+                  fontFamily: "Body Font",
+                  fontWeight: 500,
+                  fontStyle: "normal",
+                  fontSize: "16px",
+                  lineHeight: "24px",
+                  letterSpacing: "-0.03em",
+                  color: "#575757",
+                }}
+              >
+                <Add
+                  size={18}
+                  style={{ color: "#575757" }}
+                />
+                <span>Add files</span>
+              </button>
+
+              {/* Dropdown Menu */}
+              {isDropdownOpen &&
+                createPortal(
+                  <div
+                    ref={dropdownRef}
+                    className="fixed bg-white z-50"
+                    style={{
+                      top: `${dropdownPosition.top}px`,
+                      left: `${dropdownPosition.left}px`,
+                      width: "248px",
+                      padding: "6px",
+                      gap: "4px",
+                      borderRadius: "8px",
+                      border: "1px solid #E5E5E5",
+                      boxShadow: "0px 10px 10px -5px #0000000A, 0px 20px 25px -5px #0000001A",
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <button
+                      onClick={() => {
+                        setIsUploadModalOpen(true);
+                        setIsDropdownOpen(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-[#F5F5F5] transition-colors rounded-[12px]"
+                      style={{ fontFamily: "Body Font" }}
+                    >
+                      <DocumentExport size={18} style={{ color: "#575757" }} />
+                      <span className="text-sm font-medium" style={{ color: "#1A1A1A" }}>
+                        Upload File
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        // Handle upload from URL
+                        setIsDropdownOpen(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-[#F5F5F5] transition-colors rounded-[12px]"
+                      style={{ fontFamily: "Body Font" }}
+                    >
+                      <Link size={18} style={{ color: "#575757" }} />
+                      <span className="text-sm font-medium" style={{ color: "#1A1A1A" }}>
+                        Upload from URL
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        // Handle LinkedIn import
+                        setIsDropdownOpen(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-[#F5F5F5] transition-colors rounded-[12px]"
+                      style={{ fontFamily: "Body Font" }}
+                    >
+                      <LogoLinkedin size={18} style={{ color: "#575757" }} />
+                      <span className="text-sm font-medium" style={{ color: "#1A1A1A" }}>
+                        Import from LinkedIn
+                      </span>
+                    </button>
+                  </div>,
+                  document.body
+                )}
+            </div>
 
             {/* File Options */}
             <div className="space-y-1">

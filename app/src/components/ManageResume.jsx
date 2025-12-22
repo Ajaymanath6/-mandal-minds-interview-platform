@@ -9,15 +9,18 @@ import {
   RiAddLine,
   RiCloseLine,
   RiLogoutBoxLine,
-  RiEditLine,
   RiSparklingFill,
   RiFolder6Fill,
   RiLinkM,
   RiCheckboxMultipleLine,
   RiCodeSSlashLine,
   RiEyeLine,
+  RiSearchLine,
+  RiLinkedinFill,
 } from "@remixicon/react";
+import { Link, DocumentExport } from "@carbon/icons-react";
 import Sidebar from "./Sidebar";
+import FileUploadModal from "./FileUploadModal";
 
 export default function ManageResume() {
   const [resumes, setResumes] = useState([]);
@@ -33,6 +36,9 @@ export default function ManageResume() {
   const [selectedResumeForAnalysis, setSelectedResumeForAnalysis] =
     useState(null);
   const [logoModalOpen, setLogoModalOpen] = useState(false);
+  const [isAddDropdownOpen, setIsAddDropdownOpen] = useState(false);
+  const addDropdownRef = useRef(null);
+  const addButtonRef = useRef(null);
   
   // Inspect Element Feature
   const [inspectMode, setInspectMode] = useState(false);
@@ -58,11 +64,11 @@ export default function ManageResume() {
     navigate("/edit-resume", { state: { resume } });
   };
 
-  const handleUploadResume = () => {
+  const handleUploadResume = (file, text) => {
     // Add dummy resume to the list
     const dummyResume = {
       id: Date.now(),
-      resumeName: "Untitled Resume",
+      resumeName: file ? file.name : "Untitled Resume",
       matchedJob: null,
       match: null,
       created: new Date().toISOString().split("T")[0],
@@ -298,6 +304,28 @@ export default function ManageResume() {
     };
   }, [inspectData, tooltipPinned]);
 
+  // Close add dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        addDropdownRef.current &&
+        !addDropdownRef.current.contains(event.target) &&
+        addButtonRef.current &&
+        !addButtonRef.current.contains(event.target)
+      ) {
+        setIsAddDropdownOpen(false);
+      }
+    };
+
+    if (isAddDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isAddDropdownOpen]);
+
   return (
     <div className="h-screen flex" style={{ backgroundColor: "#fcfcfb" }}>
       <div className="flex w-full" style={{ height: "100vh" }}>
@@ -306,34 +334,6 @@ export default function ManageResume() {
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden px-6 py-6">
-          {/* Page Title */}
-          <div className="mb-6 flex items-center justify-between">
-            <h1 
-              className="text-base font-bold text-gray-900"
-              onMouseEnter={(e) => handleInspectHover(e, 'page-title')}
-              onMouseLeave={handleInspectLeave}
-              onClick={(e) => handleInspectClick(e, 'page-title')}
-              style={{ 
-                cursor: inspectMode ? 'pointer' : 'default'
-              }}
-            >
-              Manage Resume
-            </h1>
-            
-            {/* Inspect Mode Toggle */}
-            <button
-              onClick={toggleInspectMode}
-              className={`flex items-center justify-center w-6 h-6 rounded transition-colors ${
-                inspectMode 
-                  ? 'bg-purple-100 text-purple-700' 
-                  : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-              }`}
-              title={inspectMode ? 'Exit Inspect Mode' : 'Toggle Inspect Mode'}
-            >
-              <RiCodeSSlashLine size={14} />
-            </button>
-          </div>
-
           {/* Scrollable Content Area */}
           <div className="flex-1 overflow-y-auto">
             <div className="max-w-6xl mx-auto">
@@ -345,85 +345,234 @@ export default function ManageResume() {
                       <div className="text-center h-full">
                         {/* Light Gray Gradient Container - Everything inside here */}
                         <div 
-                          className="rounded-2xl p-8 border border-gray-200"
+                          className="rounded-2xl p-8"
                           style={{
-                            background: 'linear-gradient(to bottom, rgba(249, 250, 251, 0.15), rgba(243, 244, 246, 0.15))'
+                            boxSizing: "content-box",
+                            color: "rgba(0, 0, 0, 1)",
+                            backgroundColor: "unset",
+                            background: "unset",
+                            backgroundImage: "none",
+                            borderWidth: "0px",
+                            borderColor: "rgba(0, 0, 0, 0)",
+                            borderStyle: "none",
+                            borderImage: "none"
                           }}
                         >
-                          {/* Heading inside the gray container */}
-                          <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-                            Your Resume Hub
+                          {/* Heading above cards */}
+                          <h2 className="text-base font-semibold mb-6 text-center" style={{ color: "rgba(26, 26, 26, 1)", fontWeight: 600 }}>
+                            No resume added yet. Add resume to get started.
                           </h2>
                           
-                          <div 
-                            className="border-2 border-dashed border-gray-300 rounded-3xl p-12"
-                            style={{
-                              borderStyle: 'dashed',
-                            }}
-                          >
-                            {/* Three Tilted JD Images */}
-                            <div className="mb-6 flex justify-center items-center relative" style={{ height: '120px' }}>
-                              {/* Left tilted image */}
-                              <img 
-                                src="/jdm.png" 
-                                alt="File upload" 
-                                className="w-20 h-24 object-contain absolute"
-                                style={{
-                                  transform: 'rotate(-15deg) translateX(-70px)',
-                                  zIndex: 1,
-                                  mixBlendMode: 'multiply',
-                                }}
-                              />
-                              {/* Center image */}
-                              <img 
-                                src="/jdm.png" 
-                                alt="File upload" 
-                                className="w-24 h-28 object-contain relative"
-                                style={{
-                                  zIndex: 3,
-                                  mixBlendMode: 'multiply',
-                                }}
-                              />
-                              {/* Right tilted image */}
-                              <img 
-                                src="/jdm.png" 
-                                alt="File upload" 
-                                className="w-20 h-24 object-contain absolute"
-                                style={{
-                                  transform: 'rotate(15deg) translateX(70px)',
-                                  zIndex: 2,
-                                  mixBlendMode: 'multiply',
-                                }}
-                              />
-                            </div>
-                            
-                            {/* Main Text */}
-                            <p className="text-lg font-medium text-gray-900 mb-2">
-                              Drag and drop resume files to upload
-                            </p>
-                            
-                            {/* Subtext */}
-                            <p className="text-sm text-gray-600 mb-6">
-                              Supported formats: PDF, DOC, DOCX • Max file size: 10MB
-                            </p>
-                            
-                            {/* Buttons */}
-                            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                              <button
-                                onClick={() => setIsUploadModalOpen(true)}
-                                className="flex items-center justify-center gap-1.5 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-2xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] text-sm font-medium"
-                              >
-                                <RiUploadLine size={16} />
-                                <span>Upload Resume</span>
-                              </button>
-                              <button
-                                onClick={() => handleUploadResume()}
-                                className="flex items-center justify-center gap-1.5 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-2xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] text-sm font-medium"
-                              >
-                                <RiAddLine size={16} />
-                                <span>New Resume</span>
-                              </button>
-                            </div>
+                          {/* Cards Grid */}
+                          <div className="grid grid-cols-1 gap-3">
+                            {/* Upload JD from URL Card */}
+                            <button
+                              className="bg-white rounded-lg border cursor-pointer transition-colors text-left"
+                              style={{
+                                width: '100%',
+                                height: 'fit-content',
+                                minWidth: '244px',
+                                gap: '12px',
+                                borderWidth: '1px',
+                                padding: '16px',
+                                backgroundColor: '#FFFFFF',
+                                borderColor: '#E5E5E5',
+                                borderStyle: 'solid',
+                                boxShadow: '0px 1px 2px 0px #0000000D',
+                              }}
+                              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#F5F5F5')}
+                              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#FFFFFF')}
+                              onClick={() => {
+                                // Handle upload from URL
+                              }}
+                            >
+                              <div className="flex items-start gap-3 h-full">
+                                <Link
+                                  size={20}
+                                  className="flex-shrink-0 mt-1"
+                                  style={{ color: "#575757" }}
+                                />
+                                <div className="flex-1 min-w-0">
+                                  <div
+                                    className="text-sm font-medium mb-1"
+                                    style={{
+                                      fontFamily: "Open Sans",
+                                      fontWeight: 500,
+                                      color: "#575757",
+                                    }}
+                                  >
+                                    Upload Resume from URL
+                                  </div>
+                                  <div
+                                    className="text-xs"
+                                    style={{
+                                      fontFamily: "Open Sans",
+                                      fontWeight: 400,
+                                      color: "#9CA3AF",
+                                    }}
+                                  >
+                                    Import resume from URL
+                                  </div>
+                                </div>
+                              </div>
+                            </button>
+
+                            {/* Search Resume Templates Card */}
+                            <button
+                              className="bg-white rounded-lg border cursor-pointer transition-colors text-left"
+                              style={{
+                                width: '100%',
+                                height: 'fit-content',
+                                minWidth: '244px',
+                                gap: '12px',
+                                borderWidth: '1px',
+                                padding: '16px',
+                                backgroundColor: '#FFFFFF',
+                                borderColor: '#E5E5E5',
+                                borderStyle: 'solid',
+                                boxShadow: '0px 1px 2px 0px #0000000D',
+                              }}
+                              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#F5F5F5')}
+                              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#FFFFFF')}
+                              onClick={() => {
+                                // Handle search resume templates
+                              }}
+                            >
+                              <div className="flex items-start gap-3 h-full">
+                                <RiSearchLine
+                                  size={20}
+                                  className="flex-shrink-0 mt-1"
+                                  style={{ color: "#575757" }}
+                                />
+                                <div className="flex-1 min-w-0">
+                                  <div
+                                    className="text-sm font-medium mb-1"
+                                    style={{
+                                      fontFamily: "Open Sans",
+                                      fontWeight: 500,
+                                      color: "#575757",
+                                    }}
+                                  >
+                                    Search Resume Templates
+                                  </div>
+                                  <div
+                                    className="text-xs"
+                                    style={{
+                                      fontFamily: "Open Sans",
+                                      fontWeight: 400,
+                                      color: "#9CA3AF",
+                                    }}
+                                  >
+                                    Find resume examples and templates online
+                                  </div>
+                                </div>
+                              </div>
+                            </button>
+
+                            {/* Upload Resume/JD File Card */}
+                            <button
+                              className="bg-white rounded-lg border cursor-pointer transition-colors text-left"
+                              style={{
+                                width: '100%',
+                                height: 'fit-content',
+                                minWidth: '244px',
+                                gap: '12px',
+                                borderWidth: '1px',
+                                padding: '16px',
+                                backgroundColor: '#FFFFFF',
+                                borderColor: '#E5E5E5',
+                                borderStyle: 'solid',
+                                boxShadow: '0px 1px 2px 0px #0000000D',
+                              }}
+                              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#F5F5F5')}
+                              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#FFFFFF')}
+                              onClick={() => {
+                                setIsUploadModalOpen(true);
+                              }}
+                            >
+                              <div className="flex items-start gap-3 h-full">
+                                <DocumentExport
+                                  size={20}
+                                  className="flex-shrink-0 mt-1"
+                                  style={{ color: "#575757" }}
+                                />
+                                <div className="flex-1 min-w-0">
+                                  <div
+                                    className="text-sm font-medium mb-1"
+                                    style={{
+                                      fontFamily: "Open Sans",
+                                      fontWeight: 500,
+                                      color: "#575757",
+                                    }}
+                                  >
+                                    Upload Resume File
+                                  </div>
+                                  <div
+                                    className="text-xs"
+                                    style={{
+                                      fontFamily: "Open Sans",
+                                      fontWeight: 400,
+                                      color: "#9CA3AF",
+                                    }}
+                                  >
+                                    Import resume in PDF, DOCX formats
+                                  </div>
+                                </div>
+                              </div>
+                            </button>
+
+                            {/* Import from LinkedIn Card */}
+                            <button
+                              className="bg-white rounded-lg border cursor-pointer transition-colors text-left"
+                              style={{
+                                width: '100%',
+                                height: 'fit-content',
+                                minWidth: '244px',
+                                gap: '12px',
+                                borderWidth: '1px',
+                                padding: '16px',
+                                backgroundColor: '#FFFFFF',
+                                borderColor: '#E5E5E5',
+                                borderStyle: 'solid',
+                                boxShadow: '0px 1px 2px 0px #0000000D',
+                              }}
+                              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#F5F5F5')}
+                              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#FFFFFF')}
+                              onClick={() => {
+                                // Handle LinkedIn import
+                              }}
+                            >
+                              <div className="flex items-start gap-3 h-full">
+                                <RiLinkedinFill
+                                  size={20}
+                                  className="flex-shrink-0 mt-1"
+                                  style={{ color: "#575757" }}
+                                />
+                                <div className="flex-1 min-w-0">
+                                  <div
+                                    className="text-sm font-medium mb-1"
+                                    style={{
+                                      fontFamily: "Open Sans",
+                                      fontWeight: 500,
+                                      color: "#575757",
+                                    }}
+                                  >
+                                    Import from LinkedIn
+                                  </div>
+                                  <div
+                                    className="text-xs"
+                                    style={{
+                                      fontFamily: "Open Sans",
+                                      fontWeight: 400,
+                                      color: "#9CA3AF",
+                                    }}
+                                  >
+                                    Import resume from LinkedIn
+                                  </div>
+                                </div>
+                              </div>
+                            </button>
+
                           </div>
                         </div>
                       </div>
@@ -439,15 +588,81 @@ export default function ManageResume() {
                       <h2 className="text-lg font-semibold text-gray-900">
                         All Files
                       </h2>
-                      {!isCompareMode && (
-                        <button
-                          onClick={() => setIsCompareMode(true)}
-                          className="flex items-center space-x-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-3xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
-                        >
-                          <RiCheckboxMultipleLine size={16} />
-                          <span>Compare Multiple</span>
-                        </button>
-                      )}
+                      <div className="flex items-center space-x-3">
+                        {!isCompareMode && (
+                          <>
+                            <div className="relative" ref={addDropdownRef}>
+                              <button
+                                ref={addButtonRef}
+                                onClick={() => setIsAddDropdownOpen(!isAddDropdownOpen)}
+                                className="flex items-center space-x-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-3xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
+                              >
+                                <RiAddLine size={16} />
+                                <span>Add</span>
+                              </button>
+                              
+                              {/* Add Dropdown */}
+                              {isAddDropdownOpen && (
+                                <div
+                                  className="absolute right-0 top-full mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
+                                  style={{
+                                    minWidth: '200px',
+                                  }}
+                                >
+                                  <div className="py-1">
+                                    <button
+                                      onClick={() => {
+                                        setIsUploadModalOpen(true);
+                                        setIsAddDropdownOpen(false);
+                                      }}
+                                      className="w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-[#F5F5F5] transition-colors"
+                                      style={{ fontFamily: 'Open Sans' }}
+                                    >
+                                      <DocumentExport size={18} style={{ color: '#575757' }} />
+                                      <span className="text-sm font-medium" style={{ color: '#1A1A1A' }}>
+                                        Upload Resume File
+                                      </span>
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        // Handle upload from URL
+                                        setIsAddDropdownOpen(false);
+                                      }}
+                                      className="w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-[#F5F5F5] transition-colors"
+                                      style={{ fontFamily: 'Open Sans' }}
+                                    >
+                                      <Link size={18} style={{ color: '#575757' }} />
+                                      <span className="text-sm font-medium" style={{ color: '#1A1A1A' }}>
+                                        Upload from URL
+                                      </span>
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        // Handle LinkedIn import
+                                        setIsAddDropdownOpen(false);
+                                      }}
+                                      className="w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-[#F5F5F5] transition-colors"
+                                      style={{ fontFamily: 'Open Sans' }}
+                                    >
+                                      <RiLinkedinFill size={18} style={{ color: '#575757' }} />
+                                      <span className="text-sm font-medium" style={{ color: '#1A1A1A' }}>
+                                        Import from LinkedIn
+                                      </span>
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                            <button
+                              onClick={() => setIsCompareMode(true)}
+                              className="flex items-center space-x-2 px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-3xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
+                            >
+                              <RiCheckboxMultipleLine size={16} />
+                              <span>Compare Multiple</span>
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </div>
 
                     {/* Compare Mode Controls */}
@@ -661,116 +876,11 @@ export default function ManageResume() {
       </div>
 
       {/* Upload Modal */}
-      {isUploadModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-3xl p-1.5 max-w-2xl w-full mx-4" style={{ minHeight: "390px" }}>
-            <div className="text-center h-full">
-              {/* Light Gray Gradient Container - Everything inside here */}
-              <div 
-                className="rounded-2xl p-8 border border-gray-200"
-                style={{
-                  background: 'linear-gradient(to bottom, rgba(249, 250, 251, 0.15), rgba(243, 244, 246, 0.15))'
-                }}
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-2xl font-semibold text-gray-900">
-                    Upload Resume
-                  </h3>
-                  <button
-                    onClick={() => setIsUploadModalOpen(false)}
-                    className="text-gray-500 hover:text-gray-700"
-                  >
-                    <span
-                      className="material-symbols-outlined"
-                      style={{
-                        fontSize: "24px",
-                        fontVariationSettings:
-                          '"FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24',
-                      }}
-                    >
-                      close
-                    </span>
-                  </button>
-                </div>
-
-                <div className="border-2 border-dashed border-gray-300 rounded-3xl p-12 text-center hover:border-gray-400 transition-colors cursor-pointer">
-                  {/* Upload Image */}
-                  <div className="mb-6 flex justify-center">
-                    <img 
-                      src="/uplaod.png" 
-                      alt="Upload files" 
-                      className="w-40 h-40 object-contain"
-                      style={{
-                        filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.08))'
-                      }}
-                    />
-                  </div>
-                  
-                  <h4 className="text-lg font-medium text-gray-900 mb-2">
-                    Drop files here or click to browse
-                  </h4>
-                  <p className="text-sm text-gray-600 mb-4">
-                    Supported formats: PDF, DOC, DOCX
-                  </p>
-                  <button className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-2xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)] text-sm font-medium">
-                    Browse Files
-                  </button>
-                </div>
-
-                <div className="mt-4">
-                  <h4 className="text-base font-semibold text-gray-900 mb-3">
-                    Recent Uploads
-                  </h4>
-                  <div className="space-y-2">
-                    {[
-                      { name: "Senior_FE_Resume.pdf", img: "/fileimage.png" },
-                      { name: "Backend_Engineer_Resume.docx", img: "/fileimage1.png" },
-                      { name: "Fullstack_Resume.pdf", img: "/fileimage2.png" },
-                    ].map((item) => (
-                      <div
-                        key={item.name}
-                        className="flex items-center justify-between p-1 bg-gray-50 rounded-2xl"
-                        style={{
-                          backgroundColor: 'rgba(249, 250, 251, 0.9)'
-                        }}
-                      >
-                        <div className="flex items-center gap-2">
-                          <img 
-                            src={item.img} 
-                            alt={item.name} 
-                            className="w-12 h-12 object-contain"
-                          />
-                          <div className="text-sm text-gray-900 font-medium">
-                            {item.name}
-                          </div>
-                        </div>
-                        <div className="text-xs text-gray-900 font-medium">
-                          Just now
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex gap-3 mt-6">
-                  <button
-                    onClick={handleUploadResume}
-                    className="flex-1 px-4 py-2 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] hover:bg-[linear-gradient(180deg,#aa44ff_0%,#8c11ff_100%)] text-white rounded-3xl transition-all border border-[#a854ff] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)]"
-                  >
-                    OK
-                  </button>
-                  <button
-                    onClick={() => setIsUploadModalOpen(false)}
-                    className="px-4 py-2 bg-[linear-gradient(180deg,#ffffff_0%,#f0f0f0_100%)] hover:bg-[linear-gradient(180deg,#f8f8f8_0%,#e8e8e8_100%)] border border-[#c8c8c8] hover:border-[#b0b0b0] text-gray-900 rounded-3xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.5)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.5)]"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <FileUploadModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        onFileUpload={handleUploadResume}
+      />
 
       {/* Connect Job Modal */}
       {connectJobModal && (
