@@ -30,7 +30,6 @@ import Sidebar from "./Sidebar";
 import ResumeBuilderSidebar from "./ResumeBuilderSidebar";
 import AISearchBar from "./AISearchBar";
 import logoSvg from "../assets/logo.svg";
-import "material-symbols/outlined.css";
 import voiceResponsesData from "../data/voiceResponses.json";
 
 export default function Resume() {

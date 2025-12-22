@@ -10,16 +10,6 @@ import {
 } from "@remixicon/react";
 import Sidebar from "./Sidebar";
 import AISidebar from "./AISidebar";
-import "material-symbols/outlined.css";
-
-// Add Google Fonts Material Icons
-const link = document.createElement("link");
-link.href =
-  "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200";
-link.rel = "stylesheet";
-if (!document.head.querySelector('link[href*="material+symbols"]')) {
-  document.head.appendChild(link);
-}
 
 
 export default function AIResume() {
@@ -936,7 +926,6 @@ export default function AIResume() {
           }
           .inline-badge:hover::after {
             content: "close";
-            font-family: "Material Symbols Outlined";
             position: absolute;
             top: -8px;
             right: -8px;

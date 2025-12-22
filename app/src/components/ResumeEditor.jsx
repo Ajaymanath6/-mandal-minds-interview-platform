@@ -26,16 +26,6 @@ import {
   RiArrowRightLine,
 } from "@remixicon/react";
 import Sidebar from "./Sidebar";
-import "material-symbols/outlined.css";
-
-// Add Google Fonts Material Icons
-const link = document.createElement("link");
-link.href =
-  "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200";
-link.rel = "stylesheet";
-if (!document.head.querySelector('link[href*="material+symbols"]')) {
-  document.head.appendChild(link);
-}
 
 export default function ResumeEditor() {
   const [createFolderModal, setCreateFolderModal] = useState(false);
@@ -289,7 +279,7 @@ export default function ResumeEditor() {
   };
 
   return (
-    <div className="h-screen bg-gray-50 flex">
+    <div className="h-screen flex" style={{ backgroundColor: "#fcfcfb" }}>
       <div className="flex w-full" style={{ height: "100vh" }}>
         {/* First Sidebar - Always Visible */}
         <Sidebar activeItem="get-vetted" />

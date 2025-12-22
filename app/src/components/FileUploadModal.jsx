@@ -1,6 +1,5 @@
 import { useState, useRef } from "react";
 import { createPortal } from "react-dom";
-import "material-symbols/outlined.css";
 import { CloudUpload } from "@carbon/icons-react";
 
 export default function FileUploadModal({ isOpen, onClose, onFileUpload }) {
@@ -102,7 +101,7 @@ export default function FileUploadModal({ isOpen, onClose, onFileUpload }) {
             <span
               className="text-sm font-medium"
               style={{
-                fontFamily: "IBM Plex Sans",
+                fontFamily: "Open Sans",
                 fontWeight: 500,
                 color: "#7c00ff",
               }}
@@ -113,7 +112,7 @@ export default function FileUploadModal({ isOpen, onClose, onFileUpload }) {
           <h2
             className="text-lg font-semibold"
             style={{
-              fontFamily: "IBM Plex Sans",
+              fontFamily: "Open Sans",
               fontWeight: 600,
               color: "#575757",
             }}
@@ -148,7 +147,7 @@ export default function FileUploadModal({ isOpen, onClose, onFileUpload }) {
             <p
               className="text-sm font-medium"
               style={{
-                fontFamily: "IBM Plex Sans",
+                fontFamily: "Open Sans",
                 fontWeight: 500,
                 color: "#000000",
               }}

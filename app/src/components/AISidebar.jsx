@@ -11,7 +11,6 @@ import {
   RiArrowUpDownFill,
   RiAddLine,
 } from "@remixicon/react";
-import "material-symbols/outlined.css";
 
 // Section Item Component with Drag Controls
 function SectionItem({
@@ -192,7 +191,7 @@ export default function AISidebar({
                     </div>
                   )}
                   {currentScore >= 100 && (
-                    <div className="text-xs mt-1" style={{ color: '#10b981', fontFamily: 'IBM Plex Sans' }}>
+                    <div className="text-xs mt-1" style={{ color: '#10b981', fontFamily: 'Open Sans' }}>
                       Perfect match with JD!
                     </div>
                   )}

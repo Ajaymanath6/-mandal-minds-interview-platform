@@ -18,7 +18,6 @@ import {
   RiEyeLine,
 } from "@remixicon/react";
 import Sidebar from "./Sidebar";
-import "material-symbols/outlined.css";
 
 export default function ManageResume() {
   const [resumes, setResumes] = useState([]);
@@ -300,7 +299,7 @@ export default function ManageResume() {
   }, [inspectData, tooltipPinned]);
 
   return (
-    <div className="h-screen bg-gray-50 flex">
+    <div className="h-screen flex" style={{ backgroundColor: "#fcfcfb" }}>
       <div className="flex w-full" style={{ height: "100vh" }}>
         {/* First Sidebar - Always Visible */}
         <Sidebar activeItem="manage-resume" />

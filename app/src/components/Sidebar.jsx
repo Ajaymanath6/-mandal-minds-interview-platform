@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Home, Document, Archive } from "@carbon/icons-react";
+import { Home, Document, Archive, SidePanelClose, SidePanelOpen, User, Logout } from "@carbon/icons-react";
 import { ThumbUp } from "@mui/icons-material";
 import logoSvg from "../assets/logo.svg";
 
@@ -50,12 +50,10 @@ export default function Sidebar({ activeItem = "home" }) {
               >
                 {isLogoHovered ? (
                   <div className="w-full h-full flex items-center justify-center" style={{ backgroundColor: "#F5F5F5" }}>
-                    <span
-                      className="material-symbols-outlined"
-                      style={{ fontSize: 20, color: "#575757" }}
-                    >
-                      dock_to_right
-                    </span>
+                    <SidePanelOpen
+                      size={20}
+                      style={{ color: "#575757" }}
+                    />
                   </div>
                 ) : (
                   <img
@@ -71,12 +69,10 @@ export default function Sidebar({ activeItem = "home" }) {
                 onClick={() => setFirstSidebarOpen(false)}
                 className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 bg-[#F5F5F5] hover:bg-[#F5F5F5] rounded"
               >
-                <span
-                  className="material-symbols-outlined"
-                  style={{ fontSize: 20, color: "#575757" }}
-                >
-                  dock_to_left
-                </span>
+                <SidePanelClose
+                  size={20}
+                  style={{ color: "#575757" }}
+                />
               </button>
             )}
           </div>
@@ -228,16 +224,10 @@ export default function Sidebar({ activeItem = "home" }) {
           {firstSidebarOpen ? (
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-[#F5F5F5] rounded-full flex items-center justify-center">
-                <span
-                  className="material-symbols-outlined text-purple-600"
-                  style={{
-                    fontSize: "18px",
-                    fontVariationSettings:
-                      '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 18',
-                  }}
-                >
-                  person
-                </span>
+                <User
+                  size={18}
+                  style={{ color: "#7C00FF" }}
+                />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-gray-900 truncate" style={{ fontFamily: 'Open Sans' }}>
@@ -252,16 +242,10 @@ export default function Sidebar({ activeItem = "home" }) {
               className="w-full p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors flex items-center justify-center"
               title="Logout"
             >
-              <span
-                className="material-symbols-outlined"
-                style={{
-                  fontSize: "24px",
-                  fontVariationSettings:
-                    '"FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24',
-                }}
-              >
-                logout
-              </span>
+              <Logout
+                size={24}
+                style={{ color: "#575757" }}
+              />
             </button>
           )}
         </div>

@@ -9,7 +9,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['IBM Plex Sans', 'sans-serif'],
+        sans: ['Open Sans', 'sans-serif'],
       },
       colors: {
         // Custom order: purple, gray, then Tailwind's yellow, orange, and the rest

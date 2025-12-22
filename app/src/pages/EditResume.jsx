@@ -7,7 +7,6 @@ import {
 } from "@remixicon/react";
 import Sidebar from "../components/Sidebar";
 import EditResumeLayout from "../layouts/EditResumeLayout";
-import "material-symbols/outlined.css";
 
 export default function EditResume() {
   const location = useLocation();
@@ -164,10 +163,10 @@ export default function EditResume() {
             sectionName="Personal Information"
           >
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold mb-2" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>
+              <h1 className="text-3xl font-bold mb-2" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                 {resumeData.personal.name}
               </h1>
-              <p style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>
+              <p style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                 {resumeData.personal.email} | {resumeData.personal.phone} |{" "}
                 {resumeData.personal.location}
               </p>
@@ -182,23 +181,23 @@ export default function EditResume() {
             sectionName="Work Experience"
           >
             <div className="mb-8">
-              <h2 className="text-xl font-bold mb-3 border-b-2 border-gray-300 pb-2" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>
+              <h2 className="text-xl font-bold mb-3 border-b-2 border-gray-300 pb-2" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                 WORK EXPERIENCE
               </h2>
               {resumeData.work.map((workItem) => (
                 <div key={workItem.id} className="mb-6">
                   <div className="flex justify-between items-start mb-2">
                     <div>
-                      <h3 className="text-lg font-semibold" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>
+                      <h3 className="text-lg font-semibold" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                         {workItem.title}
                       </h3>
-                      <p style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>{workItem.company}</p>
+                      <p style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>{workItem.company}</p>
                     </div>
-                    <p style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>
+                    <p style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                       {workItem.startDate} - {workItem.endDate}
                     </p>
                   </div>
-                  <p style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>{workItem.description}</p>
+                  <p style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>{workItem.description}</p>
                 </div>
               ))}
             </div>
@@ -212,25 +211,25 @@ export default function EditResume() {
             sectionName="Education"
           >
             <div className="mb-8">
-              <h2 className="text-xl font-bold mb-3 border-b-2 border-gray-300 pb-2" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>
+              <h2 className="text-xl font-bold mb-3 border-b-2 border-gray-300 pb-2" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                 EDUCATION
               </h2>
               <div className="mb-4">
                 <div className="flex justify-between items-start mb-2">
                   <div>
-                    <h3 className="text-lg font-semibold" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>
+                    <h3 className="text-lg font-semibold" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                       {resumeData.education.degree}
                     </h3>
-                    <p style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>
+                    <p style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                       {resumeData.education.institution}
                     </p>
                   </div>
-                  <p style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>
+                  <p style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                     {resumeData.education.startYear} -{" "}
                     {resumeData.education.endYear}
                   </p>
                 </div>
-                <p style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>GPA: {resumeData.education.gpa}</p>
+                <p style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>GPA: {resumeData.education.gpa}</p>
               </div>
             </div>
           </ResumeSectionWrapper>
@@ -281,7 +280,7 @@ export default function EditResume() {
             {/* Purple border overlay - doesn't affect layout */}
             <div className="absolute inset-0 border-2 border-purple-300 rounded-lg pointer-events-none"></div>
             {/* Edit badge */}
-            <div className="absolute top-2 right-2 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] text-white px-3 py-[5px] text-[13px] rounded-[7px] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] font-semibold leading-[1.2] whitespace-nowrap z-10" style={{ fontFamily: 'IBM Plex Sans' }}>
+            <div className="absolute top-2 right-2 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] text-white px-3 py-[5px] text-[13px] rounded-[7px] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] font-semibold leading-[1.2] whitespace-nowrap z-10" style={{ fontFamily: 'Open Sans' }}>
               Click to edit this section
             </div>
           </>

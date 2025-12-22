@@ -26,7 +26,6 @@ import {
   RiCheckLine,
 } from "@remixicon/react";
 import logoSvg from "../assets/logo.svg";
-import "material-symbols/outlined.css";
 
 export default function AnalyzeResume() {
   const [firstSidebarOpen, setFirstSidebarOpen] = useState(true);

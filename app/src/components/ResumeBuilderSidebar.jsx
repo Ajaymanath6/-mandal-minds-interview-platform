@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import "material-symbols/outlined.css";
-import { CloudUpload } from "@carbon/icons-react";
+import { CloudUpload, Add, Folder, DocumentBlank, Link, Search, DocumentExport, Edit, ChevronRight, LogoLinkedin } from "@carbon/icons-react";
 import UploadStatusModal from "./UploadStatusModal";
 
 export default function ResumeBuilderSidebar({
@@ -181,12 +180,10 @@ export default function ResumeBuilderSidebar({
                 borderColor: '#E5E5E5',
               }}
             >
-              <span
-                className="material-symbols-outlined"
-                style={{ fontSize: 20 }}
-              >
-                add
-              </span>
+              <Add
+                size={20}
+                style={{ color: '#575757' }}
+              />
               <span className="text-sm font-medium">Add Files</span>
             </button>
 
@@ -211,12 +208,11 @@ export default function ResumeBuilderSidebar({
                       setIsDropdownOpen(false);
                     }}
                   >
-                    <span
-                      className="material-symbols-outlined mr-3 flex-shrink-0"
-                      style={{ fontSize: 20, color: "#575757" }}
-                    >
-                      link
-                    </span>
+                    <Link
+                      size={20}
+                      className="mr-3 flex-shrink-0"
+                      style={{ color: "#575757" }}
+                    />
                     <div className="flex-1 min-w-0">
                       <div
                         className="text-sm font-medium"
@@ -239,12 +235,11 @@ export default function ResumeBuilderSidebar({
                         Import job description from URL
                       </div>
                     </div>
-                    <span
-                      className="material-symbols-outlined ml-2 flex-shrink-0"
-                      style={{ fontSize: 18, color: "#9CA3AF" }}
-                    >
-                      chevron_right
-                    </span>
+                    <ChevronRight
+                      size={18}
+                      className="ml-2 flex-shrink-0"
+                      style={{ color: "#9CA3AF" }}
+                    />
                   </button>
 
                   {/* Search Job Postings Online */}
@@ -254,12 +249,11 @@ export default function ResumeBuilderSidebar({
                       setIsDropdownOpen(false);
                     }}
                   >
-                    <span
-                      className="material-symbols-outlined mr-3 flex-shrink-0"
-                      style={{ fontSize: 20, color: "#575757" }}
-                    >
-                      search
-                    </span>
+                    <Search
+                      size={20}
+                      className="mr-3 flex-shrink-0"
+                      style={{ color: "#575757" }}
+                    />
                     <div className="flex-1 min-w-0">
                       <div
                         className="text-sm font-medium"
@@ -282,12 +276,11 @@ export default function ResumeBuilderSidebar({
                         Search job postings across the web
                       </div>
                     </div>
-                    <span
-                      className="material-symbols-outlined ml-2 flex-shrink-0"
-                      style={{ fontSize: 18, color: "#9CA3AF" }}
-                    >
-                      chevron_right
-                    </span>
+                    <ChevronRight
+                      size={18}
+                      className="ml-2 flex-shrink-0"
+                      style={{ color: "#9CA3AF" }}
+                    />
                   </button>
 
                   {/* Upload Resume/JD File */}
@@ -298,12 +291,11 @@ export default function ResumeBuilderSidebar({
                       setIsUploadModalOpen(true);
                     }}
                   >
-                    <span
-                      className="material-symbols-outlined mr-3 flex-shrink-0"
-                      style={{ fontSize: 20, color: "#575757" }}
-                    >
-                      upload_file
-                    </span>
+                    <DocumentExport
+                      size={20}
+                      className="mr-3 flex-shrink-0"
+                      style={{ color: "#575757" }}
+                    />
                     <div className="flex-1 min-w-0">
                       <div
                         className="text-sm font-medium"
@@ -326,12 +318,11 @@ export default function ResumeBuilderSidebar({
                         Import PDF, DOCX formats
                       </div>
                     </div>
-                    <span
-                      className="material-symbols-outlined ml-2 flex-shrink-0"
-                      style={{ fontSize: 18, color: "#9CA3AF" }}
-                    >
-                      chevron_right
-                    </span>
+                    <ChevronRight
+                      size={18}
+                      className="ml-2 flex-shrink-0"
+                      style={{ color: "#9CA3AF" }}
+                    />
                   </button>
 
                   {/* Import from LinkedIn */}
@@ -341,12 +332,11 @@ export default function ResumeBuilderSidebar({
                       setIsDropdownOpen(false);
                     }}
                   >
-                    <span
-                      className="material-symbols-outlined mr-3 flex-shrink-0"
-                      style={{ fontSize: 20, color: "#575757" }}
-                    >
-                      work
-                    </span>
+                    <LogoLinkedin
+                      size={20}
+                      className="mr-3 flex-shrink-0"
+                      style={{ color: "#575757" }}
+                    />
                     <div className="flex-1 min-w-0">
                       <div
                         className="text-sm font-medium"
@@ -369,12 +359,11 @@ export default function ResumeBuilderSidebar({
                         Import resume or job posting from LinkedIn
                       </div>
                     </div>
-                    <span
-                      className="material-symbols-outlined ml-2 flex-shrink-0"
-                      style={{ fontSize: 18, color: "#9CA3AF" }}
-                    >
-                      chevron_right
-                    </span>
+                    <ChevronRight
+                      size={18}
+                      className="ml-2 flex-shrink-0"
+                      style={{ color: "#9CA3AF" }}
+                    />
                   </button>
 
                   {/* Add JD/Resume Manually */}
@@ -384,12 +373,11 @@ export default function ResumeBuilderSidebar({
                       setIsDropdownOpen(false);
                     }}
                   >
-                    <span
-                      className="material-symbols-outlined mr-3 flex-shrink-0"
-                      style={{ fontSize: 20, color: "#575757" }}
-                    >
-                      edit_note
-                    </span>
+                    <Edit
+                      size={20}
+                      className="mr-3 flex-shrink-0"
+                      style={{ color: "#575757" }}
+                    />
                     <div className="flex-1 min-w-0">
                       <div
                         className="text-sm font-medium"
@@ -412,12 +400,11 @@ export default function ResumeBuilderSidebar({
                         Create job description or resume manually
                       </div>
                     </div>
-                    <span
-                      className="material-symbols-outlined ml-2 flex-shrink-0"
-                      style={{ fontSize: 18, color: "#9CA3AF" }}
-                    >
-                      chevron_right
-                    </span>
+                    <ChevronRight
+                      size={18}
+                      className="ml-2 flex-shrink-0"
+                      style={{ color: "#9CA3AF" }}
+                    />
                   </button>
                 </div>
               </div>,
@@ -535,12 +522,10 @@ export default function ResumeBuilderSidebar({
                   color: "#575757",
                 }}
               >
-                <span
-                  className="material-symbols-outlined"
-                  style={{ fontSize: 18, color: "#575757" }}
-                >
-                  folder
-                </span>
+                <Folder
+                  size={18}
+                  style={{ color: "#575757" }}
+                />
                 <span>All files</span>
               </button>
               <button
@@ -555,12 +540,10 @@ export default function ResumeBuilderSidebar({
                   color: "#575757",
                 }}
               >
-                <span
-                  className="material-symbols-outlined"
-                  style={{ fontSize: 18, color: "#575757" }}
-                >
-                  description
-                </span>
+                <DocumentBlank
+                  size={18}
+                  style={{ color: "#575757" }}
+                />
                 <span className="truncate">{childFileName}</span>
               </button>
             </div>

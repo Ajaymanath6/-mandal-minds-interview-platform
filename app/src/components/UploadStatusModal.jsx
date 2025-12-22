@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import "material-symbols/outlined.css";
 
 export default function UploadStatusModal({ uploads, onClose, onCollapse }) {
   const [isCollapsed, setIsCollapsed] = useState(false);

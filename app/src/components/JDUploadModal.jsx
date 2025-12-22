@@ -1,6 +1,5 @@
 import { useState, useRef } from "react";
 import { RiUploadLine } from "@remixicon/react";
-import "material-symbols/outlined.css";
 
 export default function JDUploadModal({ isOpen, onClose, onFileUpload }) {
   const [isDragging, setIsDragging] = useState(false);

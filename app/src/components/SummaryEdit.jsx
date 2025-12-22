@@ -8,7 +8,6 @@ import {
 } from "@remixicon/react";
 import { DocumentPdf, Document, CircleDash, TextLongParagraph, Restart } from "@carbon/icons-react";
 import AISidebar from "./AISidebar";
-import "material-symbols/outlined.css";
 
 export default function SummaryEdit({
   fileType,
@@ -717,7 +716,7 @@ export default function SummaryEdit({
               dangerouslySetInnerHTML={{ __html: highlightKeywordsInText(editableValue || value) }}
               className="w-full px-3 py-2 text-sm text-[#3c4043] bg-white border border-[#dfe1e5] rounded-lg shadow-[0_1px_6px_rgba(32,33,36,0.08)] focus:outline-none focus:border-[#a854ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] transition-all placeholder:text-[#80868b] hover:bg-[#F5F5F5]"
               style={{ 
-                fontFamily: 'IBM Plex Sans',
+                fontFamily: 'Open Sans',
                 minHeight: type === "textarea" ? `${rows * 1.5}rem` : '2.5rem',
                 whiteSpace: type === "textarea" ? 'pre-wrap' : 'nowrap',
                 overflow: type === "textarea" ? 'auto' : 'hidden',
@@ -895,7 +894,6 @@ export default function SummaryEdit({
           }
           .inline-badge:hover::after {
             content: "close";
-            font-family: "Material Symbols Outlined";
             position: absolute;
             top: -8px;
             right: -8px;
@@ -1021,7 +1019,7 @@ export default function SummaryEdit({
         <div className="mb-4">
           <div className="flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium" style={{ backgroundColor: '#F5F5F5', color: '#1A1A1A' }}>
             <div className="flex items-center space-x-3">
-              <span style={{ fontFamily: 'IBM Plex Sans', fontWeight: 500, fontSize: '16px', lineHeight: '24px', letterSpacing: '-0.03em' }}>Job Description (JD)</span>
+              <span style={{ fontFamily: 'Open Sans', fontWeight: 500, fontSize: '16px', lineHeight: '24px', letterSpacing: '-0.03em' }}>Job Description (JD)</span>
             </div>
           </div>
           <div className="mt-3 p-4 rounded-xl" style={{ backgroundColor: '#fcfcfb', border: 'none', boxShadow: 'none' }}>
@@ -1064,7 +1062,7 @@ export default function SummaryEdit({
                 <button
                   onClick={handleCompare}
                   className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] text-white rounded-[7px] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] transition-all hover:opacity-90"
-                  style={{ fontFamily: 'IBM Plex Sans', fontWeight: 500, fontSize: '14px' }}
+                  style={{ fontFamily: 'Open Sans', fontWeight: 500, fontSize: '14px' }}
                 >
                   <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
                     compare_arrows
@@ -1081,7 +1079,7 @@ export default function SummaryEdit({
           <div className="mb-4">
             <div className="flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium" style={{ backgroundColor: '#F5F5F5', color: '#1A1A1A' }}>
               <div className="flex items-center space-x-3">
-                <span style={{ fontFamily: 'IBM Plex Sans', fontWeight: 500, fontSize: '16px', lineHeight: '24px', letterSpacing: '-0.03em' }}>Overall Match Score</span>
+                <span style={{ fontFamily: 'Open Sans', fontWeight: 500, fontSize: '16px', lineHeight: '24px', letterSpacing: '-0.03em' }}>Overall Match Score</span>
               </div>
             </div>
             <div className="mt-3 p-4 bg-white rounded-xl shadow-lg">
@@ -1112,24 +1110,24 @@ export default function SummaryEdit({
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center">
-                      <div className="text-3xl font-bold" style={{ color: getMatchColor(matchScore), fontFamily: 'IBM Plex Sans' }}>
+                      <div className="text-3xl font-bold" style={{ color: getMatchColor(matchScore), fontFamily: 'Open Sans' }}>
                         {matchScore}%
                       </div>
-                      <div className="text-xs" style={{ color: '#575757', fontFamily: 'IBM Plex Sans' }}>
+                      <div className="text-xs" style={{ color: '#575757', fontFamily: 'Open Sans' }}>
                         Match
                       </div>
                     </div>
                   </div>
                 </div>
                 {/* Qualitative Title */}
-                <h3 className="text-lg font-semibold text-center" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>
+                <h3 className="text-lg font-semibold text-center" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                   {getMatchTitle(matchScore)}
                 </h3>
                 {/* Smart Edit Resume Button */}
                 <button
                   onClick={() => setActiveTab("ai-resume")}
                   className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] text-white rounded-[7px] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] transition-all hover:opacity-90"
-                  style={{ fontFamily: 'IBM Plex Sans', fontWeight: 500, fontSize: '14px', marginTop: '16px' }}
+                  style={{ fontFamily: 'Open Sans', fontWeight: 500, fontSize: '14px', marginTop: '16px' }}
                 >
                   <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
                     auto_fix_high
@@ -1228,7 +1226,7 @@ export default function SummaryEdit({
         <div className="flex items-center justify-between mb-4 px-3 py-2 rounded-md" style={{ backgroundColor: '#F5F5F5' }}>
           <div className="flex items-center gap-2">
             <TextLongParagraph size={20} style={{ color: "#575757" }} />
-            <span style={{ fontFamily: 'IBM Plex Sans', fontWeight: 500, fontSize: '16px', lineHeight: '24px', letterSpacing: '-0.03em', color: '#1A1A1A' }}>
+            <span style={{ fontFamily: 'Open Sans', fontWeight: 500, fontSize: '16px', lineHeight: '24px', letterSpacing: '-0.03em', color: '#1A1A1A' }}>
               AI summary
             </span>
           </div>
@@ -1247,19 +1245,19 @@ export default function SummaryEdit({
           {isInitialLoading || isRephrasing ? (
             <div className="bg-white p-4 rounded-lg space-y-4">
               <div>
-                <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>Professional Summary:</h4>
+                <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>Professional Summary:</h4>
                 <TextSkeletonLoader lines={4} />
               </div>
               <div>
-                <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>Education:</h4>
+                <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>Education:</h4>
                 <TextSkeletonLoader lines={1} />
               </div>
               <div>
-                <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>Key Skills:</h4>
+                <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>Key Skills:</h4>
                 <TextSkeletonLoader lines={1} />
               </div>
               <div>
-                <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>Contact Information:</h4>
+                <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>Contact Information:</h4>
                 <TextSkeletonLoader lines={1} />
               </div>
             </div>
@@ -1267,7 +1265,7 @@ export default function SummaryEdit({
             <div className="bg-white p-4 rounded-lg space-y-4">
               {/* Professional Summary Section */}
               <div>
-                <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>Professional Summary:</h4>
+                <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>Professional Summary:</h4>
                 <p
                   style={{ 
                     fontFamily: 'Open Sans', 
@@ -1280,7 +1278,7 @@ export default function SummaryEdit({
                 </p>
               </div>
               <div>
-                <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>Education:</h4>
+                <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>Education:</h4>
                 <p
                   style={{ 
                     fontFamily: 'Open Sans',
@@ -1292,7 +1290,7 @@ export default function SummaryEdit({
                 </p>
               </div>
               <div>
-                <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>Key Skills:</h4>
+                <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>Key Skills:</h4>
                 <p
                   style={{ 
                     fontFamily: 'Open Sans',
@@ -1304,7 +1302,7 @@ export default function SummaryEdit({
                 </p>
               </div>
               <div>
-                <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>Contact Information:</h4>
+                <h4 className="font-semibold mb-2" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>Contact Information:</h4>
                 <p
                   style={{ 
                     fontFamily: 'Open Sans',
@@ -1395,7 +1393,7 @@ export default function SummaryEdit({
                   className="p-4 bg-white rounded-xl shadow-lg"
                 >
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-medium" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>
+                    <h4 className="font-medium" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                       Work Experience {workIndex + 1}
                     </h4>
                     <div className="flex items-center gap-2">
@@ -1533,7 +1531,7 @@ export default function SummaryEdit({
             <div className="space-y-4">
               {/* Current Resume Skills */}
               <div>
-                <h4 className="text-sm font-medium mb-2" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>
+                <h4 className="text-sm font-medium mb-2" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                   Current Skills
                 </h4>
                 <div className="space-y-3">
@@ -1605,7 +1603,7 @@ export default function SummaryEdit({
             ) : (
               <Document size={20} style={{ color: '#575757' }} />
             )}
-            <h2 className="text-base font-bold" style={{ color: '#1A1A1A', fontFamily: 'IBM Plex Sans' }}>
+            <h2 className="text-base font-bold" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
               {fileType === 'pdf' ? 'PDF View' : 'Word Document'}
             </h2>
           </div>
@@ -1642,7 +1640,7 @@ export default function SummaryEdit({
               style={{
                 padding: "4px 6px",
                 borderRadius: "10px",
-                fontFamily: "IBM Plex Sans",
+                fontFamily: "Open Sans",
                 fontWeight: 500,
                 fontStyle: "normal",
                 fontSize: "16px",
@@ -1666,7 +1664,7 @@ export default function SummaryEdit({
               style={{
                 padding: "4px 6px",
                 borderRadius: "10px",
-                fontFamily: "IBM Plex Sans",
+                fontFamily: "Open Sans",
                 fontWeight: 500,
                 fontStyle: "normal",
                 fontSize: "16px",
@@ -1690,7 +1688,7 @@ export default function SummaryEdit({
               style={{
                 padding: "4px 6px",
                 borderRadius: "10px",
-                fontFamily: "IBM Plex Sans",
+                fontFamily: "Open Sans",
                 fontWeight: 500,
                 fontStyle: "normal",
                 fontSize: "16px",
@@ -1712,7 +1710,7 @@ export default function SummaryEdit({
                 style={{
                   padding: "4px 6px",
                   borderRadius: "10px",
-                  fontFamily: "IBM Plex Sans",
+                  fontFamily: "Open Sans",
                   fontWeight: 500,
                   fontStyle: "normal",
                   fontSize: "16px",

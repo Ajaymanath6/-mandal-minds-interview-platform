@@ -10,7 +10,6 @@ import {
 } from "@remixicon/react";
 import { IbmWatsonDiscovery, Chat, IbmWatsonOpenscale } from "@carbon/icons-react";
 import FileUploadModal from "./FileUploadModal";
-import "material-symbols/outlined.css";
 
 export default function AISearchBar({
   onCompare,
