@@ -8,6 +8,7 @@ import {
   RiDeleteBinLine,
   RiArrowUpDownFill,
 } from "@remixicon/react";
+import { Edit, MagicWand } from "@carbon/icons-react";
 import Sidebar from "./Sidebar";
 import AISidebar from "./AISidebar";
 
@@ -853,12 +854,7 @@ export default function AIResume() {
                 className="w-8 h-8 flex items-center justify-center bg-[#f59e0b] text-white rounded-[7px] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.3)] transition-all hover:opacity-90"
                 title="AI Rephrase content"
               >
-                <span
-                  className="material-symbols-outlined"
-                  style={{ fontSize: 16 }}
-                >
-                  auto_fix_high
-                </span>
+                <MagicWand size={16} style={{ color: 'white' }} />
               </button>
 
               {/* Edit badge */}
@@ -870,12 +866,7 @@ export default function AIResume() {
                 className="w-8 h-8 flex items-center justify-center bg-[linear-gradient(180deg,#9a33ff_0%,#7c00ff_100%)] text-white rounded-[7px] shadow-[0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.2)] transition-all hover:opacity-90"
                 title="Edit this field"
               >
-                <span
-                  className="material-symbols-outlined"
-                  style={{ fontSize: 16 }}
-                >
-                  edit
-                </span>
+                <Edit size={16} style={{ color: 'white' }} />
               </button>
             </div>
           )}

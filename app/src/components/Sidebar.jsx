@@ -1,12 +1,31 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Home, Document, Archive, SidePanelClose, SidePanelOpen, User, Logout, ThumbsUpDouble } from "@carbon/icons-react";
+import { Home, Document, Archive, SidePanelClose, SidePanelOpen, User, Logout, ThumbsUpDouble, Settings } from "@carbon/icons-react";
 import logoSvg from "../assets/logo.svg";
 
 export default function Sidebar({ activeItem = "home" }) {
   const [firstSidebarOpen, setFirstSidebarOpen] = useState(true);
   const [isLogoHovered, setIsLogoHovered] = useState(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const userDropdownRef = useRef(null);
   const navigate = useNavigate();
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (userDropdownRef.current && !userDropdownRef.current.contains(event.target)) {
+        setIsUserDropdownOpen(false);
+      }
+    };
+
+    if (isUserDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isUserDropdownOpen]);
 
   return (
     <div
@@ -219,21 +238,70 @@ export default function Sidebar({ activeItem = "home" }) {
         </nav>
 
         {/* User Profile - Bottom */}
-        <div className="p-3 border-t border-gray-200">
+        <div className="p-3 border-t border-gray-200 relative">
           {firstSidebarOpen ? (
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-[#F5F5F5] rounded-full flex items-center justify-center">
-                <User
-                  size={18}
-                  style={{ color: "#7C00FF" }}
-                />
+            <div className="relative" ref={userDropdownRef}>
+              <div 
+                className="flex items-center gap-3 cursor-pointer"
+                onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
+              >
+                <div className="w-8 h-8 bg-[#F5F5F5] rounded-full flex items-center justify-center">
+                  <User
+                    size={18}
+                    style={{ color: "#7C00FF" }}
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-900 truncate" style={{ fontFamily: 'Open Sans' }}>
+                    John Doe
+                  </p>
+                  <p className="text-xs text-gray-500 truncate" style={{ fontFamily: 'Open Sans' }}>Designer</p>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate" style={{ fontFamily: 'Open Sans' }}>
-                  John Doe
-                </p>
-                <p className="text-xs text-gray-500 truncate" style={{ fontFamily: 'Open Sans' }}>Designer</p>
-              </div>
+              
+              {/* User Dropdown - Opens upward */}
+              {isUserDropdownOpen && (
+                <div
+                  className="absolute bottom-full left-0 mb-2 bg-white rounded-lg border z-50"
+                  style={{
+                    width: '248px',
+                    height: '264px',
+                    padding: '6px',
+                    gap: '4px',
+                    borderColor: '#E5E5E5',
+                    borderWidth: '1px',
+                    boxShadow: '0px 10px 10px -5px #0000000A, 0px 20px 25px -5px #0000001A',
+                    borderRadius: '8px',
+                  }}
+                >
+                  <button
+                    onClick={() => {
+                      setIsUserDropdownOpen(false);
+                      // Handle settings action
+                    }}
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-md transition-colors hover:bg-[#F5F5F5]"
+                    style={{ fontFamily: 'Open Sans' }}
+                  >
+                    <Settings size={20} style={{ color: '#575757' }} />
+                    <span className="text-sm font-medium" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
+                      Settings
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsUserDropdownOpen(false);
+                      navigate("/");
+                    }}
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-md transition-colors hover:bg-[#F5F5F5]"
+                    style={{ fontFamily: 'Open Sans' }}
+                  >
+                    <Logout size={20} style={{ color: '#575757' }} />
+                    <span className="text-sm font-medium" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
+                      Logout
+                    </span>
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <button

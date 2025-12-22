@@ -26,10 +26,10 @@ export default function Landing() {
   const handleEmailSignIn = () => handleAuth('email')
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4" style={{ backgroundColor: "#fcfcfb" }}>
       {/* Loading Screen */}
       {isLoading && (
-        <div className="fixed inset-0 bg-gray-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 flex items-center justify-center z-50" style={{ backgroundColor: "#fcfcfb" }}>
           <div className="text-center">
             <img src={flogoSvg} alt="Mandal Minds Logo" className="w-48 h-16 mx-auto mb-4 animate-pulse" />
             <p className="text-gray-600 text-lg">Signing you in...</p>
