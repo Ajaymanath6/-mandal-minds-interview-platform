@@ -273,7 +273,7 @@ export default function ResumeBuilderSidebar({
               <button
                 ref={buttonRef}
                 onClick={toggleDropdown}
-                className="w-full flex items-center gap-2 pt-1 pr-2 pb-1 pl-2 text-gray-900 rounded-[12px] transition-colors border-0 hover:bg-[#F5F5F5]"
+                className="w-full flex items-center gap-2 pt-1 pr-2 pb-1 pl-2 text-gray-900 rounded-[12px] transition-colors hover:bg-[#F5F5F5]"
                 style={{
                   fontFamily: "Body Font",
                   fontWeight: 500,
@@ -282,6 +282,7 @@ export default function ResumeBuilderSidebar({
                   lineHeight: "24px",
                   letterSpacing: "-0.03em",
                   color: "#575757",
+                  border: "1px solid #E5E5E5",
                 }}
               >
                 <Add

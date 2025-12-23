@@ -7,9 +7,11 @@ import {
   RiSaveLine,
   RiCloseLine,
   RiSearchLine,
+  RiArrowDownSLine,
 } from "@remixicon/react";
-import { IbmWatsonDiscovery, Chat, IbmWatsonOpenscale, CheckmarkFilled } from "@carbon/icons-react";
+import { IbmWatsonDiscovery, Chat, IbmWatsonOpenscale, CheckmarkFilled, List, Grid, Earth, EarthFilled, TableOfContents } from "@carbon/icons-react";
 import FileUploadModal from "./FileUploadModal";
+import SimpleDropdown from "./SimpleDropdown";
 
 export default function AISearchBar({
   onCompare,
@@ -25,6 +27,10 @@ export default function AISearchBar({
   const textareaRef = useRef(null);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [isBottomButtonDropdownOpen, setIsBottomButtonDropdownOpen] = useState(false);
+  const [selectedBottomOption, setSelectedBottomOption] = useState(null);
+  const bottomButtonRef = useRef(null);
+  const bottomButtonDropdownRef = useRef(null);
   const navigate = useNavigate();
 
   const tabs = [
@@ -378,12 +384,49 @@ export default function AISearchBar({
             style={{ marginLeft: 0, marginRight: 0, marginTop: 0, borderColor: '#E5E5E5' }}
           />
           
+          {/* Bottom Left Button with Dropdown */}
+          <div className="absolute bottom-4 left-4 flex items-center gap-2 z-20">
+            <div className="relative">
+              <button
+                ref={bottomButtonRef}
+                onClick={() => setIsBottomButtonDropdownOpen(!isBottomButtonDropdownOpen)}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all bg-transparent text-[#A5A5A5] hover:text-[#1A1A1A] hover:bg-[#F5F5F5]"
+                style={{ border: 'none' }}
+                aria-label="Options"
+              >
+                {selectedBottomOption ? (
+                  <>
+                    <selectedBottomOption.icon size={18} style={{ color: '#7c00ff' }} />
+                    <span style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
+                      {selectedBottomOption.label}
+                    </span>
+                  </>
+                ) : (
+                  <RiSearchLine size={18} />
+                )}
+                <RiArrowDownSLine size={16} style={{ color: '#1A1A1A' }} />
+              </button>
+              <SimpleDropdown
+                isOpen={isBottomButtonDropdownOpen}
+                onClose={() => setIsBottomButtonDropdownOpen(false)}
+                dropdownRef={bottomButtonDropdownRef}
+                items={[
+                  { label: 'Globe view', icon: EarthFilled, onClick: () => setSelectedBottomOption({ label: 'Globe view', icon: EarthFilled }) },
+                  { label: 'List view', icon: List, onClick: () => setSelectedBottomOption({ label: 'List view', icon: List }) },
+                ]}
+                selectedOption={selectedBottomOption}
+                position={{ top: 'auto', bottom: '100%', left: '0', right: 'auto' }}
+                width="200px"
+              />
+            </div>
+          </div>
+
           {/* Save Job Button - Left Bottom Corner (only show when JD is loaded, but not in Chat with Resume tab) */}
           {jdUploadStatus === "loaded" && activeTab !== "analyze" && (
-            <div className="absolute bottom-4 left-4 flex items-center gap-2 z-20">
+            <div className="absolute bottom-4 left-20 flex items-center gap-2 z-20">
               <button
                 className="flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-transparent text-[#A5A5A5] hover:text-[#1A1A1A] hover:bg-[#F5F5F5]"
-                style={{ boxSizing: 'content-box' }}
+                style={{ boxSizing: 'content-box', border: 'none' }}
                 onClick={() => {
                   if (searchQuery.trim() && onSaveJD) {
                     onSaveJD(searchQuery);

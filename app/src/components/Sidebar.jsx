@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Home, Document, Archive, SidePanelClose, SidePanelOpen, User, Logout, ThumbsUpDouble, Settings, Bullhorn } from "@carbon/icons-react";
+import { Home, Document, Archive, SidePanelClose, SidePanelOpen, User, Logout, ThumbsUpDouble, Settings, Bullhorn, UserAvatar } from "@carbon/icons-react";
 import logoSvg from "../assets/logo.svg";
+import AccountDropdown from "./AccountDropdown";
 
 export default function Sidebar({ activeItem = "home" }) {
   const [firstSidebarOpen, setFirstSidebarOpen] = useState(true);
@@ -10,10 +11,17 @@ export default function Sidebar({ activeItem = "home" }) {
   const userDropdownRef = useRef(null);
   const navigate = useNavigate();
 
+  const userButtonRef = useRef(null);
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (userDropdownRef.current && !userDropdownRef.current.contains(event.target)) {
+      if (
+        userDropdownRef.current &&
+        !userDropdownRef.current.contains(event.target) &&
+        userButtonRef.current &&
+        !userButtonRef.current.contains(event.target)
+      ) {
         setIsUserDropdownOpen(false);
       }
     };
@@ -282,6 +290,7 @@ export default function Sidebar({ activeItem = "home" }) {
           {firstSidebarOpen ? (
             <div className="relative" ref={userDropdownRef}>
               <button
+                ref={userButtonRef}
                 onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
                 className={`flex items-center ${
                   firstSidebarOpen ? "space-x-3" : "justify-center"
@@ -317,59 +326,35 @@ export default function Sidebar({ activeItem = "home" }) {
               </button>
               
               {/* User Dropdown - Opens upward */}
-              {isUserDropdownOpen && (
-                <div
-                  className="absolute bottom-full left-0 mb-2 bg-white rounded-lg border z-50 flex flex-col"
-                  style={{
-                    width: '208px',
-                    padding: '6px',
-                    gap: '4px',
-                    borderColor: '#E5E5E5',
-                    borderWidth: '1px',
-                    boxShadow: '0px 10px 10px -5px #0000000A, 0px 20px 25px -5px #0000001A',
-                    borderRadius: '8px',
-                  }}
-                >
-                  <button
-                    onClick={() => {
-                      setIsUserDropdownOpen(false);
-                      // Handle settings action
-                    }}
-                    className="w-full flex items-center gap-3 px-3 py-2 rounded-md transition-colors hover:bg-[#F5F5F5]"
-                    style={{ fontFamily: 'Open Sans' }}
-                  >
-                    <Settings size={20} style={{ color: '#575757' }} />
-                    <span className="text-sm font-medium" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
-                      Settings
-                    </span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setIsUserDropdownOpen(false);
-                      navigate("/");
-                    }}
-                    className="w-full flex items-center gap-3 px-3 py-2 rounded-md transition-colors hover:bg-[#F5F5F5]"
-                    style={{ fontFamily: 'Open Sans' }}
-                  >
-                    <Logout size={20} style={{ color: '#575757' }} />
-                    <span className="text-sm font-medium" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
-                      Logout
-                    </span>
-                  </button>
-                </div>
-              )}
+              <AccountDropdown
+                isOpen={isUserDropdownOpen}
+                onClose={() => setIsUserDropdownOpen(false)}
+                userDropdownRef={userDropdownRef}
+                isSidebarCollapsed={false}
+              />
             </div>
           ) : (
-            <button
-              onClick={() => navigate("/")}
-              className="w-full p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors flex items-center justify-center"
-              title="Logout"
-            >
-              <Logout
-                size={24}
-                style={{ color: "#575757" }}
-              />
-            </button>
+            <div className="relative">
+              <button
+                ref={userButtonRef}
+                onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
+                className="w-full p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors flex items-center justify-center"
+                title="Account"
+              >
+                <Logout
+                  size={24}
+                  style={{ color: "#575757" }}
+                />
+              </button>
+              <div ref={userDropdownRef} className="relative">
+                <AccountDropdown
+                  isOpen={isUserDropdownOpen}
+                  onClose={() => setIsUserDropdownOpen(false)}
+                  userDropdownRef={userDropdownRef}
+                  isSidebarCollapsed={true}
+                />
+              </div>
+            </div>
           )}
         </div>
       </div>

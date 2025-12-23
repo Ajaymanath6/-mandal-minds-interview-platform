@@ -360,7 +360,7 @@ export default function ManageResume() {
                         >
                           {/* Heading above cards */}
                           <h2 className="text-base font-semibold mb-6 text-center" style={{ color: "rgba(26, 26, 26, 1)", fontWeight: 600 }}>
-                            No resume added yet. Add resume to get started.
+                            NO RESUME ADDED YET. ADD RESUME TO GET STARTED.
                           </h2>
                           
                           {/* Cards Grid */}
