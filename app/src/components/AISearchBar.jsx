@@ -20,8 +20,8 @@ export default function AISearchBar({
   onSaveJD,
   onJDUploaded,
   externalJDFile,
-  secondSidebarOpen = false,
-  onMapViewChange = null,
+  secondSidebarOpen = true,
+  firstSidebarOpen = true,
 }) {
   const [activeTab, setActiveTab] = useState("upload");
   const [searchQuery, setSearchQuery] = useState("");
@@ -37,6 +37,10 @@ export default function AISearchBar({
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
   const [selectedFilterOption, setSelectedFilterOption] = useState(null);
   const [hasSearched, setHasSearched] = useState(false);
+  const [isMapLoading, setIsMapLoading] = useState(false);
+  const [mapJourneyStep, setMapJourneyStep] = useState(0); // 0 = initial, 1 = show state, 2 = zoom to pincode
+  const [currentMapLocation, setCurrentMapLocation] = useState(null);
+  const [currentMapZoom, setCurrentMapZoom] = useState(10);
   const bottomButtonRef = useRef(null);
   const bottomButtonDropdownRef = useRef(null);
   const filterButtonRef = useRef(null);
@@ -63,17 +67,308 @@ export default function AISearchBar({
     },
   ];
 
-  // Extract location from search query using "in [City]" pattern
+  // Kerala district to pincode mapping
+  const keralaDistrictPincodes = {
+    // Thiruvananthapuram
+    'thiruvananthapuram': '695001',
+    'trivandrum': '695001',
+    'tvm': '695001',
+    
+    // Kollam
+    'kollam': '691001',
+    'quilon': '691001',
+    
+    // Pathanamthitta
+    'pathanamthitta': '689101',
+    'pathanamtitta': '689101',
+    
+    // Alappuzha
+    'alappuzha': '688001',
+    'alleppey': '688001',
+    'alapuzha': '688001',
+    
+    // Kottayam
+    'kottayam': '686001',
+    
+    // Idukki
+    'idukki': '685602',
+    
+    // Ernakulam
+    'kochi': '682001',
+    'ernakulam': '682001',
+    'cochin': '682001',
+    'ekm': '682001',
+    
+    // Thrissur
+    'thrissur': '680001',
+    'trichur': '680001',
+    'trissur': '680001',
+    
+    // Palakkad
+    'palakkad': '678001',
+    'palghat': '678001',
+    'palakad': '678001',
+    
+    // Malappuram
+    'malappuram': '676505',
+    'malapuram': '676505',
+    
+    // Kozhikode
+    'kozhikode': '673001',
+    'calicut': '673001',
+    
+    // Wayanad
+    'wayanad': '673121',
+    'waynad': '673121',
+    
+    // Kannur
+    'kannur': '670001',
+    'cannanore': '670001',
+    'kanur': '670001',
+    
+    // Kasaragod
+    'kasaragod': '671121',
+    'kasargod': '671121',
+    'kasargode': '671121',
+  };
+
+  // Karnataka district to pincode mapping
+  const karnatakaDistrictPincodes = {
+    // Bengaluru Urban
+    'bengaluru': '560001',
+    'bangalore': '560001',
+    'bengaluru urban': '560001',
+    'bangalore urban': '560001',
+    'blr': '560001',
+    
+    // Bengaluru Rural
+    'bengaluru rural': '562111',
+    'bangalore rural': '562111',
+    
+    // Mysuru
+    'mysuru': '570001',
+    'mysore': '570001',
+    
+    // Mangaluru (Dakshina Kannada)
+    'mangaluru': '575001',
+    'mangalore': '575001',
+    'dakshina kannada': '575001',
+    'dakshina kannad': '575001',
+    
+    // Udupi
+    'udupi': '576101',
+    
+    // Hubballi-Dharwad
+    'hubballi': '580001',
+    'hubli': '580001',
+    'dharwad': '580001',
+    'hubballi-dharwad': '580001',
+    'hubli-dharwad': '580001',
+    
+    // Belagavi
+    'belagavi': '590001',
+    'belgaum': '590001',
+    
+    // Kalaburagi (Gulbarga)
+    'kalaburagi': '585101',
+    'gulbarga': '585101',
+    
+    // Ballari
+    'ballari': '583101',
+    'bellary': '583101',
+    
+    // Tumakuru
+    'tumakuru': '572101',
+    'tumkur': '572101',
+    
+    // Shivamogga
+    'shivamogga': '577201',
+    'shimoga': '577201',
+    
+    // Hassan
+    'hassan': '573201',
+    
+    // Mandya
+    'mandya': '571401',
+    
+    // Vijayapura (Bijapur)
+    'vijayapura': '586101',
+    'bijapur': '586101',
+    
+    // Bagalkote
+    'bagalkote': '587101',
+    'bagalkot': '587101',
+    
+    // Raichur
+    'raichur': '584101',
+    
+    // Bidar
+    'bidar': '585401',
+    
+    // Chikkamagaluru
+    'chikkamagaluru': '577101',
+    'chikmagalur': '577101',
+    'chikmagaluru': '577101',
+    
+    // Davangere
+    'davangere': '577001',
+    'davanagere': '577001',
+    
+    // Uttara Kannada (Karwar)
+    'uttara kannada': '581301',
+    'karwar': '581301',
+    'uttar kannada': '581301',
+  };
+
+  // Extract location from search query - supports "in [City]" pattern and direct district/pincode search
   const extractLocation = (query) => {
     if (!query || !query.trim()) return null;
     
-    // Pattern: match "in " followed by city name (case-insensitive)
-    const pattern = /\bin\s+([A-Za-z\s]+)/i;
-    const match = query.match(pattern);
+    const normalizedQuery = query.toLowerCase().trim();
     
-    if (match && match[1]) {
-      // Trim whitespace and return the location
-      return match[1].trim();
+    // Check for 6-digit pincode pattern first
+    const pincodePattern = /\b\d{6}\b/;
+    const pincodeMatch = query.match(pincodePattern);
+    if (pincodeMatch) {
+      return pincodeMatch[0];
+    }
+    
+    // Helper function to find matching district
+    const findMatchingDistrict = (districtMap, queryText) => {
+      for (const [district] of Object.entries(districtMap)) {
+        const normalizedDistrict = district.toLowerCase();
+        // Check for exact match or if district name appears in query (or vice versa)
+        if (normalizedDistrict === queryText || 
+            queryText.includes(normalizedDistrict) || 
+            normalizedDistrict.includes(queryText) ||
+            district.split(' ').some(word => queryText.includes(word.toLowerCase()) || word.toLowerCase().includes(queryText))) {
+          // Return properly capitalized district name
+          return district.split(' ').map(word => 
+            word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          ).join(' ');
+        }
+      }
+      return null;
+    };
+    
+    // First, try "in [City]" pattern (case-insensitive)
+    const inPattern = /\bin\s+([A-Za-z\s]+)/i;
+    const inMatch = query.match(inPattern);
+    
+    if (inMatch && inMatch[1]) {
+      const location = inMatch[1].trim();
+      const normalizedLocation = location.toLowerCase().trim();
+      
+      // Check if this location matches a known district
+      if (selectedFilterOption && selectedFilterOption.country === 'India') {
+        const selectedState = selectedFilterOption.state;
+        
+        // Check Kerala districts
+        if (selectedState === 'Kerala' || (!selectedState && selectedFilterOption.country === 'India')) {
+          const matchedDistrict = findMatchingDistrict(keralaDistrictPincodes, normalizedLocation);
+          if (matchedDistrict) {
+            return matchedDistrict;
+          }
+        }
+        
+        // Check Karnataka districts
+        if (selectedState === 'Karnataka' || (!selectedState && selectedFilterOption.country === 'India')) {
+          const matchedDistrict = findMatchingDistrict(karnatakaDistrictPincodes, normalizedLocation);
+          if (matchedDistrict) {
+            return matchedDistrict;
+          }
+        }
+      }
+      
+      // Return the location as-is if no district match found
+      return location;
+    }
+    
+    // If no "in" pattern found, check if the query itself contains a district name
+    if (selectedFilterOption && selectedFilterOption.country === 'India') {
+      const selectedState = selectedFilterOption.state;
+      
+      // Check Kerala districts directly in query
+      if (selectedState === 'Kerala' || (!selectedState && selectedFilterOption.country === 'India')) {
+        const matchedDistrict = findMatchingDistrict(keralaDistrictPincodes, normalizedQuery);
+        if (matchedDistrict) {
+          return matchedDistrict;
+        }
+      }
+      
+      // Check Karnataka districts directly in query
+      if (selectedState === 'Karnataka' || (!selectedState && selectedFilterOption.country === 'India')) {
+        const matchedDistrict = findMatchingDistrict(karnatakaDistrictPincodes, normalizedQuery);
+        if (matchedDistrict) {
+          return matchedDistrict;
+        }
+      }
+    }
+    
+    return null;
+  };
+
+  // Get pincode for state districts (state-aware to avoid cross-state matches)
+  const getStatePincode = (location) => {
+    if (!location || !selectedFilterOption) return null;
+    
+    // Must have India selected
+    if (selectedFilterOption.country !== 'India') return null;
+    
+    const selectedState = selectedFilterOption.state;
+    const normalizedLocation = location.toLowerCase().trim();
+    
+    // Check if location is a pincode (6-digit number)
+    if (/^\d{6}$/.test(normalizedLocation)) {
+      // If it's a pincode, try to find which state it belongs to
+      // Check Kerala districts first
+      for (const [district, pincode] of Object.entries(keralaDistrictPincodes)) {
+        if (pincode === normalizedLocation) {
+          // If state is explicitly set, it must match
+          if (selectedState && selectedState !== 'Kerala') return null;
+          return { pincode, state: 'Kerala' };
+        }
+      }
+      // Check Karnataka districts
+      for (const [district, pincode] of Object.entries(karnatakaDistrictPincodes)) {
+        if (pincode === normalizedLocation) {
+          // If state is explicitly set, it must match
+          if (selectedState && selectedState !== 'Karnataka') return null;
+          return { pincode, state: 'Karnataka' };
+        }
+      }
+      // If pincode found but no state match, return null
+      return null;
+    }
+    
+    // Check Kerala districts - if Kerala state is selected OR no state selected (check both)
+    if (selectedState === 'Kerala' || (!selectedState && selectedFilterOption.country === 'India')) {
+      for (const [district, pincode] of Object.entries(keralaDistrictPincodes)) {
+        // More flexible matching: exact match, contains, or district contains location
+        if (normalizedLocation === district || 
+            normalizedLocation.includes(district) || 
+            district.includes(normalizedLocation) ||
+            district.split(' ').some(word => normalizedLocation.includes(word) || word.includes(normalizedLocation))) {
+          // Double check: if state is explicitly set, it must be Kerala
+          if (selectedState && selectedState !== 'Kerala') return null;
+          return { pincode, state: 'Kerala' };
+        }
+      }
+    }
+    
+    // Check Karnataka districts - if Karnataka state is selected OR no state selected (check both)
+    if (selectedState === 'Karnataka' || (!selectedState && selectedFilterOption.country === 'India')) {
+      for (const [district, pincode] of Object.entries(karnatakaDistrictPincodes)) {
+        // More flexible matching: exact match, contains, or district contains location
+        if (normalizedLocation === district || 
+            normalizedLocation.includes(district) || 
+            district.includes(normalizedLocation) ||
+            district.split(' ').some(word => normalizedLocation.includes(word) || word.includes(normalizedLocation))) {
+          // Double check: if state is explicitly set, it must be Karnataka
+          if (selectedState && selectedState !== 'Karnataka') return null;
+          return { pincode, state: 'Karnataka' };
+        }
+      }
     }
     
     return null;
@@ -82,18 +377,55 @@ export default function AISearchBar({
   const handleSearch = () => {
     if (!searchQuery.trim()) return;
 
-    // Mark that search has been clicked
-    setHasSearched(true);
-
     // Check if Globe view is selected
     const isGlobeView = selectedBottomOption && selectedBottomOption.label === 'Globe view';
     
     if (isGlobeView) {
-      // Extract location and update state
+      // Show loading state
+      setIsMapLoading(true);
+      setHasSearched(true);
+      setMapJourneyStep(0);
+      
+      // Extract location from search query
       const location = extractLocation(searchQuery);
       setExtractedLocation(location);
+      
+      // Check if we have a pincode for journey animation
+      const pincodeData = getStatePincode(location);
+      const pincode = pincodeData ? pincodeData.pincode : null;
+      
+      if (pincode && selectedFilterOption) {
+        // Journey animation: Step 1 - Show Kerala first
+        setTimeout(() => {
+          setIsMapLoading(false);
+          setMapJourneyStep(1);
+          // Show Kerala state with medium zoom
+          const stateLocation = selectedFilterOption.state 
+            ? `${selectedFilterOption.state}, ${selectedFilterOption.country}`
+            : selectedFilterOption.country;
+          setCurrentMapLocation(stateLocation);
+          setCurrentMapZoom(8);
+          
+          // Step 2 - After 2 seconds, zoom to pincode area
+          setTimeout(() => {
+            setMapJourneyStep(2);
+            const pincodeData = getStatePincode(location);
+            const stateName = pincodeData ? pincodeData.state : (selectedFilterOption.state || 'Kerala');
+            const districtName = location ? location.charAt(0).toUpperCase() + location.slice(1).toLowerCase() : (stateName === 'Kerala' ? 'Ernakulam' : 'Bengaluru');
+            setCurrentMapLocation(`${pincode}, ${districtName}, ${stateName}, India`);
+            setCurrentMapZoom(14);
+          }, 2000);
+        }, 1500);
+      } else {
+        // No journey animation, just show map
+        setTimeout(() => {
+          setIsMapLoading(false);
+          setMapJourneyStep(2);
+        }, 1500);
+      }
     } else {
       // List view: trigger comparison as before
+      setHasSearched(true);
       if (onCompare) {
         onCompare(searchQuery);
       }
@@ -598,22 +930,22 @@ export default function AISearchBar({
   );
 
   // Check if we should show GlobeView (after location selected from filter and search clicked, or Globe view with location)
-  // Show map if: (user searched AND has filter selected) OR (Globe view selected AND user searched AND (has filter OR extracted location))
   const shouldShowGlobeView = (hasSearched && selectedFilterOption) || (isGlobeView && hasSearched && (selectedFilterOption || extractedLocation));
   
   // Check if search bar should be collapsed (after search in Globe view or when filter is selected and search clicked)
-  // Collapse if: (Globe view selected AND user searched) OR (user searched AND has filter selected)
   const isSearchBarCollapsed = (isGlobeView && hasSearched) || (hasSearched && selectedFilterOption);
-
-  // Notify parent when map view state changes
-  useEffect(() => {
-    if (onMapViewChange) {
-      onMapViewChange(isSearchBarCollapsed && shouldShowGlobeView);
-    }
-  }, [isSearchBarCollapsed, shouldShowGlobeView, onMapViewChange]);
 
   // Collapsed layout: Show after search is clicked with Globe view or with filter selected
   if (isSearchBarCollapsed) {
+    // Calculate left offset based on sidebar states
+    // First sidebar: 208px (w-52) + 1px border = 209px when open, 64px (w-16) + 1px border = 65px when collapsed
+    // Second sidebar: 220px when open + 1px border = 221px
+    const firstSidebarWidth = firstSidebarOpen ? 209 : 65;
+    const secondSidebarWidth = secondSidebarOpen ? 221 : 0;
+    const totalWidth = firstSidebarWidth + secondSidebarWidth;
+    const leftOffset = `${totalWidth}px`;
+    const widthCalc = `calc(100% - ${totalWidth}px)`;
+    
     return (
       <>
         {/* Add style for placeholder color */}
@@ -622,14 +954,119 @@ export default function AISearchBar({
             color: #A5A5A5 !important;
           }
         `}</style>
-        <div className="w-full h-full" style={{ position: 'fixed', top: 0, left: '208px', right: 0, bottom: 0, height: '100vh', width: 'calc(100% - 208px)', margin: 0, padding: 0, zIndex: 10 }}>
+        <div className="w-full h-full" style={{ position: 'fixed', top: 0, left: leftOffset, right: 0, bottom: 0, height: '100vh', width: widthCalc, margin: 0, padding: 0, zIndex: 0 }}>
+          {/* Loading State */}
+          {isMapLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-white z-10" style={{ width: '100%', height: '100%', zIndex: 2 }}>
+              <div className="text-center">
+                <div className="w-12 h-12 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-base font-medium text-[#1A1A1A]" style={{ fontFamily: 'Open Sans' }}>
+                  Loading map...
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Map - Full coverage of right side area, no padding */}
-          {shouldShowGlobeView && (
+          {shouldShowGlobeView && !isMapLoading && (
             <div className="absolute inset-0" style={{ width: '100%', height: '100%', zIndex: 1, margin: 0, padding: 0 }}>
               <GlobeView 
-                location={selectedFilterOption ? (selectedFilterOption.state ? `${selectedFilterOption.state}, ${selectedFilterOption.country}` : selectedFilterOption.country) : extractedLocation} 
+                location={(() => {
+                  // Check if we should use pincode for state districts
+                  const pincodeData = getStatePincode(extractedLocation);
+                  const pincode = pincodeData ? pincodeData.pincode : null;
+                  const stateName = pincodeData ? pincodeData.state : null;
+                  
+                  // Journey animation logic - only use journey steps if pincode exists
+                  if (pincode && selectedFilterOption && stateName) {
+                    // Step 1: Show state (after loading, before zooming to pincode)
+                    if (mapJourneyStep === 1) {
+                      return currentMapLocation || (selectedFilterOption.state 
+                        ? `${selectedFilterOption.state}, ${selectedFilterOption.country}`
+                        : selectedFilterOption.country);
+                    }
+                    
+                    // Step 2: Show pincode location (final destination)
+                    if (mapJourneyStep === 2) {
+                      const districtName = extractedLocation ? extractedLocation.charAt(0).toUpperCase() + extractedLocation.slice(1).toLowerCase() : (stateName === 'Kerala' ? 'Ernakulam' : 'Bengaluru');
+                      return currentMapLocation || `${pincode}, ${districtName}, ${stateName}, India`;
+                    }
+                    
+                    // Step 0 or initial: Show state first (this will be shown immediately after loading)
+                    // This ensures we see the state before the journey animation starts
+                    const stateLocation = selectedFilterOption.state 
+                      ? `${selectedFilterOption.state}, ${selectedFilterOption.country}`
+                      : selectedFilterOption.country;
+                    return stateLocation;
+                  }
+                  
+                  // No journey animation - combine filter location with search query location
+                  let finalLocation = '';
+                  
+                  if (selectedFilterOption) {
+                    if (selectedFilterOption.state) {
+                      // State + Country from filter
+                      finalLocation = `${selectedFilterOption.state}, ${selectedFilterOption.country}`;
+                    } else {
+                      // Just Country from filter
+                      finalLocation = selectedFilterOption.country;
+                    }
+                    
+                    // Add search query location if available
+                    if (extractedLocation) {
+                      finalLocation = `${extractedLocation}, ${finalLocation}`;
+                    }
+                  } else if (extractedLocation) {
+                    // Just search query location
+                    finalLocation = extractedLocation;
+                  }
+                  
+                  return finalLocation;
+                })()}
                 searchQuery={searchQuery} 
-                hasSearched={hasSearched} 
+                hasSearched={hasSearched}
+                zoom={(() => {
+                  // Check if using pincode (state district)
+                  const pincodeData = getStatePincode(extractedLocation);
+                  const pincode = pincodeData ? pincodeData.pincode : null;
+                  
+                  // Journey animation logic - only use journey steps if pincode exists
+                  if (pincode && selectedFilterOption) {
+                    // Step 1: Show state with medium zoom
+                    if (mapJourneyStep === 1) {
+                      return currentMapZoom || 8;
+                    }
+                    
+                    // Step 2: Zoom to pincode (close-up)
+                    if (mapJourneyStep === 2) {
+                      return currentMapZoom || 14;
+                    }
+                    
+                    // Step 0 or initial: Show state with medium zoom first
+                    return 8;
+                  }
+                  
+                  // Determine zoom level based on specificity
+                  if (selectedFilterOption?.state && extractedLocation) {
+                    // City + State = most specific, zoom in more
+                    return 13;
+                  } else if (selectedFilterOption?.state) {
+                    // Just State = medium zoom
+                    return 8;
+                  } else if (selectedFilterOption?.country && extractedLocation) {
+                    // City + Country = medium-high zoom
+                    return 11;
+                  } else if (selectedFilterOption?.country) {
+                    // Just Country = zoom out
+                    return 6;
+                  } else if (extractedLocation) {
+                    // Just city from search = medium zoom
+                    return 12;
+                  }
+                  // Default zoom
+                  return 10;
+                })()}
+                key={`${mapJourneyStep}-${currentMapLocation}-${currentMapZoom}`}
               />
             </div>
           )}
@@ -665,18 +1102,11 @@ export default function AISearchBar({
                     }
                   }}
                   placeholder="Search for keywords, product design, frontend developer..."
-                  className="flex-1 min-w-0 bg-white rounded-lg px-3 py-2 border border-[#E5E5E5] focus:outline-none text-sm"
+                  className="flex-1 min-w-0 bg-white rounded-lg px-3 py-2 border border-[#E5E5E5] focus:outline-none focus:border-[#7c00ff] text-sm"
                   style={{ 
                     fontFamily: 'Open Sans', 
                     fontSize: '14px',
                     color: '#1A1A1A',
-                    borderColor: '#E5E5E5',
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = '#A5A5A5';
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = '#E5E5E5';
                   }}
                 />
                 <style>{`
@@ -708,23 +1138,22 @@ export default function AISearchBar({
                       dropdownRef={filterDropdownRef}
                       selectedOption={selectedFilterOption}
                       onSelect={(option) => setSelectedFilterOption(option)}
-                      position={{ top: 'auto', bottom: '100%', right: '0', left: 'auto' }}
+                      position={{ top: '100%', bottom: 'auto', right: '0', left: 'auto', marginTop: '8px' }}
                       width="300px"
                     />
                   </div>
                 )}
-                {/* Return button - Reset to default state */}
+                {/* Return button - Go back to search bar (preserve state) */}
                 <button
                   onClick={() => {
+                    // Only reset the collapsed view, preserve search query and filter
                     setHasSearched(false);
-                    setSelectedFilterOption(null);
-                    setExtractedLocation(null);
-                    setSearchQuery("");
-                    setSelectedBottomOption(null);
+                    // Keep searchQuery, selectedFilterOption, extractedLocation, selectedBottomOption
+                    // This will show the expanded search bar with the preserved search query
                   }}
                   className="flex items-center justify-center p-2 rounded-lg transition-colors hover:bg-[#F5F5F5] flex-shrink-0"
-                  aria-label="Return to default"
-                  title="Return to default search"
+                  aria-label="Return to search bar"
+                  title="Return to search bar"
                 >
                   <Return size={20} style={{ color: '#575757' }} />
                 </button>

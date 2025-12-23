@@ -4,8 +4,25 @@ import { Home, Document, Archive, SidePanelClose, SidePanelOpen, User, Logout, T
 import logoSvg from "../assets/logo.svg";
 import AccountDropdown from "./AccountDropdown";
 
-export default function Sidebar({ activeItem = "home" }) {
-  const [firstSidebarOpen, setFirstSidebarOpen] = useState(true);
+export default function Sidebar({ activeItem = "home", onToggle, isOpen: externalIsOpen }) {
+  const [internalIsOpen, setInternalIsOpen] = useState(true);
+  const firstSidebarOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
+  
+  // Sync internal state when external state changes
+  useEffect(() => {
+    if (externalIsOpen !== undefined) {
+      setInternalIsOpen(externalIsOpen);
+    }
+  }, [externalIsOpen]);
+  
+  const setFirstSidebarOpen = (value) => {
+    if (externalIsOpen === undefined) {
+      setInternalIsOpen(value);
+    }
+    if (onToggle) {
+      onToggle(value);
+    }
+  };
   const [isLogoHovered, setIsLogoHovered] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const userDropdownRef = useRef(null);

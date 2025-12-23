@@ -26,6 +26,7 @@ import {
   RiUploadLine,
   RiFileTextLine,
 } from "@remixicon/react";
+import { SidePanelOpen } from "@carbon/icons-react";
 import Sidebar from "./Sidebar";
 import ResumeBuilderSidebar from "./ResumeBuilderSidebar";
 import AISearchBar from "./AISearchBar";
@@ -33,6 +34,7 @@ import logoSvg from "../assets/logo.svg";
 import voiceResponsesData from "../data/voiceResponses.json";
 
 export default function Resume() {
+  const [firstSidebarOpen, setFirstSidebarOpen] = useState(true);
   const [secondSidebarOpen, setSecondSidebarOpen] = useState(true);
   const [jdContent, setJdContent] = useState("");
   const [isAnalyzed, setIsAnalyzed] = useState(false);
@@ -65,7 +67,6 @@ export default function Resume() {
   const [resumeFile, setResumeFile] = useState(null);
   const resumeFileInputRef = useRef(null);
   const [externalJDFile, setExternalJDFile] = useState(null);
-  const [isMapViewActive, setIsMapViewActive] = useState(false);
 
   // Sample resumes - in real app this would come from API
   const SAMPLE_RESUMES = [
@@ -414,29 +415,41 @@ export default function Resume() {
         style={{ height: "100vh" }}
       >
         {/* First Sidebar - Always Visible */}
-          <Sidebar activeItem="home" />
+          <Sidebar activeItem="home" isOpen={firstSidebarOpen} onToggle={setFirstSidebarOpen} />
 
-        {/* Second Sidebar - Resume Builder - Completely remove when map is active */}
-        {!isMapViewActive && (
-          <ResumeBuilderSidebar
-            isOpen={secondSidebarOpen}
-            onToggle={() => setSecondSidebarOpen(!secondSidebarOpen)}
-            onJDUploaded={(file, text) => {
-              // Set the external JD file to trigger AISearchBar upload
-              setExternalJDFile(file);
-              // Reset after a short delay to allow re-uploads
-              setTimeout(() => {
-                setExternalJDFile(null);
-              }, 100);
-              // Also update JD content
-              setJdContent(text);
+        {/* Second Sidebar - Resume Builder */}
+        <ResumeBuilderSidebar
+          isOpen={secondSidebarOpen}
+          onToggle={() => setSecondSidebarOpen(!secondSidebarOpen)}
+          onJDUploaded={(file, text) => {
+            // Set the external JD file to trigger AISearchBar upload
+            setExternalJDFile(file);
+            // Reset after a short delay to allow re-uploads
+            setTimeout(() => {
+              setExternalJDFile(null);
+            }, 100);
+            // Also update JD content
+            setJdContent(text);
+          }}
+        />
+
+        {/* Collapse button for second sidebar - Top left corner when collapsed */}
+        {!secondSidebarOpen && (
+          <button
+            onClick={() => setSecondSidebarOpen(true)}
+            className={`fixed top-4 z-50 w-10 h-10 bg-white rounded-lg shadow-md border border-gray-200 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-gray-50 transition-all`}
+            style={{ 
+              zIndex: 1000,
+              left: firstSidebarOpen ? '209px' : '65px' // 208px + 1px border when open, 64px + 1px border when collapsed
             }}
-          />
+            title="Show Resume Builder Sidebar"
+          >
+            <SidePanelOpen size={20} style={{ color: "#575757" }} />
+          </button>
         )}
 
-        {/* Main Content - Responsive - Hide when map is active */}
-        {!isMapViewActive && (
-          <div className="flex-1 px-4 lg:px-6 pb-4 lg:pb-6 overflow-y-auto" style={{ backgroundColor: "#fcfcfb" }}>
+        {/* Main Content - Responsive */}
+        <div className="flex-1 px-4 lg:px-6 pb-4 lg:pb-6 overflow-y-auto" style={{ backgroundColor: "#fcfcfb" }}>
           {isInterviewStarted ? (
             <div className="h-full flex flex-col min-h-0">
               {/* Interview Header */}
@@ -726,14 +739,8 @@ export default function Resume() {
                     setJdContent(jdContent);
                     setJdUploaded(true);
                   }}
-                  secondSidebarOpen={secondSidebarOpen && !isMapViewActive}
-                  onMapViewChange={(isActive) => {
-                    setIsMapViewActive(isActive);
-                    // Close second sidebar when map view is active
-                    if (isActive) {
-                      setSecondSidebarOpen(false);
-                    }
-                  }}
+                  secondSidebarOpen={secondSidebarOpen}
+                  firstSidebarOpen={firstSidebarOpen}
                 />
 
                 {/* Resume Upload Badge - Appears below text area after JD is loaded */}
@@ -976,7 +983,6 @@ export default function Resume() {
             </div>
           )}
         </div>
-        )}
       </div>
 
       {/* Resume Selection Modal */}
@@ -1061,7 +1067,7 @@ export default function Resume() {
             </div>
           </div>
         </div>
-        )}
+      )}
     </div>
   );
 }

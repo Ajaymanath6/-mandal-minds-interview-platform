@@ -1686,26 +1686,26 @@ export default function SummaryEdit({
 
           {/* File Name */}
           <div className="flex items-center justify-between pb-2">
-            <div className="flex items-center gap-2">
-              {fileType === 'pdf' ? (
-                <DocumentPdf size={20} style={{ color: '#575757' }} />
-              ) : (
-                <Document size={20} style={{ color: '#575757' }} />
-              )}
-              <h2 className="text-base font-bold" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
+          <div className="flex items-center gap-2">
+            {fileType === 'pdf' ? (
+              <DocumentPdf size={20} style={{ color: '#575757' }} />
+            ) : (
+              <Document size={20} style={{ color: '#575757' }} />
+            )}
+            <h2 className="text-base font-bold" style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
                 Document_Resume_2024
-              </h2>
-            </div>
-            <button
-              onClick={() => navigate("/manage-resume")}
-              className="flex items-center justify-center p-2 rounded-lg transition-colors hover:bg-[#F5F5F5]"
-              title="Back to Resume List"
-            >
-              <ArrowLeft
-                size={20}
-                style={{ color: "#575757" }}
-              />
-            </button>
+            </h2>
+          </div>
+          <button
+            onClick={() => navigate("/manage-resume")}
+            className="flex items-center justify-center p-2 rounded-lg transition-colors hover:bg-[#F5F5F5]"
+            title="Back to Resume List"
+          >
+            <ArrowLeft
+              size={20}
+              style={{ color: "#575757" }}
+            />
+          </button>
           </div>
         </div>
 

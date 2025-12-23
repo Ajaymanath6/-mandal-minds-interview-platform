@@ -162,10 +162,10 @@ export default function ResumeBuilderSidebar({
       {/* Second Sidebar - Job Description Input */}
       <div
         className={`${
-          isOpen ? "w-[220px]" : "w-12 md:w-0"
-        } bg-white transition-all duration-300 ${
-          isOpen ? "" : "md:hidden"
-        } flex-shrink-0 h-full border-r border-[#E5E5E5]`}
+          isOpen ? "w-[220px]" : "w-0"
+        } bg-white transition-all duration-300 flex-shrink-0 h-full ${
+          isOpen ? "border-r border-[#E5E5E5]" : "border-0"
+        } overflow-hidden`}
       >
         <div className="w-[220px] flex flex-col h-full">
           {/* Empty content area */}
@@ -397,22 +397,6 @@ export default function ResumeBuilderSidebar({
           </div>
         </div>
       </div>
-
-      {/* Collapse button for second sidebar when closed - Always visible on laptop */}
-      {!isOpen && (
-        <button
-          onClick={onToggle}
-          className="w-12 md:w-8 h-8 bg-white rounded-lg shadow-sm border border-gray-200 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-gray-50 mb-8 flex-shrink-0"
-          title="Show Resume Builder"
-        >
-          <span
-            className="material-symbols-outlined"
-            style={{ fontSize: 20 }}
-          >
-            dock_to_right
-          </span>
-        </button>
-      )}
 
       {/* Upload Status Modal */}
       <UploadStatusModal

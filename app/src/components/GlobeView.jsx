@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function GlobeView({ location, searchQuery, hasSearched }) {
+export default function GlobeView({ location, searchQuery, hasSearched, zoom = 10 }) {
   // If no location is found and user has searched, show a message
   if (!location && hasSearched) {
     return (
@@ -27,10 +27,11 @@ export default function GlobeView({ location, searchQuery, hasSearched }) {
   }
 
   // Use Google Maps embed iframe - NO API KEY REQUIRED
-  // Default roadmap view
+  // Default roadmap view with zoom parameter
   // Note: "Directions" and "View larger map" links are part of Google's embed
   // and cannot be removed due to cross-origin restrictions (they're inside the iframe)
-  const mapsUrl = `https://www.google.com/maps?q=${encodeURIComponent(location)}&output=embed`;
+  // Zoom levels: 1 (world) to 20 (buildings), default is 10
+  const mapsUrl = `https://www.google.com/maps?q=${encodeURIComponent(location)}&z=${zoom}&output=embed`;
 
   return (
     <div className="w-full h-full" style={{ position: 'relative', backgroundColor: 'white', overflow: 'hidden', margin: 0, padding: 0 }}>
@@ -46,6 +47,8 @@ export default function GlobeView({ location, searchQuery, hasSearched }) {
           position: 'absolute',
           top: 0,
           left: 0,
+          width: '100%',
+          height: '100%',
         }}
         title="Google Maps View"
         allowFullScreen
@@ -53,25 +56,6 @@ export default function GlobeView({ location, searchQuery, hasSearched }) {
         referrerPolicy="no-referrer-when-downgrade"
         frameBorder="0"
       />
-      {/* Overlay to hide Google Maps embed links at bottom - larger and more opaque */}
-      <div 
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: '120px',
-          background: 'linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.98) 50%, rgba(255, 255, 255, 0.95) 100%)',
-          zIndex: 10,
-          pointerEvents: 'none',
-        }}
-      />
-      <style>{`
-        /* Try to hide Google Maps embed links - may not work due to cross-origin */
-        iframe[title="Google Maps View"] {
-          opacity: 1;
-        }
-      `}</style>
     </div>
   );
 }

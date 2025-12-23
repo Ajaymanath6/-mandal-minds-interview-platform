@@ -99,6 +99,7 @@ export default function FilterDropdown({
         bottom: position.bottom,
         left: position.left,
         right: position.right,
+        marginTop: position.marginTop || '0',
         padding: '8px',
         gap: '8px',
         borderColor: '#E5E5E5',
