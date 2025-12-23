@@ -394,25 +394,34 @@ export default function AISearchBar({
       const pincodeData = getStatePincode(location);
       const pincode = pincodeData ? pincodeData.pincode : null;
       
-      if (pincode && selectedFilterOption) {
-        // Journey animation: Step 1 - Show Kerala first
+      // Check if we have a state selected for animation
+      const hasState = selectedFilterOption && selectedFilterOption.state;
+      
+      if ((pincode || location) && selectedFilterOption && hasState) {
+        // Journey animation: Step 1 - Show state first
         setTimeout(() => {
           setIsMapLoading(false);
           setMapJourneyStep(1);
-          // Show Kerala state with medium zoom
+          // Show state with medium zoom
           const stateLocation = selectedFilterOption.state 
             ? `${selectedFilterOption.state}, ${selectedFilterOption.country}`
             : selectedFilterOption.country;
           setCurrentMapLocation(stateLocation);
           setCurrentMapZoom(8);
           
-          // Step 2 - After 2 seconds, zoom to pincode area
+          // Step 2 - After 2 seconds, zoom to specific location
           setTimeout(() => {
             setMapJourneyStep(2);
-            const pincodeData = getStatePincode(location);
-            const stateName = pincodeData ? pincodeData.state : (selectedFilterOption.state || 'Kerala');
-            const districtName = location ? location.charAt(0).toUpperCase() + location.slice(1).toLowerCase() : (stateName === 'Kerala' ? 'Ernakulam' : 'Bengaluru');
-            setCurrentMapLocation(`${pincode}, ${districtName}, ${stateName}, India`);
+            if (pincode) {
+              const pincodeData = getStatePincode(location);
+              const stateName = pincodeData ? pincodeData.state : (selectedFilterOption.state || 'Kerala');
+              const districtName = location ? location.charAt(0).toUpperCase() + location.slice(1).toLowerCase() : (stateName === 'Kerala' ? 'Ernakulam' : 'Bengaluru');
+              setCurrentMapLocation(`${pincode}, ${districtName}, ${stateName}, India`);
+            } else if (location) {
+              // For non-pincode locations, combine with state
+              const finalLocation = `${location}, ${selectedFilterOption.state}, ${selectedFilterOption.country}`;
+              setCurrentMapLocation(finalLocation);
+            }
             setCurrentMapZoom(14);
           }, 2000);
         }, 1500);
@@ -1025,6 +1034,14 @@ export default function AISearchBar({
                 })()}
                 searchQuery={searchQuery} 
                 hasSearched={hasSearched}
+                journeyStep={(() => {
+                  // Pass journey step to GlobeView for animation control
+                  // Enable animation if we have a state selected and a location
+                  if (selectedFilterOption && selectedFilterOption.state && extractedLocation) {
+                    return mapJourneyStep;
+                  }
+                  return null;
+                })()}
                 zoom={(() => {
                   // Check if using pincode (state district)
                   const pincodeData = getStatePincode(extractedLocation);
