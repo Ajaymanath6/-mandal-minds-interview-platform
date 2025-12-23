@@ -416,7 +416,7 @@ export default function Resume() {
         {/* First Sidebar - Always Visible */}
           <Sidebar activeItem="home" />
 
-        {/* Second Sidebar - Resume Builder - Hide when map is active */}
+        {/* Second Sidebar - Resume Builder - Completely remove when map is active */}
         {!isMapViewActive && (
           <ResumeBuilderSidebar
             isOpen={secondSidebarOpen}
@@ -434,8 +434,9 @@ export default function Resume() {
           />
         )}
 
-        {/* Main Content - Responsive */}
-        <div className="flex-1 px-4 lg:px-6 pb-4 lg:pb-6 overflow-y-auto" style={{ backgroundColor: "#fcfcfb" }}>
+        {/* Main Content - Responsive - Hide when map is active */}
+        {!isMapViewActive && (
+          <div className="flex-1 px-4 lg:px-6 pb-4 lg:pb-6 overflow-y-auto" style={{ backgroundColor: "#fcfcfb" }}>
           {isInterviewStarted ? (
             <div className="h-full flex flex-col min-h-0">
               {/* Interview Header */}
@@ -1059,7 +1060,8 @@ export default function Resume() {
             </div>
           </div>
         </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
