@@ -51,10 +51,14 @@ export default function GlobeView({ location, searchQuery, hasSearched, zoom = 1
           height: '100%',
         }}
         title="Google Maps View"
-        allowFullScreen
+        allowFullScreen={true}
+        allow="geolocation *; fullscreen *; autoplay *; encrypted-media *; picture-in-picture *"
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
         frameBorder="0"
+        onError={(e) => {
+          console.error('Map iframe error:', e);
+        }}
       />
     </div>
   );
