@@ -9,9 +9,11 @@ import {
   RiSearchLine,
   RiArrowDownSLine,
 } from "@remixicon/react";
-import { IbmWatsonDiscovery, Chat, IbmWatsonOpenscale, CheckmarkFilled, List, Grid, Earth, EarthFilled, TableOfContents } from "@carbon/icons-react";
+import { IbmWatsonDiscovery, Chat, IbmWatsonOpenscale, CheckmarkFilled, List, Grid, Earth, EarthFilled, TableOfContents, Filter, ArrowLeft } from "@carbon/icons-react";
 import FileUploadModal from "./FileUploadModal";
 import SimpleDropdown from "./SimpleDropdown";
+import GlobeView from "./GlobeView";
+import FilterDropdown from "./FilterDropdown";
 
 export default function AISearchBar({
   onCompare,
@@ -29,8 +31,14 @@ export default function AISearchBar({
   const [isDragging, setIsDragging] = useState(false);
   const [isBottomButtonDropdownOpen, setIsBottomButtonDropdownOpen] = useState(false);
   const [selectedBottomOption, setSelectedBottomOption] = useState(null);
+  const [extractedLocation, setExtractedLocation] = useState(null);
+  const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
+  const [selectedFilterOption, setSelectedFilterOption] = useState(null);
+  const [hasSearched, setHasSearched] = useState(false);
   const bottomButtonRef = useRef(null);
   const bottomButtonDropdownRef = useRef(null);
+  const filterButtonRef = useRef(null);
+  const filterDropdownRef = useRef(null);
   const navigate = useNavigate();
 
   const tabs = [
@@ -53,12 +61,40 @@ export default function AISearchBar({
     },
   ];
 
+  // Extract location from search query using "in [City]" pattern
+  const extractLocation = (query) => {
+    if (!query || !query.trim()) return null;
+    
+    // Pattern: match "in " followed by city name (case-insensitive)
+    const pattern = /\bin\s+([A-Za-z\s]+)/i;
+    const match = query.match(pattern);
+    
+    if (match && match[1]) {
+      // Trim whitespace and return the location
+      return match[1].trim();
+    }
+    
+    return null;
+  };
+
   const handleSearch = () => {
     if (!searchQuery.trim()) return;
 
-    // Trigger comparison
-    if (onCompare) {
-      onCompare(searchQuery);
+    // Mark that search has been clicked
+    setHasSearched(true);
+
+    // Check if Globe view is selected
+    const isGlobeView = selectedBottomOption && selectedBottomOption.label === 'Globe view';
+    
+    if (isGlobeView) {
+      // Extract location and update state
+      const location = extractLocation(searchQuery);
+      setExtractedLocation(location);
+    } else {
+      // List view: trigger comparison as before
+      if (onCompare) {
+        onCompare(searchQuery);
+      }
     }
   };
 
@@ -175,6 +211,13 @@ export default function AISearchBar({
     return "Paste job description here or upload JD file...";
   };
 
+  // Set default to List view when in AI job Search tab
+  useEffect(() => {
+    if (activeTab === "upload" && !selectedBottomOption) {
+      setSelectedBottomOption({ label: 'List view', icon: List });
+    }
+  }, [activeTab, selectedBottomOption]);
+
   // Handle external JD file uploads
   useEffect(() => {
     if (externalJDFile) {
@@ -218,173 +261,205 @@ export default function AISearchBar({
     }
   }, [activeTab, jdUploadStatus, onCompare, onJDUploaded]);
 
-  return (
-    <div className="w-full max-w-4xl mx-auto">
-      {/* Search Bar Container */}
-      <div className="bg-[#F5F5F5] rounded-xl border border-[#E5E5E5] shadow-sm pt-[23px] pb-[23px] px-6">
-        {/* Tabs - Inside search bar at the top */}
-        <div className="flex items-center gap-2 mb-3 overflow-x-auto pb-2">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            const isDisabled = tab.disabled === true;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => {
-                  if (!isDisabled) {
-                    setActiveTab(tab.id);
-                  }
-                }}
-                disabled={isDisabled}
-                className={`flex items-center space-x-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-                  isDisabled
-                    ? "bg-transparent text-[#A5A5A5] cursor-not-allowed opacity-50"
-                    : isActive
-                    ? "bg-[#0A0A0A] text-white shadow-md"
-                    : "bg-[#E5E5E5] text-[#1A1A1A] hover:bg-[#E5E5E5]"
-                }`}
-                title={isDisabled ? "Please upload JD first" : ""}
-              >
-                <Icon size={18} />
-                <span className="hidden sm:inline">{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
-        {/* Search Input Area */}
-        <div 
-          className="relative"
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-        >
-          
-          {/* JD Image Preview with Loading Spinner */}
-          {jdUploadStatus !== "idle" && jdImage && (
-            <div className="absolute inset-0 bg-white rounded-lg flex items-end justify-center z-10 px-4 pb-4">
-              <div className="flex items-end gap-3">
-                <div className="relative overflow-hidden" style={{ maxHeight: '120px' }}>
-                  <img
-                    src={jdImage}
-                    alt="JD Preview"
-                    className="max-w-full max-h-[120px] object-cover object-bottom rounded-lg"
-                    style={{ objectPosition: 'center bottom' }}
-                  />
-                  {/* Loading Spinner Overlay */}
-                  {jdUploadStatus === "uploading" && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-80 rounded-lg">
-                      <div className="relative">
-                        <div className="w-12 h-12 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
-                      </div>
+  // Update extracted location when switching to Globe view or when searchQuery changes in Globe view
+  useEffect(() => {
+    const isGlobeView = selectedBottomOption && selectedBottomOption.label === 'Globe view';
+    if (isGlobeView && searchQuery) {
+      const location = extractLocation(searchQuery);
+      setExtractedLocation(location);
+    } else if (!isGlobeView) {
+      // Clear extracted location when switching away from Globe view
+      setExtractedLocation(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedBottomOption, searchQuery]);
+
+  // Check if Globe view is selected
+  const isGlobeView = selectedBottomOption && selectedBottomOption.label === 'Globe view';
+  
+  // Check if we're in AI job Search tab
+  const isAISearchTab = activeTab === "upload";
+  
+  // Set default filter option to India
+  useEffect(() => {
+    if (isAISearchTab && !selectedFilterOption) {
+      setSelectedFilterOption({ label: 'India', country: 'India', state: null });
+    }
+  }, [isAISearchTab, selectedFilterOption]);
+
+  // Render search bar component (used in both views)
+  const renderSearchBar = () => (
+    <div className="bg-[#F5F5F5] rounded-xl border border-[#E5E5E5] shadow-sm pt-[23px] pb-[23px] px-6">
+      {/* Tabs - Inside search bar at the top */}
+      <div className="flex items-center gap-2 mb-3 overflow-x-auto pb-2">
+        {tabs.map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+          const isDisabled = tab.disabled === true;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => {
+                if (!isDisabled) {
+                  setActiveTab(tab.id);
+                }
+              }}
+              disabled={isDisabled}
+              className={`flex items-center space-x-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                isDisabled
+                  ? "bg-transparent text-[#A5A5A5] cursor-not-allowed opacity-50"
+                  : isActive
+                  ? "bg-[#0A0A0A] text-white shadow-md"
+                  : "bg-[#E5E5E5] text-[#1A1A1A] hover:bg-[#E5E5E5]"
+              }`}
+              title={isDisabled ? "Please upload JD first" : ""}
+            >
+              <Icon size={18} />
+              <span className="hidden sm:inline">{tab.label}</span>
+            </button>
+          );
+        })}
+      </div>
+      {/* Search Input Area */}
+      <div 
+        className="relative"
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
+        
+        {/* JD Image Preview with Loading Spinner */}
+        {jdUploadStatus !== "idle" && jdImage && (
+          <div className="absolute inset-0 bg-white rounded-lg flex items-end justify-center z-10 px-4 pb-4">
+            <div className="flex items-end gap-3">
+              <div className="relative overflow-hidden" style={{ maxHeight: '120px' }}>
+                <img
+                  src={jdImage}
+                  alt="JD Preview"
+                  className="max-w-full max-h-[120px] object-cover object-bottom rounded-lg"
+                  style={{ objectPosition: 'center bottom' }}
+                />
+                {/* Loading Spinner Overlay */}
+                {jdUploadStatus === "uploading" && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-80 rounded-lg">
+                    <div className="relative">
+                      <div className="w-12 h-12 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
                     </div>
-                  )}
-                  {/* Remove button when loaded */}
-                  {jdUploadStatus === "loaded" && (
-                    <button
-                      onClick={handleRemoveJD}
-                      className="absolute top-2 right-2 w-8 h-8 bg-gray-800 hover:bg-gray-900 text-white rounded-full flex items-center justify-center transition-colors"
-                      aria-label="Remove JD"
-                    >
-                      <RiCloseLine size={16} />
-                    </button>
-                  )}
-                </div>
-                {/* Document Name Display - Aligned to bottom of image */}
-                {jdFileName && (
-                  <div className="flex items-center gap-2">
-                    {jdUploadStatus === "loaded" && (
-                      <CheckmarkFilled
-                        size={20}
-                        className="flex-shrink-0"
-                        style={{ color: "#22c55e" }}
-                      />
-                    )}
-                    <p className="text-sm font-normal text-[#1A1A1A] truncate max-w-[120px]" title={jdFileName}>
-                      {jdFileName.length > 8 ? `${jdFileName.substring(0, 8)}...` : jdFileName}
-                    </p>
                   </div>
                 )}
-              </div>
-            </div>
-          )}
-          
-          {/* Dotted border overlay for Chat with Resume tab */}
-          {activeTab === "analyze" && jdUploadStatus === "idle" && (
-            <div 
-              className="absolute inset-0 border-2 border-dashed rounded-lg z-10 flex items-center justify-center transition-colors bg-white"
-              style={{
-                borderColor: isDragging ? '#E5E5E5' : '#E5E5E5'
-              }}
-            >
-              <div className="text-center">
-                <p className="text-base font-medium">
+                {/* Remove button when loaded */}
+                {jdUploadStatus === "loaded" && (
                   <button
-                    onClick={() => setIsUploadModalOpen(true)}
-                    className="text-purple-600 hover:text-purple-700 underline cursor-pointer"
+                    onClick={handleRemoveJD}
+                    className="absolute top-2 right-2 w-8 h-8 bg-gray-800 hover:bg-gray-900 text-white rounded-full flex items-center justify-center transition-colors"
+                    aria-label="Remove JD"
                   >
-                    Select
-                  </button> or drop files here
-                </p>
-                <input
-                  type="file"
-                  id="resume-file-input"
-                  className="hidden"
-                  onChange={handleFileInput}
-                  accept=".pdf,.doc,.docx,.txt"
-                />
+                    <RiCloseLine size={16} />
+                  </button>
+                )}
               </div>
+              {/* Document Name Display - Aligned to bottom of image */}
+              {jdFileName && (
+                <div className="flex items-center gap-2">
+                  {jdUploadStatus === "loaded" && (
+                    <CheckmarkFilled
+                      size={20}
+                      className="flex-shrink-0"
+                      style={{ color: "#22c55e" }}
+                    />
+                  )}
+                  <p className="text-sm font-normal text-[#1A1A1A] truncate max-w-[120px]" title={jdFileName}>
+                    {jdFileName.length > 8 ? `${jdFileName.substring(0, 8)}...` : jdFileName}
+                  </p>
+                </div>
+              )}
             </div>
-          )}
-          
-          {/* Dotted border overlay for AI Interview tab */}
-          {activeTab === "interview" && jdUploadStatus === "idle" && (
-            <div 
-              className="absolute inset-0 border-2 border-dashed rounded-lg z-10 flex items-center justify-center transition-colors bg-white"
-              style={{
-                borderColor: isDragging ? '#E5E5E5' : '#E5E5E5'
-              }}
-            >
-              <div className="text-center">
-                <p className="text-base font-medium">
-                  <button
-                    onClick={() => setIsUploadModalOpen(true)}
-                    className="text-purple-600 hover:text-purple-700 underline cursor-pointer"
-                  >
-                    Select
-                  </button> JD or <button
-                    onClick={() => setIsUploadModalOpen(true)}
-                    className="text-purple-600 hover:text-purple-700 underline cursor-pointer"
-                  >
-                    upload
-                  </button> JD or write JD copy paste JD to text area
-                </p>
-                <input
-                  type="file"
-                  id="interview-file-input"
-                  className="hidden"
-                  onChange={handleFileInput}
-                  accept=".pdf,.doc,.docx,.txt"
-                />
-              </div>
+          </div>
+        )}
+        
+        {/* Dotted border overlay for Chat with Resume tab */}
+        {activeTab === "analyze" && jdUploadStatus === "idle" && (
+          <div 
+            className="absolute inset-0 border-2 border-dashed rounded-lg z-10 flex items-center justify-center transition-colors bg-white"
+            style={{
+              borderColor: isDragging ? '#E5E5E5' : '#E5E5E5'
+            }}
+          >
+            <div className="text-center">
+              <p className="text-base font-medium">
+                <button
+                  onClick={() => setIsUploadModalOpen(true)}
+                  className="text-purple-600 hover:text-purple-700 underline cursor-pointer"
+                >
+                  Select
+                </button> or drop files here
+              </p>
+              <input
+                type="file"
+                id="resume-file-input"
+                className="hidden"
+                onChange={handleFileInput}
+                accept=".pdf,.doc,.docx,.txt"
+              />
             </div>
-          )}
-          
-          <textarea
-            ref={textareaRef}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder={getPlaceholder()}
-            className={`w-full min-h-[140px] px-6 py-4 pr-16 text-gray-900 bg-white border rounded-lg focus:outline-none resize-none placeholder:text-[#A5A5A5] text-base m-0 ${
-              jdUploadStatus !== "idle" ? "opacity-0 pointer-events-none" : ""
-            } ${(activeTab === "analyze" || activeTab === "interview") && jdUploadStatus === "idle" ? "opacity-0 pointer-events-none" : ""}`}
-            rows={5}
-            disabled={jdUploadStatus === "uploading"}
-            style={{ marginLeft: 0, marginRight: 0, marginTop: 0, borderColor: '#E5E5E5' }}
-          />
-          
-          {/* Bottom Left Button with Dropdown */}
+          </div>
+        )}
+        
+        {/* Dotted border overlay for AI Interview tab */}
+        {activeTab === "interview" && jdUploadStatus === "idle" && (
+          <div 
+            className="absolute inset-0 border-2 border-dashed rounded-lg z-10 flex items-center justify-center transition-colors bg-white"
+            style={{
+              borderColor: isDragging ? '#E5E5E5' : '#E5E5E5'
+            }}
+          >
+            <div className="text-center">
+              <p className="text-base font-medium">
+                <button
+                  onClick={() => setIsUploadModalOpen(true)}
+                  className="text-purple-600 hover:text-purple-700 underline cursor-pointer"
+                >
+                  Select
+                </button> JD or <button
+                  onClick={() => setIsUploadModalOpen(true)}
+                  className="text-purple-600 hover:text-purple-700 underline cursor-pointer"
+                >
+                  upload
+                </button> JD or write JD copy paste JD to text area
+              </p>
+              <input
+                type="file"
+                id="interview-file-input"
+                className="hidden"
+                onChange={handleFileInput}
+                accept=".pdf,.doc,.docx,.txt"
+              />
+            </div>
+          </div>
+        )}
+        
+        <textarea
+          ref={textareaRef}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyPress={handleKeyPress}
+          placeholder={getPlaceholder()}
+          className={`w-full min-h-[140px] px-6 py-4 pr-16 bg-white border rounded-lg focus:outline-none resize-none text-base m-0 ${
+            jdUploadStatus !== "idle" ? "opacity-0 pointer-events-none" : ""
+          } ${(activeTab === "analyze" || activeTab === "interview") && jdUploadStatus === "idle" ? "opacity-0 pointer-events-none" : ""}`}
+          style={{ 
+            marginLeft: 0, 
+            marginRight: 0, 
+            marginTop: 0, 
+            borderColor: '#E5E5E5',
+            color: '#1A1A1A',
+          }}
+          rows={5}
+          disabled={jdUploadStatus === "uploading"}
+        />
+        
+        {/* Bottom Left Button with Dropdown - Only show in AI job Search tab */}
+        {isAISearchTab && (
           <div className="absolute bottom-4 left-4 flex items-center gap-2 z-20">
             <div className="relative">
               <button
@@ -420,50 +495,204 @@ export default function AISearchBar({
               />
             </div>
           </div>
+        )}
 
-          {/* Save Job Button - Left Bottom Corner (only show when JD is loaded, but not in Chat with Resume tab) */}
-          {jdUploadStatus === "loaded" && activeTab !== "analyze" && (
-            <div className="absolute bottom-4 left-20 flex items-center gap-2 z-20">
+        {/* Save Job Button - Left Bottom Corner (only show when JD is loaded, but not in Chat with Resume tab) */}
+        {jdUploadStatus === "loaded" && activeTab !== "analyze" && (
+          <div className="absolute bottom-4 left-20 flex items-center gap-2 z-20">
+            <button
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-transparent text-[#A5A5A5] hover:text-[#1A1A1A] hover:bg-[#F5F5F5]"
+              style={{ boxSizing: 'content-box', border: 'none' }}
+              onClick={() => {
+                if (searchQuery.trim() && onSaveJD) {
+                  onSaveJD(searchQuery);
+                }
+              }}
+              aria-label="Save Job"
+            >
+              <RiSaveLine size={18} />
+              <span>Save Job</span>
+            </button>
+          </div>
+        )}
+        {/* Filter Button - Show in AI job Search tab (both Globe and List view) */}
+        {isAISearchTab && (
+          <div className="absolute bottom-4 right-32 flex items-center gap-2 z-20">
+            <div className="relative">
               <button
-                className="flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-transparent text-[#A5A5A5] hover:text-[#1A1A1A] hover:bg-[#F5F5F5]"
-                style={{ boxSizing: 'content-box', border: 'none' }}
-                onClick={() => {
-                  if (searchQuery.trim() && onSaveJD) {
-                    onSaveJD(searchQuery);
-                  }
-                }}
-                aria-label="Save Job"
+                ref={filterButtonRef}
+                onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all bg-transparent text-[#A5A5A5] hover:text-[#1A1A1A] hover:bg-[#F5F5F5]"
+                style={{ border: 'none' }}
+                aria-label="Filter"
               >
-                <RiSaveLine size={18} />
-                <span>Save Job</span>
+                {selectedFilterOption && selectedFilterOption.country === 'India' && (
+                  <span style={{ fontSize: '18px' }}>🇮🇳</span>
+                )}
+                <Filter size={18} style={{ color: '#575757' }} />
+                <span style={{ color: '#1A1A1A', fontFamily: 'Open Sans' }}>
+                  {selectedFilterOption ? (selectedFilterOption.state ? `${selectedFilterOption.state}` : selectedFilterOption.label) : 'Filter'}
+                </span>
+                <RiArrowDownSLine size={16} style={{ color: '#1A1A1A' }} />
               </button>
+              <FilterDropdown
+                isOpen={isFilterDropdownOpen}
+                onClose={() => setIsFilterDropdownOpen(false)}
+                dropdownRef={filterDropdownRef}
+                selectedOption={selectedFilterOption}
+                onSelect={(option) => setSelectedFilterOption(option)}
+                position={{ top: 'auto', bottom: '100%', right: '0', left: 'auto' }}
+                width="300px"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Search Button - Show in List view when user types, or in Globe view, or when JD is loaded */}
+        {((!isGlobeView && isAISearchTab && searchQuery.trim()) || (isGlobeView && isAISearchTab) || (jdUploadStatus === "loaded" && !isGlobeView)) ? (
+          <button
+            className="absolute bottom-4 right-4 flex items-center gap-2 px-4 py-2 bg-[#0A0A0A] text-white rounded-lg transition-colors hover:bg-[#1A1A1A] shadow-md z-20"
+            onClick={() => {
+              if (isGlobeView || (!isGlobeView && searchQuery.trim())) {
+                // In Globe view or List view with search query, trigger search
+                handleSearch();
+              } else {
+                // In List view without search query, navigate to edit-resume
+                navigate("/edit-resume");
+              }
+            }}
+            aria-label={isGlobeView || (!isGlobeView && searchQuery.trim()) ? "Search" : "Proceed"}
+          >
+            <span className="text-sm font-medium">{isGlobeView || (!isGlobeView && searchQuery.trim()) ? "Search" : "Proceed"}</span>
+            {isGlobeView || (!isGlobeView && searchQuery.trim()) ? <RiSearchLine size={18} /> : <RiArrowRightLine size={18} />}
+          </button>
+        ) : null}
+      </div>
+    </div>
+  );
+
+  // Check if we should show GlobeView (after location selected from filter and search clicked, or Globe view with location)
+  const shouldShowGlobeView = (hasSearched && selectedFilterOption) || (isGlobeView && hasSearched && (selectedFilterOption || extractedLocation));
+  
+  // Check if search bar should be collapsed (after search in Globe view or when filter is selected and search clicked)
+  const isSearchBarCollapsed = (isGlobeView && hasSearched) || (hasSearched && selectedFilterOption);
+
+  // Collapsed layout: Show after search is clicked with Globe view or with filter selected
+  if (isSearchBarCollapsed) {
+    return (
+      <>
+        {/* Add style for placeholder color */}
+        <style>{`
+          textarea::placeholder {
+            color: #A5A5A5 !important;
+          }
+        `}</style>
+        <div className="w-full" style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+          {/* Collapsed Search Bar */}
+          <div className="w-full max-w-4xl mx-auto">
+            <div className="bg-[#F5F5F5] rounded-xl border border-[#E5E5E5] shadow-sm px-4 py-2" style={{ width: '100%' }}>
+              <div className="flex items-center gap-3">
+                {/* Selected view option */}
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  {selectedBottomOption ? (
+                    <>
+                      <selectedBottomOption.icon size={18} style={{ color: '#7c00ff' }} />
+                      <span style={{ color: '#1A1A1A', fontFamily: 'Open Sans', fontSize: '14px' }}>
+                        {selectedBottomOption.label}
+                      </span>
+                    </>
+                  ) : (
+                    <span style={{ color: '#1A1A1A', fontFamily: 'Open Sans', fontSize: '14px' }}>
+                      List view
+                    </span>
+                  )}
+                </div>
+                {/* Search query */}
+                <div className="flex-1 min-w-0">
+                  <span className="truncate block" style={{ color: '#1A1A1A', fontFamily: 'Open Sans', fontSize: '14px' }}>
+                    {searchQuery || 'No query'}
+                  </span>
+                </div>
+                {/* Filter button if location selected */}
+                {selectedFilterOption && (
+                  <div className="relative flex-shrink-0">
+                    <button
+                      ref={filterButtonRef}
+                      onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
+                      className="flex items-center gap-2 px-3 py-1 rounded-lg text-sm font-medium transition-all bg-transparent text-[#A5A5A5] hover:text-[#1A1A1A] hover:bg-[#F5F5F5]"
+                      style={{ border: 'none' }}
+                      aria-label="Filter"
+                    >
+                      {selectedFilterOption && selectedFilterOption.country === 'India' && (
+                        <span style={{ fontSize: '16px' }}>🇮🇳</span>
+                      )}
+                      <Filter size={16} style={{ color: '#575757' }} />
+                      <span style={{ color: '#1A1A1A', fontFamily: 'Open Sans', fontSize: '12px' }}>
+                        {selectedFilterOption ? (selectedFilterOption.state ? `${selectedFilterOption.state}` : selectedFilterOption.label) : 'Filter'}
+                      </span>
+                    </button>
+                    <FilterDropdown
+                      isOpen={isFilterDropdownOpen}
+                      onClose={() => setIsFilterDropdownOpen(false)}
+                      dropdownRef={filterDropdownRef}
+                      selectedOption={selectedFilterOption}
+                      onSelect={(option) => setSelectedFilterOption(option)}
+                      position={{ top: 'auto', bottom: '100%', right: '0', left: 'auto' }}
+                      width="300px"
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          
+          {/* Globe View - Show after location selected from filter and search clicked */}
+          {shouldShowGlobeView && (
+            <div className="flex-1" style={{ minHeight: 0, width: '100%', maxWidth: '100%' }}>
+              <GlobeView 
+                location={selectedFilterOption ? (selectedFilterOption.state ? `${selectedFilterOption.state}, ${selectedFilterOption.country}` : selectedFilterOption.country) : extractedLocation} 
+                searchQuery={searchQuery} 
+                hasSearched={hasSearched} 
+              />
             </div>
           )}
-          {/* Proceed Button (only show when JD is loaded) */}
-          {jdUploadStatus === "loaded" && (
-            <button
-              className="absolute bottom-4 right-4 flex items-center gap-2 px-4 py-2 bg-[#0A0A0A] text-white rounded-lg transition-colors hover:bg-[#1A1A1A] shadow-md z-20"
-              onClick={() => {
-                navigate("/edit-resume");
-              }}
-              aria-label="Proceed"
-            >
-              <span className="text-sm font-medium">Proceed</span>
-              <RiArrowRightLine size={18} />
-            </button>
-          )}
-        </div>
-      </div>
 
-      {/* File Upload Modal */}
-      <FileUploadModal
-        isOpen={isUploadModalOpen}
-        onClose={() => setIsUploadModalOpen(false)}
-        onFileUpload={(file, text) => {
-          handleFileSelect(file);
-        }}
-      />
-    </div>
+          {/* File Upload Modal */}
+          <FileUploadModal
+            isOpen={isUploadModalOpen}
+            onClose={() => setIsUploadModalOpen(false)}
+            onFileUpload={(file, text) => {
+              handleFileSelect(file);
+            }}
+          />
+        </div>
+      </>
+    );
+  }
+
+  // List view layout: current structure (unchanged)
+  return (
+    <>
+      {/* Add style for placeholder color */}
+      <style>{`
+        textarea::placeholder {
+          color: #A5A5A5 !important;
+        }
+      `}</style>
+      <div className="w-full max-w-4xl mx-auto">
+        {/* Search Bar Container */}
+        {renderSearchBar()}
+
+        {/* File Upload Modal */}
+        <FileUploadModal
+          isOpen={isUploadModalOpen}
+          onClose={() => setIsUploadModalOpen(false)}
+          onFileUpload={(file, text) => {
+            handleFileSelect(file);
+          }}
+        />
+      </div>
+    </>
   );
 }
 
