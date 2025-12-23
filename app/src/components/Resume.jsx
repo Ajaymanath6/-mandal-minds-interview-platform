@@ -976,6 +976,7 @@ export default function Resume() {
             </div>
           )}
         </div>
+        )}
       </div>
 
       {/* Resume Selection Modal */}
