@@ -65,6 +65,7 @@ export default function Resume() {
   const [resumeFile, setResumeFile] = useState(null);
   const resumeFileInputRef = useRef(null);
   const [externalJDFile, setExternalJDFile] = useState(null);
+  const [isMapViewActive, setIsMapViewActive] = useState(false);
 
   // Sample resumes - in real app this would come from API
   const SAMPLE_RESUMES = [
@@ -415,21 +416,23 @@ export default function Resume() {
         {/* First Sidebar - Always Visible */}
           <Sidebar activeItem="home" />
 
-        {/* Second Sidebar - Resume Builder */}
-        <ResumeBuilderSidebar
-          isOpen={secondSidebarOpen}
-          onToggle={() => setSecondSidebarOpen(!secondSidebarOpen)}
-          onJDUploaded={(file, text) => {
-            // Set the external JD file to trigger AISearchBar upload
-            setExternalJDFile(file);
-            // Reset after a short delay to allow re-uploads
-            setTimeout(() => {
-              setExternalJDFile(null);
-            }, 100);
-            // Also update JD content
-            setJdContent(text);
-          }}
-        />
+        {/* Second Sidebar - Resume Builder - Hide when map is active */}
+        {!isMapViewActive && (
+          <ResumeBuilderSidebar
+            isOpen={secondSidebarOpen}
+            onToggle={() => setSecondSidebarOpen(!secondSidebarOpen)}
+            onJDUploaded={(file, text) => {
+              // Set the external JD file to trigger AISearchBar upload
+              setExternalJDFile(file);
+              // Reset after a short delay to allow re-uploads
+              setTimeout(() => {
+                setExternalJDFile(null);
+              }, 100);
+              // Also update JD content
+              setJdContent(text);
+            }}
+          />
+        )}
 
         {/* Main Content - Responsive */}
         <div className="flex-1 px-4 lg:px-6 pb-4 lg:pb-6 overflow-y-auto" style={{ backgroundColor: "#fcfcfb" }}>
@@ -722,7 +725,14 @@ export default function Resume() {
                     setJdContent(jdContent);
                     setJdUploaded(true);
                   }}
-                  secondSidebarOpen={secondSidebarOpen}
+                  secondSidebarOpen={secondSidebarOpen && !isMapViewActive}
+                  onMapViewChange={(isActive) => {
+                    setIsMapViewActive(isActive);
+                    // Close second sidebar when map view is active
+                    if (isActive) {
+                      setSecondSidebarOpen(false);
+                    }
+                  }}
                 />
 
                 {/* Resume Upload Badge - Appears below text area after JD is loaded */}

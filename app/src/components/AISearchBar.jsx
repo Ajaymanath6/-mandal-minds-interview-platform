@@ -21,6 +21,7 @@ export default function AISearchBar({
   onJDUploaded,
   externalJDFile,
   secondSidebarOpen = false,
+  onMapViewChange = null,
 }) {
   const [activeTab, setActiveTab] = useState("upload");
   const [searchQuery, setSearchQuery] = useState("");
@@ -602,6 +603,13 @@ export default function AISearchBar({
   // Check if search bar should be collapsed (after search in Globe view or when filter is selected and search clicked)
   const isSearchBarCollapsed = (isGlobeView && hasSearched) || (hasSearched && selectedFilterOption);
 
+  // Notify parent when map view state changes
+  useEffect(() => {
+    if (onMapViewChange) {
+      onMapViewChange(isSearchBarCollapsed && shouldShowGlobeView);
+    }
+  }, [isSearchBarCollapsed, shouldShowGlobeView, onMapViewChange]);
+
   // Collapsed layout: Show after search is clicked with Globe view or with filter selected
   if (isSearchBarCollapsed) {
     return (
@@ -612,7 +620,7 @@ export default function AISearchBar({
             color: #A5A5A5 !important;
           }
         `}</style>
-        <div className="w-full h-full" style={{ position: 'fixed', top: 0, left: secondSidebarOpen ? '428px' : '208px', right: 0, bottom: 0, height: '100vh', width: secondSidebarOpen ? 'calc(100% - 428px)' : 'calc(100% - 208px)', margin: 0, padding: 0, zIndex: 0 }}>
+        <div className="w-full h-full" style={{ position: 'fixed', top: 0, left: '208px', right: 0, bottom: 0, height: '100vh', width: 'calc(100% - 208px)', margin: 0, padding: 0, zIndex: 0 }}>
           {/* Map - Full coverage of right side area, no padding */}
           {shouldShowGlobeView && (
             <div className="absolute inset-0" style={{ width: '100%', height: '100%', zIndex: 1, margin: 0, padding: 0 }}>
@@ -655,11 +663,18 @@ export default function AISearchBar({
                     }
                   }}
                   placeholder="Search for keywords, product design, frontend developer..."
-                  className="flex-1 min-w-0 bg-white rounded-lg px-3 py-2 border border-[#E5E5E5] focus:outline-none focus:border-[#7c00ff] text-sm"
+                  className="flex-1 min-w-0 bg-white rounded-lg px-3 py-2 border border-[#E5E5E5] focus:outline-none text-sm"
                   style={{ 
                     fontFamily: 'Open Sans', 
                     fontSize: '14px',
                     color: '#1A1A1A',
+                    borderColor: '#E5E5E5',
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = '#A5A5A5';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = '#E5E5E5';
                   }}
                 />
                 <style>{`

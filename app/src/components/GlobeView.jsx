@@ -53,15 +53,15 @@ export default function GlobeView({ location, searchQuery, hasSearched }) {
         referrerPolicy="no-referrer-when-downgrade"
         frameBorder="0"
       />
-      {/* Overlay to hide Google Maps embed links */}
+      {/* Overlay to hide Google Maps embed links at bottom - larger and more opaque */}
       <div 
         style={{
           position: 'absolute',
           bottom: 0,
           left: 0,
           right: 0,
-          height: '60px',
-          backgroundColor: 'white',
+          height: '120px',
+          background: 'linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.98) 50%, rgba(255, 255, 255, 0.95) 100%)',
           zIndex: 10,
           pointerEvents: 'none',
         }}
