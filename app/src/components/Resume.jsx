@@ -722,6 +722,7 @@ export default function Resume() {
                     setJdContent(jdContent);
                     setJdUploaded(true);
                   }}
+                  secondSidebarOpen={secondSidebarOpen}
                 />
 
                 {/* Resume Upload Badge - Appears below text area after JD is loaded */}

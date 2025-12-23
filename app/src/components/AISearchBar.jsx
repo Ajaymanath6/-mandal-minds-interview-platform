@@ -9,7 +9,7 @@ import {
   RiSearchLine,
   RiArrowDownSLine,
 } from "@remixicon/react";
-import { IbmWatsonDiscovery, Chat, IbmWatsonOpenscale, CheckmarkFilled, List, Grid, Earth, EarthFilled, TableOfContents, Filter, ArrowLeft } from "@carbon/icons-react";
+import { IbmWatsonDiscovery, Chat, IbmWatsonOpenscale, CheckmarkFilled, List, Grid, Earth, EarthFilled, TableOfContents, Filter, ArrowLeft, Return } from "@carbon/icons-react";
 import FileUploadModal from "./FileUploadModal";
 import SimpleDropdown from "./SimpleDropdown";
 import GlobeView from "./GlobeView";
@@ -20,6 +20,7 @@ export default function AISearchBar({
   onSaveJD,
   onJDUploaded,
   externalJDFile,
+  secondSidebarOpen = false,
 }) {
   const [activeTab, setActiveTab] = useState("upload");
   const [searchQuery, setSearchQuery] = useState("");
@@ -548,25 +549,49 @@ export default function AISearchBar({
           </div>
         )}
 
-        {/* Search Button - Show in List view when user types, or in Globe view, or when JD is loaded */}
-        {((!isGlobeView && isAISearchTab && searchQuery.trim()) || (isGlobeView && isAISearchTab) || (jdUploadStatus === "loaded" && !isGlobeView)) ? (
+        {/* Search Button - Always show in AI job Search tab, disabled until user types */}
+        {isAISearchTab && (
+          <button
+            className={`absolute bottom-4 right-4 flex items-center gap-2 px-4 py-2 rounded-lg transition-colors shadow-md z-20 ${
+              searchQuery.trim() 
+                ? "bg-[#0A0A0A] text-white hover:bg-[#1A1A1A]" 
+                : "bg-[#E5E5E5] text-[#A5A5A5] cursor-not-allowed"
+            }`}
+            style={{
+              opacity: searchQuery.trim() ? 1 : 0.55
+            }}
+            onClick={() => {
+              if (searchQuery.trim()) {
+                if (isGlobeView || (!isGlobeView && searchQuery.trim())) {
+                  // In Globe view or List view with search query, trigger search
+                  handleSearch();
+                } else {
+                  // In List view without search query, navigate to edit-resume
+                  navigate("/edit-resume");
+                }
+              }
+            }}
+            disabled={!searchQuery.trim()}
+            aria-label="Search"
+          >
+            <span className="text-sm font-medium">Search</span>
+            <RiSearchLine size={18} />
+          </button>
+        )}
+        
+        {/* Proceed Button - Show when JD is loaded (not in AI job Search tab) */}
+        {jdUploadStatus === "loaded" && !isAISearchTab && (
           <button
             className="absolute bottom-4 right-4 flex items-center gap-2 px-4 py-2 bg-[#0A0A0A] text-white rounded-lg transition-colors hover:bg-[#1A1A1A] shadow-md z-20"
             onClick={() => {
-              if (isGlobeView || (!isGlobeView && searchQuery.trim())) {
-                // In Globe view or List view with search query, trigger search
-                handleSearch();
-              } else {
-                // In List view without search query, navigate to edit-resume
-                navigate("/edit-resume");
-              }
+              navigate("/edit-resume");
             }}
-            aria-label={isGlobeView || (!isGlobeView && searchQuery.trim()) ? "Search" : "Proceed"}
+            aria-label="Proceed"
           >
-            <span className="text-sm font-medium">{isGlobeView || (!isGlobeView && searchQuery.trim()) ? "Search" : "Proceed"}</span>
-            {isGlobeView || (!isGlobeView && searchQuery.trim()) ? <RiSearchLine size={18} /> : <RiArrowRightLine size={18} />}
+            <span className="text-sm font-medium">Proceed</span>
+            <RiArrowRightLine size={18} />
           </button>
-        ) : null}
+        )}
       </div>
     </div>
   );
@@ -587,10 +612,21 @@ export default function AISearchBar({
             color: #A5A5A5 !important;
           }
         `}</style>
-        <div className="w-full" style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-          {/* Collapsed Search Bar */}
-          <div className="w-full max-w-4xl mx-auto">
-            <div className="bg-[#F5F5F5] rounded-xl border border-[#E5E5E5] shadow-sm px-4 py-2" style={{ width: '100%' }}>
+        <div className="w-full h-full" style={{ position: 'fixed', top: 0, left: secondSidebarOpen ? '428px' : '208px', right: 0, bottom: 0, height: '100vh', width: secondSidebarOpen ? 'calc(100% - 428px)' : 'calc(100% - 208px)', margin: 0, padding: 0, zIndex: 0 }}>
+          {/* Map - Full coverage of right side area, no padding */}
+          {shouldShowGlobeView && (
+            <div className="absolute inset-0" style={{ width: '100%', height: '100%', zIndex: 1, margin: 0, padding: 0 }}>
+              <GlobeView 
+                location={selectedFilterOption ? (selectedFilterOption.state ? `${selectedFilterOption.state}, ${selectedFilterOption.country}` : selectedFilterOption.country) : extractedLocation} 
+                searchQuery={searchQuery} 
+                hasSearched={hasSearched} 
+              />
+            </div>
+          )}
+
+          {/* Collapsed Search Bar - Overlay on top of map */}
+          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50" style={{ width: '90%', maxWidth: '800px' }}>
+            <div className="bg-white rounded-xl border border-[#E5E5E5] shadow-lg px-4 py-2" style={{ width: '100%' }}>
               <div className="flex items-center gap-3">
                 {/* Selected view option */}
                 <div className="flex items-center gap-2 flex-shrink-0">
@@ -607,12 +643,30 @@ export default function AISearchBar({
                     </span>
                   )}
                 </div>
-                {/* Search query */}
-                <div className="flex-1 min-w-0">
-                  <span className="truncate block" style={{ color: '#1A1A1A', fontFamily: 'Open Sans', fontSize: '14px' }}>
-                    {searchQuery || 'No query'}
-                  </span>
-                </div>
+                {/* Search query - Editable input field */}
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey && searchQuery.trim()) {
+                      e.preventDefault();
+                      handleSearch();
+                    }
+                  }}
+                  placeholder="Search for keywords, product design, frontend developer..."
+                  className="flex-1 min-w-0 bg-white rounded-lg px-3 py-2 border border-[#E5E5E5] focus:outline-none focus:border-[#7c00ff] text-sm"
+                  style={{ 
+                    fontFamily: 'Open Sans', 
+                    fontSize: '14px',
+                    color: '#1A1A1A',
+                  }}
+                />
+                <style>{`
+                  input::placeholder {
+                    color: #A5A5A5 !important;
+                  }
+                `}</style>
                 {/* Filter button if location selected */}
                 {selectedFilterOption && (
                   <div className="relative flex-shrink-0">
@@ -642,20 +696,24 @@ export default function AISearchBar({
                     />
                   </div>
                 )}
+                {/* Return button - Reset to default state */}
+                <button
+                  onClick={() => {
+                    setHasSearched(false);
+                    setSelectedFilterOption(null);
+                    setExtractedLocation(null);
+                    setSearchQuery("");
+                    setSelectedBottomOption(null);
+                  }}
+                  className="flex items-center justify-center p-2 rounded-lg transition-colors hover:bg-[#F5F5F5] flex-shrink-0"
+                  aria-label="Return to default"
+                  title="Return to default search"
+                >
+                  <Return size={20} style={{ color: '#575757' }} />
+                </button>
               </div>
             </div>
           </div>
-          
-          {/* Globe View - Show after location selected from filter and search clicked */}
-          {shouldShowGlobeView && (
-            <div className="flex-1" style={{ minHeight: 0, width: '100%', maxWidth: '100%' }}>
-              <GlobeView 
-                location={selectedFilterOption ? (selectedFilterOption.state ? `${selectedFilterOption.state}, ${selectedFilterOption.country}` : selectedFilterOption.country) : extractedLocation} 
-                searchQuery={searchQuery} 
-                hasSearched={hasSearched} 
-              />
-            </div>
-          )}
 
           {/* File Upload Modal */}
           <FileUploadModal
@@ -695,4 +753,6 @@ export default function AISearchBar({
     </>
   );
 }
+
+
 
