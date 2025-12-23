@@ -598,9 +598,11 @@ export default function AISearchBar({
   );
 
   // Check if we should show GlobeView (after location selected from filter and search clicked, or Globe view with location)
+  // Show map if: (user searched AND has filter selected) OR (Globe view selected AND user searched AND (has filter OR extracted location))
   const shouldShowGlobeView = (hasSearched && selectedFilterOption) || (isGlobeView && hasSearched && (selectedFilterOption || extractedLocation));
   
   // Check if search bar should be collapsed (after search in Globe view or when filter is selected and search clicked)
+  // Collapse if: (Globe view selected AND user searched) OR (user searched AND has filter selected)
   const isSearchBarCollapsed = (isGlobeView && hasSearched) || (hasSearched && selectedFilterOption);
 
   // Notify parent when map view state changes
@@ -620,7 +622,7 @@ export default function AISearchBar({
             color: #A5A5A5 !important;
           }
         `}</style>
-        <div className="w-full h-full" style={{ position: 'fixed', top: 0, left: '208px', right: 0, bottom: 0, height: '100vh', width: 'calc(100% - 208px)', margin: 0, padding: 0, zIndex: 0 }}>
+        <div className="w-full h-full" style={{ position: 'fixed', top: 0, left: '208px', right: 0, bottom: 0, height: '100vh', width: 'calc(100% - 208px)', margin: 0, padding: 0, zIndex: 10 }}>
           {/* Map - Full coverage of right side area, no padding */}
           {shouldShowGlobeView && (
             <div className="absolute inset-0" style={{ width: '100%', height: '100%', zIndex: 1, margin: 0, padding: 0 }}>
