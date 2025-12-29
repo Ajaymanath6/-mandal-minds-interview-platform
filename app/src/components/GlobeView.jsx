@@ -5,7 +5,6 @@ import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import "leaflet.markercluster";
 // MarkerClusterGroup is added to L namespace after import
-import "@elfalem/leaflet-curve";
 import CompanyDetailsDrawer from "./CompanyDetailsDrawer";
 import mockJobs from "../data/mockJobs.json";
 
@@ -27,8 +26,8 @@ const thrissurCompanyLogos = [
   '/comp6.png',
 ];
 
-// Create custom pin icon for company locations
-const createCustomTeardropIcon = (logoUrl = null, size = 50) => {
+// Create custom pin icon for company locations with distance badge attached
+const createCustomTeardropIcon = (logoUrl = null, size = 50, distanceKm = null) => {
   const boxSize = size;
   
   const iconId = `company-icon-${Math.random().toString(36).substr(2, 9)}`;
@@ -36,17 +35,25 @@ const createCustomTeardropIcon = (logoUrl = null, size = 50) => {
   // Light blue border color (#87CEEB is sky blue)
   const lightBlueBorder = '#87CEEB';
   
+  // Distance badge HTML (attached to icon)
+  const badgeHtml = distanceKm !== null ? `
+    <div style="position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);background-color:#0A0A0A;color:white;border-radius:4px;padding:2px 6px;font-size:11px;font-weight:600;white-space:nowrap;box-shadow:0 2px 4px rgba(0,0,0,0.3);pointer-events:none;z-index:1000;">
+      ${distanceKm} km
+    </div>
+  ` : '';
+  
   // Image fills the entire box (no padding, object-fit: cover to fill background)
-  const html = `<div id="${iconId}" class="company-marker" style="width:${boxSize}px;height:${boxSize}px;background-color:#FFFFFF;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0;box-shadow:0 2px 8px rgba(0,0,0,0.12),0 1px 3px rgba(0,0,0,0.08);border:2px solid ${lightBlueBorder};cursor:pointer;transition:transform 0.2s ease,box-shadow 0.2s ease;overflow:hidden;">
+  const html = `<div id="${iconId}" class="company-marker" style="position:relative;width:${boxSize}px;height:${boxSize}px;background-color:#FFFFFF;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0;box-shadow:0 2px 8px rgba(0,0,0,0.12),0 1px 3px rgba(0,0,0,0.08);border:2px solid ${lightBlueBorder};cursor:pointer;transition:transform 0.2s ease,box-shadow 0.2s ease;overflow:visible;">
     ${logoUrl ? `<img src="${logoUrl}" alt="Logo" style="width:100%;height:100%;object-fit:cover;border-radius:6px;" />` : ''}
+    ${badgeHtml}
   </div>`;
   
   return L.divIcon({
     html: html,
     className: 'custom-pindrop-marker',
-    iconSize: [boxSize, boxSize],
-    iconAnchor: [boxSize / 2, boxSize / 2],
-    popupAnchor: [0, -boxSize - 10], // Position tooltip above the top border of the box
+    iconSize: [boxSize, boxSize + (distanceKm !== null ? 20 : 0)],
+    iconAnchor: [boxSize / 2, (boxSize + (distanceKm !== null ? 20 : 0)) / 2],
+    popupAnchor: [0, -(boxSize + (distanceKm !== null ? 20 : 0)) - 10], // Position tooltip above the top border of the box
   });
 };
 
@@ -112,11 +119,11 @@ const getCompaniesForLocation = (location) => {
 // Export getCompaniesForLocation for use in other components
 export { getCompaniesForLocation };
 
-// Function to fetch road path from OSRM API
-const fetchRoadPath = async (start, end) => {
+// Function to fetch road distance from OSRM API (distance only, no path)
+const fetchRoadDistance = async (start, end) => {
   try {
-    // OSRM API: lon,lat format
-    const url = `http://router.project-osrm.org/route/v1/driving/${start[1]},${start[0]};${end[1]},${end[0]}?overview=full&geometries=geojson`;
+    // OSRM API: lon,lat format, overview=false to get only distance
+    const url = `http://router.project-osrm.org/route/v1/driving/${start[1]},${start[0]};${end[1]},${end[0]}?overview=false`;
     
     const response = await fetch(url, {
       headers: { "User-Agent": "MandalMinds/1.0" },
@@ -129,13 +136,13 @@ const fetchRoadPath = async (start, end) => {
     const data = await response.json();
     
     if (data.code === 'Ok' && data.routes && data.routes.length > 0) {
-      // Return GeoJSON geometry coordinates
-      return data.routes[0].geometry.coordinates.map(coord => [coord[1], coord[0]]); // Convert [lon, lat] to [lat, lon]
+      // Return distance in meters
+      return data.routes[0].distance;
     }
     
     return null;
   } catch (error) {
-    console.error('Error fetching road path:', error);
+    console.error('Error fetching road distance:', error);
     return null;
   }
 };
@@ -157,58 +164,33 @@ export default function GlobeView({
   const pinAnimationTimeoutRefs = useRef([]);
   const previousLocationRef = useRef(null);
   const findingJobsCalledRef = useRef(false); // Prevent multiple calls to onFindingJobsStart
-  const curvesRef = useRef([]); // Store curve lines
+  const straightLinesRef = useRef([]); // Store straight lines from home to companies
   const homeMarkerRef = useRef(null); // Store home location marker
-  const roadPathsRef = useRef([]); // Store road path polylines
-  const distanceBadgesRef = useRef([]); // Store distance badge markers
-  const companyMarkersRef = useRef([]); // Store company markers for hover handlers
+  const companyMarkersRef = useRef([]); // Store company markers with distance data
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  // Function to show road path on hover
-  const showRoadPath = React.useCallback(async (company, home) => {
-    if (!mapInstanceRef.current || !home || !company) return;
-
-    // Cleanup existing road paths
-    if (roadPathsRef.current && roadPathsRef.current.length > 0) {
-      roadPathsRef.current.forEach(path => {
-        if (mapInstanceRef.current) {
-          mapInstanceRef.current.removeLayer(path);
-        }
-      });
-      roadPathsRef.current = [];
-    }
+  // Function to get road distance and show on line hover
+  const showRoadDistanceOnHover = async (line, company, home) => {
+    if (!mapInstanceRef.current || !home || !company || !line) return;
 
     const homeCoords = [home.lat, home.lon];
     const companyCoords = [company.lat, company.lon];
 
-    // Fetch road path from OSRM
-    const roadPathCoords = await fetchRoadPath(homeCoords, companyCoords);
-
-    if (roadPathCoords && roadPathCoords.length > 0) {
-      // Create polyline for road path (black color)
-      const roadPath = L.polyline(roadPathCoords, {
-        color: '#000000',
-        weight: 3,
-        opacity: 0.8,
-        zIndexOffset: 1500
-      }).addTo(mapInstanceRef.current);
-
-      roadPathsRef.current.push(roadPath);
-    }
-  }, []);
-
-  // Function to hide road path
-  const hideRoadPath = React.useCallback(() => {
-    if (roadPathsRef.current && roadPathsRef.current.length > 0) {
-      roadPathsRef.current.forEach(path => {
-        if (mapInstanceRef.current) {
-          mapInstanceRef.current.removeLayer(path);
-        }
+    // Fetch road distance from OSRM
+    const roadDistanceMeters = await fetchRoadDistance(homeCoords, companyCoords);
+    
+    if (roadDistanceMeters !== null) {
+      const roadDistanceKm = (roadDistanceMeters / 1000).toFixed(1);
+      
+      // Bind tooltip to line showing road distance
+      line.bindTooltip(`${company.name || 'Location'}: ${roadDistanceKm} km by road`, {
+        permanent: false,
+        direction: 'top',
+        className: 'road-distance-tooltip'
       });
-      roadPathsRef.current = [];
     }
-  }, []);
+  };
 
   // Initialize map
   useEffect(() => {
@@ -247,34 +229,14 @@ export default function GlobeView({
       clusterGroupRef.current = null;
     }
 
-    // Cleanup previous curves
-    if (curvesRef.current && curvesRef.current.length > 0) {
-      curvesRef.current.forEach(curve => {
+    // Cleanup previous straight lines
+    if (straightLinesRef.current && straightLinesRef.current.length > 0) {
+      straightLinesRef.current.forEach(line => {
         if (mapInstanceRef.current) {
-          mapInstanceRef.current.removeLayer(curve);
+          mapInstanceRef.current.removeLayer(line);
         }
       });
-      curvesRef.current = [];
-    }
-
-    // Cleanup previous road paths
-    if (roadPathsRef.current && roadPathsRef.current.length > 0) {
-      roadPathsRef.current.forEach(path => {
-        if (mapInstanceRef.current) {
-          mapInstanceRef.current.removeLayer(path);
-        }
-      });
-      roadPathsRef.current = [];
-    }
-
-    // Cleanup previous distance badges
-    if (distanceBadgesRef.current && distanceBadgesRef.current.length > 0) {
-      distanceBadgesRef.current.forEach(badge => {
-        if (mapInstanceRef.current) {
-          mapInstanceRef.current.removeLayer(badge);
-        }
-      });
-      distanceBadgesRef.current = [];
+      straightLinesRef.current = [];
     }
 
     // Cleanup company markers ref
@@ -434,22 +396,45 @@ export default function GlobeView({
                       box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
                       padding: 12px !important;
                       font-family: 'Open Sans', sans-serif !important;
+                      width: auto !important;
+                      min-width: auto !important;
+                      max-width: none !important;
                     }
                     .home-panel-tooltip .leaflet-tooltip-content {
                       margin: 0 !important;
+                      width: auto !important;
                     }
                   `;
                   document.head.appendChild(style);
                 }
 
                 // Add all markers at once (no staggered animation)
-                setTimeout(() => {
+                setTimeout(async () => {
+                  // Calculate distances for all companies if home location exists
+                  const companyDistances = {};
+                  if (homeLocation && homeLocation.lat && homeLocation.lon) {
+                    await Promise.all(companies.map(async (company) => {
+                      const homeCoords = [homeLocation.lat, homeLocation.lon];
+                      const companyCoords = [company.lat, company.lon];
+                      const roadDistanceMeters = await fetchRoadDistance(homeCoords, companyCoords);
+                      if (roadDistanceMeters !== null) {
+                        companyDistances[company.name] = (roadDistanceMeters / 1000).toFixed(1);
+                      } else {
+                        // Fallback to straight-line distance
+                        const straightDistance = mapInstanceRef.current.distance(homeCoords, companyCoords);
+                        companyDistances[company.name] = (straightDistance / 1000).toFixed(1);
+                      }
+                    }));
+                  }
+
                   companies.forEach((company, index) => {
                     // Always use uploaded images for Thrissur companies (comp1.png to comp6.png)
                     const logoUrl = index < thrissurCompanyLogos.length ? thrissurCompanyLogos[index] : (company.logoUrl || null);
+                    const distanceKm = companyDistances[company.name] || null;
                     const customIcon = createCustomTeardropIcon(
                       logoUrl,
-                      50
+                      50,
+                      distanceKm
                     );
 
                     const marker = L.marker([company.lat, company.lon], {
@@ -460,11 +445,12 @@ export default function GlobeView({
 
                     // Store company data in marker
                     marker.companyData = company;
+                    marker.distanceKm = distanceKm;
 
                     // Add marker to cluster group
                     clusterGroup.addLayer(marker);
 
-                    // Store marker reference for hover handlers
+                    // Store marker reference
                     companyMarkersRef.current.push(marker);
 
                     // Click handler - open drawer
@@ -472,17 +458,6 @@ export default function GlobeView({
                       setSelectedCompany(marker.companyData);
                       setIsDrawerOpen(true);
                     });
-
-                    // Hover handlers for road path display
-                    if (homeLocation && homeLocation.lat && homeLocation.lon) {
-                      marker.on('mouseover', function() {
-                        showRoadPath(company, homeLocation);
-                      });
-
-                      marker.on('mouseout', function() {
-                        hideRoadPath();
-                      });
-                    }
 
                     console.log('✅ Added marker for:', company.name, 'at', company.lat, company.lon);
                   });
@@ -496,9 +471,9 @@ export default function GlobeView({
                 // Add home location marker and draw curved lines if homeLocation is set
                 if (homeLocation && homeLocation.lat && homeLocation.lon) {
                   setTimeout(() => {
-                    // Add home location pin marker
+                    // Add home location pin marker with emoji home icon and white background
                     const homeIcon = L.divIcon({
-                      html: `<div style="background-color:#7c00ff;color:white;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:20px;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);">🏠</div>`,
+                      html: `<div style="background-color:white;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:20px;border:3px solid #E5E5E5;box-shadow:0 2px 8px rgba(0,0,0,0.3);">🏠</div>`,
                       className: 'home-marker',
                       iconSize: [40, 40],
                       iconAnchor: [20, 20]
@@ -510,35 +485,30 @@ export default function GlobeView({
                       interactive: true
                     }).addTo(mapInstanceRef.current);
 
-                    // Create home panel content with all connected locations
+                    // Create home panel content with all connected locations (no km labels)
                     const createHomePanelContent = (companiesList) => {
                       if (!companiesList || companiesList.length === 0) return 'No locations';
                       
                       const items = companiesList.map((company, idx) => {
-                        const home = [homeLocation.lat, homeLocation.lon];
-                        const companyLoc = [company.lat, company.lon];
-                        const distance = mapInstanceRef.current.distance(home, companyLoc);
-                        const distanceKm = (distance / 1000).toFixed(1);
                         const logoUrl = idx < thrissurCompanyLogos.length ? thrissurCompanyLogos[idx] : (company.logoUrl || null);
                         
                         return `
                           <div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(0,0,0,0.1);">
                             ${logoUrl ? `<img src="${logoUrl}" style="width:24px;height:24px;border-radius:4px;object-fit:cover;" />` : '<div style="width:24px;height:24px;background:#7c00ff;border-radius:4px;"></div>'}
-                            <span style="flex:1;font-size:13px;color:#1A1A1A;">${company.name || 'Location'}</span>
-                            <span style="font-size:12px;font-weight:bold;color:#7c00ff;">${distanceKm} km</span>
+                            <span style="font-size:13px;color:#1A1A1A;">${company.name || 'Location'}</span>
                           </div>
                         `;
                       }).join('');
                       
                       return `
-                        <div style="max-width:250px;max-height:300px;overflow-y:auto;">
+                        <div style="width:auto;max-width:none;overflow:visible;">
                           <div style="font-weight:bold;margin-bottom:8px;color:#1A1A1A;font-size:14px;">Connected Locations</div>
                           ${items}
                         </div>
                       `;
                     };
 
-                    // Bind tooltip with home panel content (hover-only)
+                    // Bind tooltip with home panel content (click-based, closes on outside click)
                     homeMarker.bindTooltip(createHomePanelContent(companies), {
                       permanent: false,
                       direction: 'right',
@@ -547,69 +517,53 @@ export default function GlobeView({
                       interactive: true
                     });
 
+                    // Show tooltip on click, closes when clicking outside
+                    homeMarker.off('click');
+                    homeMarker.on('click', function() {
+                      if (homeMarker.isTooltipOpen()) {
+                        homeMarker.closeTooltip();
+                      } else {
+                        homeMarker.openTooltip();
+                      }
+                    });
+                    
+                    // Close tooltip when clicking on map
+                    mapInstanceRef.current.on('click', function() {
+                      if (homeMarker.isTooltipOpen()) {
+                        homeMarker.closeTooltip();
+                      }
+                    });
+
                     homeMarkerRef.current = homeMarker;
 
-                    // Draw curved lines from home to companies ONLY if showHomeLines is true
+                    // Draw straight lines from home to companies ONLY if showHomeLines is true
                     if (showHomeLines) {
-                      companies.forEach((company) => {
-                      const home = [homeLocation.lat, homeLocation.lon];
-                      const companyLoc = [company.lat, company.lon];
-                      
-                      // Calculate distance in meters
-                      const distance = mapInstanceRef.current.distance(home, companyLoc);
-                      const distanceKm = (distance / 1000).toFixed(1);
-                      
-                      // Calculate control points for curved line (Bézier curve)
-                      // Control points are offset to create a nice arc
-                      const midLat = (home[0] + companyLoc[0]) / 2;
-                      const offset = 0.1; // Adjust this to change curve height
-                      const controlPoint1 = [midLat + offset, home[1]];
-                      const controlPoint2 = [midLat + offset, companyLoc[1]];
-                      
-                      // Create curved line using SVG path commands
-                      const curve = L.curve(
-                        [
-                          'M', home,          // Move to home location
-                          'C', controlPoint1, // Control point 1
-                               controlPoint2, // Control point 2
-                               companyLoc     // End at company location
-                        ],
-                        {
-                          color: '#7c00ff',
-                          weight: 2,
-                          opacity: 0.6,
-                          dashArray: '5, 5',
-                          interactive: true
-                        }
-                      ).addTo(mapInstanceRef.current);
-                      
-                      // Add hover handlers to curved line for road path display
-                      curve.on('mouseover', function() {
-                        showRoadPath(company, homeLocation);
-                      });
-
-                      curve.on('mouseout', function() {
-                        hideRoadPath();
-                      });
-                      
-                      // Add distance label next to destination icon (Option A)
-                      // Position badge slightly below the company icon
-                      const badgeLat = companyLoc[0] - 0.001; // Slightly south of icon
-                      const badgeLon = companyLoc[1];
-                      
-                      const label = L.marker([badgeLat, badgeLon], {
-                        icon: L.divIcon({
-                          html: `<div style="background-color:rgba(124,0,255,0.9);color:white;border-radius:4px;padding:2px 6px;font-size:12px;font-weight:bold;white-space:nowrap;box-shadow:0 2px 4px rgba(0,0,0,0.3);pointer-events:none;">${distanceKm} km</div>`,
-                          className: 'distance-label',
-                          iconSize: [60, 20],
-                          iconAnchor: [30, 20] // Anchor at top center, badge appears below
-                        }),
-                        interactive: false,
-                        zIndexOffset: 500
-                      }).addTo(mapInstanceRef.current);
-                      
-                        curvesRef.current.push(curve);
-                        distanceBadgesRef.current.push(label);
+                      companies.forEach(async (company) => {
+                        const home = [homeLocation.lat, homeLocation.lon];
+                        const companyLoc = [company.lat, company.lon];
+                        
+                        // Create straight line (polyline)
+                        const straightLine = L.polyline(
+                          [home, companyLoc],
+                          {
+                            color: '#0A0A0A',
+                            weight: 2,
+                            opacity: 0.6,
+                            dashArray: '5, 5',
+                            interactive: true
+                          }
+                        ).addTo(mapInstanceRef.current);
+                        
+                        // Add hover handler to show road distance
+                        straightLine.on('mouseover', async function() {
+                          await showRoadDistanceOnHover(straightLine, company, homeLocation);
+                        });
+                        
+                        straightLine.on('mouseout', function() {
+                          straightLine.closeTooltip();
+                        });
+                        
+                        straightLinesRef.current.push(straightLine);
                       });
                     }
                   }, baseDelay + 200);
@@ -655,9 +609,9 @@ export default function GlobeView({
         console.error("Geocoding error:", error);
         onLoadingComplete?.();
       });
-  }, [location, hasSearched, zoom, journeyStep, homeLocation, onLoadingComplete, onFindingJobsStart, showRoadPath, hideRoadPath]);
+  }, [location, hasSearched, zoom, journeyStep, homeLocation, onLoadingComplete, onFindingJobsStart]);
 
-  // Effect to toggle curved lines when showHomeLines changes
+  // Effect to toggle straight lines when showHomeLines changes
   useEffect(() => {
     if (!mapInstanceRef.current || !homeLocation || !homeLocation.lat || !homeLocation.lon) return;
     if (!hasSearched) return;
@@ -666,91 +620,45 @@ export default function GlobeView({
     const companies = getCompaniesForLocation(location || '');
     if (companies.length === 0) return;
 
-    // Cleanup existing curves
-    if (curvesRef.current && curvesRef.current.length > 0) {
-      curvesRef.current.forEach(curve => {
+    // Cleanup existing straight lines
+    if (straightLinesRef.current && straightLinesRef.current.length > 0) {
+      straightLinesRef.current.forEach(line => {
         if (mapInstanceRef.current) {
-          mapInstanceRef.current.removeLayer(curve);
+          mapInstanceRef.current.removeLayer(line);
         }
       });
-      curvesRef.current = [];
+      straightLinesRef.current = [];
     }
 
-    // Cleanup existing distance badges
-    if (distanceBadgesRef.current && distanceBadgesRef.current.length > 0) {
-      distanceBadgesRef.current.forEach(badge => {
-        if (mapInstanceRef.current) {
-          mapInstanceRef.current.removeLayer(badge);
-        }
-      });
-      distanceBadgesRef.current = [];
-    }
-
-    // Draw curves if showHomeLines is true
+    // Draw straight lines if showHomeLines is true
     if (showHomeLines) {
-      console.log('🎯 Drawing curved lines, companies count:', companies.length);
-      companies.forEach((company) => {
+      console.log('🎯 Drawing straight lines, companies count:', companies.length);
+      companies.forEach(async (company) => {
         const home = [homeLocation.lat, homeLocation.lon];
         const companyLoc = [company.lat, company.lon];
         
-        // Calculate distance in meters
-        const distance = mapInstanceRef.current.distance(home, companyLoc);
-        const distanceKm = (distance / 1000).toFixed(1);
+        // Create straight line (polyline)
+        const straightLine = L.polyline(
+          [home, companyLoc],
+          {
+            color: '#0A0A0A',
+            weight: 2,
+            opacity: 0.6,
+            dashArray: '5, 5',
+            interactive: true
+          }
+        ).addTo(mapInstanceRef.current);
         
-        // Calculate control points for curved line (Bézier curve)
-        const offset = 0.1;
-        const midLat = (home[0] + companyLoc[0]) / 2;
-        const controlPoint1 = [midLat + offset, home[1]];
-        const controlPoint2 = [midLat + offset, companyLoc[1]];
+        // Add hover handler to show road distance
+        straightLine.on('mouseover', async function() {
+          await showRoadDistanceOnHover(straightLine, company, homeLocation);
+        });
         
-        // Create curved line - check if L.curve exists
-        if (typeof L.curve === 'function') {
-          const curve = L.curve(
-            [
-              'M', home,
-              'C', controlPoint1,
-                   controlPoint2,
-                   companyLoc
-            ],
-            {
-              color: '#7c00ff',
-              weight: 2,
-              opacity: 0.6,
-              dashArray: '5, 5',
-              interactive: true
-            }
-          ).addTo(mapInstanceRef.current);
+        straightLine.on('mouseout', function() {
+          straightLine.closeTooltip();
+        });
         
-          // Add hover handlers to curved line for road path display
-          curve.on('mouseover', function() {
-            showRoadPath(company, homeLocation);
-          });
-
-          curve.on('mouseout', function() {
-            hideRoadPath();
-          });
-        
-          // Add distance label next to destination icon (Option A)
-          // Position badge slightly below the company icon
-          const badgeLat = companyLoc[0] - 0.001; // Slightly south of icon
-          const badgeLon = companyLoc[1];
-          
-          const label = L.marker([badgeLat, badgeLon], {
-            icon: L.divIcon({
-              html: `<div style="background-color:rgba(124,0,255,0.9);color:white;border-radius:4px;padding:2px 6px;font-size:12px;font-weight:bold;white-space:nowrap;box-shadow:0 2px 4px rgba(0,0,0,0.3);pointer-events:none;">${distanceKm} km</div>`,
-              className: 'distance-label',
-              iconSize: [60, 20],
-              iconAnchor: [30, 20] // Anchor at top center, badge appears below
-            }),
-            interactive: false,
-            zIndexOffset: 500
-          }).addTo(mapInstanceRef.current);
-        
-          curvesRef.current.push(curve);
-          distanceBadgesRef.current.push(label);
-        } else {
-          console.error('❌ L.curve is not available. Check if @elfalem/leaflet-curve is properly imported.');
-        }
+        straightLinesRef.current.push(straightLine);
       });
 
       // Update home marker tooltip with current companies
@@ -766,16 +674,16 @@ export default function GlobeView({
             const logoUrl = idx < thrissurCompanyLogos.length ? thrissurCompanyLogos[idx] : (company.logoUrl || null);
             
             return `
-              <div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(0,0,0,0.1);">
+              <div style="display:flex;align-items:center;gap:4px;padding:4px 0;border-bottom:1px solid rgba(0,0,0,0.1);">
                 ${logoUrl ? `<img src="${logoUrl}" style="width:24px;height:24px;border-radius:4px;object-fit:cover;" />` : '<div style="width:24px;height:24px;background:#7c00ff;border-radius:4px;"></div>'}
-                <span style="flex:1;font-size:13px;color:#1A1A1A;">${company.name || 'Location'}</span>
-                <span style="font-size:12px;font-weight:bold;color:#7c00ff;">${distanceKm} km</span>
+                <span style="flex:1;font-size:13px;color:#1A1A1A;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${company.name || 'Location'}</span>
+                <span style="font-size:12px;font-weight:600;color:#0A0A0A;white-space:nowrap;flex-shrink:0;margin-left:4px;">${distanceKm} km</span>
               </div>
             `;
           }).join('');
           
           return `
-            <div style="max-width:250px;max-height:300px;overflow-y:auto;">
+            <div style="width:500px;max-height:none;overflow:visible;">
               <div style="font-weight:bold;margin-bottom:8px;color:#1A1A1A;font-size:14px;">Connected Locations</div>
               ${items}
             </div>
@@ -783,11 +691,31 @@ export default function GlobeView({
         };
 
         homeMarkerRef.current.setTooltipContent(createHomePanelContent(companies));
+        
+        // Ensure click handler is set
+        homeMarkerRef.current.off('click');
+        homeMarkerRef.current.on('click', function() {
+          if (homeMarkerRef.current.isTooltipOpen()) {
+            homeMarkerRef.current.closeTooltip();
+          } else {
+            homeMarkerRef.current.openTooltip();
+          }
+        });
+        
+        // Close tooltip when clicking on map
+        if (mapInstanceRef.current) {
+          mapInstanceRef.current.off('click');
+          mapInstanceRef.current.on('click', function() {
+            if (homeMarkerRef.current && homeMarkerRef.current.isTooltipOpen()) {
+              homeMarkerRef.current.closeTooltip();
+            }
+          });
+        }
       }
     } else {
-      console.log('🚫 showHomeLines is false, not drawing curves');
+      console.log('🚫 showHomeLines is false, not drawing lines');
     }
-  }, [showHomeLines, homeLocation, location, hasSearched, showRoadPath, hideRoadPath]);
+  }, [showHomeLines, homeLocation, location, hasSearched]);
 
   // Update zoom when prop changes
   useEffect(() => {

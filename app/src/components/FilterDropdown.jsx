@@ -27,7 +27,7 @@ export default function FilterDropdown({
   const [selectedCountry, setSelectedCountry] = useState(countries[0]); // India by default
   const [selectedState, setSelectedState] = useState(null);
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
-  const [showStates, setShowStates] = useState(false);
+  const [showStates, setShowStates] = useState(true); // Show states by default
   const searchInputRef = useRef(null);
 
   // Initialize with India and its states if no selection
@@ -38,15 +38,21 @@ export default function FilterDropdown({
         setSelectedCountry(country);
         if (selectedOption.state) {
           setSelectedState(selectedOption.state);
-          setShowStates(true);
         }
+        setShowStates(true);
+        setShowCountryDropdown(false);
       }
     } else {
       // Default to India
       setSelectedCountry(countries[0]);
       setShowStates(true);
+      setShowCountryDropdown(false);
     }
-  }, [selectedOption]);
+    // Reset search when dropdown opens/closes
+    if (isOpen) {
+      setSearchQuery("");
+    }
+  }, [selectedOption, isOpen]);
 
   // Focus search input when dropdown opens
   useEffect(() => {
@@ -58,13 +64,21 @@ export default function FilterDropdown({
   }, [isOpen, showCountryDropdown]);
 
   // Filter countries/states based on search
-  const filteredCountries = countries.filter(country =>
-    country.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Only filter countries if country dropdown is open
+  const filteredCountries = showCountryDropdown 
+    ? countries.filter(country =>
+        country.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : [];
 
-  const filteredStates = selectedCountry?.states.filter(state =>
-    state.toLowerCase().includes(searchQuery.toLowerCase())
-  ) || [];
+  // Filter states when states are shown (only if country dropdown is closed)
+  const filteredStates = showStates && !showCountryDropdown && selectedCountry?.states
+    ? selectedCountry.states.filter(state =>
+        state.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : showStates && !showCountryDropdown && selectedCountry?.states
+    ? selectedCountry.states
+    : [];
 
   const handleCountrySelect = (country) => {
     setSelectedCountry(country);
@@ -72,6 +86,7 @@ export default function FilterDropdown({
     setShowStates(true);
     setSearchQuery("");
     setSelectedState(null);
+    // Focus will be handled by useEffect when showCountryDropdown becomes false
   };
 
   const handleStateSelect = (state) => {

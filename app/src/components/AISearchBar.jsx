@@ -1166,9 +1166,170 @@ export default function AISearchBar({
           ) : null;
         })()}
 
-          {/* Home Filter Button - Separate overlay, same line as search bar, only in Globe view */}
+          {/* Collapsed Search Bar and Distance Button - Grouped together, only in Globe view */}
           {isGlobeView && hasSearched && (
-            <div className="absolute top-4 right-4 z-50">
+            <div 
+              className={`absolute left-1/2 transform -translate-x-1/2 z-50 flex items-center ${!isGlobeView && hasSearched ? 'bottom-4' : 'top-4'}`} 
+              style={{ gap: '24px' }}
+            >
+              {/* Collapsed Search Bar */}
+              <div style={{ width: '90%', maxWidth: '800px' }}>
+                <div className="bg-white rounded-xl border border-[#E5E5E5] shadow-lg px-4 py-2" style={{ width: '100%' }}>
+                  <div className="flex items-center gap-3">
+                    {/* Selected view option with dropdown - Show in both Globe and List view */}
+                    {hasSearched ? (
+                      <div className="relative flex-shrink-0">
+                        <button
+                          ref={bottomButtonRef}
+                          onClick={() => setIsBottomButtonDropdownOpen(!isBottomButtonDropdownOpen)}
+                          className="flex items-center gap-2 px-3 py-1 rounded-lg text-sm font-medium transition-all bg-transparent text-[#A5A5A5] hover:text-[#1A1A1A] hover:bg-[#F5F5F5]"
+                          style={{ border: 'none' }}
+                          aria-label="View options"
+                        >
+                          {selectedBottomOption ? (
+                            <>
+                              <selectedBottomOption.icon size={18} style={{ color: '#7c00ff' }} />
+                              <span style={{ color: '#1A1A1A', fontFamily: 'Open Sans', fontSize: '14px' }}>
+                                {selectedBottomOption.label}
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              {isGlobeView ? (
+                                <>
+                                  <EarthFilled size={18} style={{ color: '#7c00ff' }} />
+                                  <span style={{ color: '#1A1A1A', fontFamily: 'Open Sans', fontSize: '14px' }}>
+                                    Globe view
+                                  </span>
+                                </>
+                              ) : (
+                                <>
+                                  <List size={18} style={{ color: '#7c00ff' }} />
+                                  <span style={{ color: '#1A1A1A', fontFamily: 'Open Sans', fontSize: '14px' }}>
+                                    List view
+                                  </span>
+                                </>
+                              )}
+                            </>
+                          )}
+                          <RiArrowDownSLine size={16} style={{ color: '#1A1A1A' }} />
+                        </button>
+                        <SimpleDropdown
+                          isOpen={isBottomButtonDropdownOpen}
+                          onClose={() => setIsBottomButtonDropdownOpen(false)}
+                          dropdownRef={bottomButtonDropdownRef}
+                          items={[
+                            { label: 'Globe view', icon: EarthFilled, onClick: () => setSelectedBottomOption({ label: 'Globe view', icon: EarthFilled }) },
+                            { label: 'List view', icon: List, onClick: () => setSelectedBottomOption({ label: 'List view', icon: List }) },
+                          ]}
+                          selectedOption={selectedBottomOption}
+                          position={isGlobeView ? { top: '100%', bottom: 'auto', left: '0', right: 'auto', marginTop: '8px' } : { top: 'auto', bottom: '100%', left: '0', right: 'auto', marginBottom: '8px' }}
+                          width="200px"
+                        />
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        {selectedBottomOption ? (
+                          <>
+                            <selectedBottomOption.icon size={18} style={{ color: '#7c00ff' }} />
+                            <span style={{ color: '#1A1A1A', fontFamily: 'Open Sans', fontSize: '14px' }}>
+                              {selectedBottomOption.label}
+                            </span>
+                          </>
+                        ) : (
+                          <span style={{ color: '#1A1A1A', fontFamily: 'Open Sans', fontSize: '14px' }}>
+                            {isGlobeView ? 'Globe view' : 'List view'}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    {/* Search query - Editable input field */}
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey && searchQuery.trim()) {
+                          e.preventDefault();
+                          handleSearch();
+                        }
+                      }}
+                      placeholder="Search for keywords, product design, frontend developer..."
+                      className="flex-1 min-w-0 bg-white rounded-lg px-3 py-2 border border-[#E5E5E5] focus:outline-none focus:border-[#7c00ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] hover:bg-[#F5F5F5] transition-all text-sm"
+                      style={{ 
+                        fontFamily: 'Open Sans', 
+                        fontSize: '14px',
+                        color: '#1A1A1A',
+                        boxShadow: '0_1px_6px_rgba(32,33,36,0.08)',
+                      }}
+                    />
+                    <style>{`
+                      input::placeholder {
+                        color: #A5A5A5 !important;
+                      }
+                    `}</style>
+                    {/* Search button - SendFilled icon with brand color */}
+                    <button
+                      onClick={() => {
+                        if (searchQuery.trim()) {
+                          handleSearch();
+                        }
+                      }}
+                      disabled={!searchQuery.trim()}
+                      className="flex items-center justify-center p-2 rounded-lg transition-colors hover:bg-[#F5F5F5] flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                      aria-label="Search"
+                      title="Search"
+                    >
+                      <SendFilled size={20} style={{ color: searchQuery.trim() ? '#7c00ff' : '#A5A5A5' }} />
+                    </button>
+                    {/* Filter button if location selected */}
+                    {selectedFilterOption && (
+                      <div className="relative flex-shrink-0">
+                        <button
+                          ref={filterButtonRef}
+                          onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
+                          className="flex items-center gap-2 px-3 py-1 rounded-lg text-sm font-medium transition-all bg-transparent text-[#A5A5A5] hover:text-[#1A1A1A] hover:bg-[#F5F5F5]"
+                          style={{ border: 'none' }}
+                          aria-label="Filter"
+                        >
+                          {selectedFilterOption && selectedFilterOption.country === 'India' && (
+                            <span style={{ fontSize: '16px' }}>🇮🇳</span>
+                          )}
+                          <Filter size={16} style={{ color: '#575757' }} />
+                          <span style={{ color: '#1A1A1A', fontFamily: 'Open Sans', fontSize: '12px' }}>
+                            {selectedFilterOption ? (selectedFilterOption.state ? `${selectedFilterOption.state}` : selectedFilterOption.label) : 'Filter'}
+                          </span>
+                        </button>
+                        <FilterDropdown
+                          isOpen={isFilterDropdownOpen}
+                          onClose={() => setIsFilterDropdownOpen(false)}
+                          dropdownRef={filterDropdownRef}
+                          selectedOption={selectedFilterOption}
+                          onSelect={(option) => setSelectedFilterOption(option)}
+                          position={isGlobeView ? { top: '100%', bottom: 'auto', right: '0', left: 'auto', marginTop: '8px' } : { top: 'auto', bottom: '100%', right: '0', left: 'auto', marginBottom: '8px' }}
+                          width="300px"
+                        />
+                      </div>
+                    )}
+                    {/* Return button - Go back to search bar (preserve state) */}
+                    <button
+                      onClick={() => {
+                        // Only reset the collapsed view, preserve search query and filter
+                        setHasSearched(false);
+                        // Keep searchQuery, selectedFilterOption, extractedLocation, selectedBottomOption
+                        // This will show the expanded search bar with the preserved search query
+                      }}
+                      className="flex items-center justify-center p-2 rounded-lg transition-colors hover:bg-[#F5F5F5] flex-shrink-0"
+                      aria-label="Return to search bar"
+                      title="Return to search bar"
+                    >
+                      <Return size={20} style={{ color: '#575757' }} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Home Filter Button */}
               <div className="relative">
                 <button
                   ref={homeLocationButtonRef}
@@ -1186,16 +1347,16 @@ export default function AISearchBar({
                     e.preventDefault();
                     setIsHomeLocationDropdownOpen(!isHomeLocationDropdownOpen);
                   }}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all shadow-lg border ${
+                  className={`flex items-center gap-2 px-4 rounded-xl text-sm font-medium transition-all shadow-lg border ${
                     isHomeFilterActive 
-                      ? 'bg-[#7c00ff] text-white hover:bg-[#6a00e6] border-[#7c00ff]' 
+                      ? 'bg-[#F5F5F5] text-[#1A1A1A] hover:bg-[#F5F5F5] border-[#E5E5E5]' 
                       : 'bg-white text-[#1A1A1A] hover:bg-[#F5F5F5] border-[#E5E5E5]'
                   }`}
-                  style={{ fontFamily: 'Open Sans' }}
+                  style={{ fontFamily: 'Open Sans', height: '56px', whiteSpace: 'nowrap' }}
                   aria-label="Home Location"
                 >
                   <span style={{ fontSize: '16px' }}>🏠</span>
-                  <span style={{ fontFamily: 'Open Sans', fontSize: '14px' }}>
+                  <span style={{ fontFamily: 'Open Sans', fontSize: '14px', whiteSpace: 'nowrap' }}>
                     {isHomeFilterActive ? 'Hide Distance' : 'Show Distance'}
                   </span>
                 </button>
@@ -1216,11 +1377,12 @@ export default function AISearchBar({
             </div>
           )}
 
-          {/* Collapsed Search Bar - Overlay on top of map (Globe view) or bottom (List view) */}
-          <div 
-            className={`absolute left-1/2 transform -translate-x-1/2 z-50 ${!isGlobeView && hasSearched ? 'bottom-4' : 'top-4'}`} 
-            style={{ width: '90%', maxWidth: '800px' }}
-          >
+          {/* Collapsed Search Bar - Overlay on top of map (Globe view) or bottom (List view) - Only show when NOT in Globe view or when Globe view but not searched */}
+          {(!isGlobeView || !hasSearched) && (
+            <div 
+              className={`absolute left-1/2 transform -translate-x-1/2 z-50 ${!isGlobeView && hasSearched ? 'bottom-4' : 'top-4'}`} 
+              style={{ width: '90%', maxWidth: '800px' }}
+            >
             <div className="bg-white rounded-xl border border-[#E5E5E5] shadow-lg px-4 py-2" style={{ width: '100%' }}>
               <div className="flex items-center gap-3">
                 {/* Selected view option with dropdown - Show in both Globe and List view */}
@@ -1375,6 +1537,7 @@ export default function AISearchBar({
               </div>
             </div>
           </div>
+          )}
 
           {/* File Upload Modal */}
           <FileUploadModal
