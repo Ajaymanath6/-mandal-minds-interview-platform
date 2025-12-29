@@ -130,7 +130,7 @@ export default function ListViewLayout({ companies = [], extractedLocation = "",
       
       {/* Job List - No borders, gaps, or shadows */}
       <div>
-        {allJobs.map((job, index) => {
+        {allJobs.map((job) => {
           const company = displayCompanies.find(c => c.id === job.companyId);
           const logoUrl = company ? (displayCompanies.indexOf(company) < thrissurLogos.length 
             ? thrissurLogos[displayCompanies.indexOf(company)] 
