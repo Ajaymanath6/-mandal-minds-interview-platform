@@ -141,8 +141,7 @@ export default function ListViewLayout({ companies = [], extractedLocation = "",
               key={job.id}
               className="bg-white p-4"
               style={{ 
-                fontFamily: 'Open Sans',
-                borderTop: index > 0 ? '1px solid #E5E5E5' : 'none'
+                fontFamily: 'Open Sans'
               }}
             >
               <div className="flex items-start gap-4">
