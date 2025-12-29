@@ -54,11 +54,15 @@ export default function CompanyDetailsDrawer({
 
       {/* Drawer */}
       <div
-        className={`fixed right-0 top-0 h-full w-full sm:w-96 bg-white shadow-2xl z-[2001] transform transition-transform duration-300 ease-out overflow-y-auto ${
+        className={`fixed h-full w-full sm:w-96 bg-white shadow-2xl z-[2001] transform transition-transform duration-300 ease-out overflow-y-auto rounded-xl ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
         style={{
           fontFamily: "Open Sans",
+          top: "92px", // 92px margin from top (78px + 14px)
+          right: "16px", // 16px margin from right
+          bottom: "16px", // 16px margin from bottom
+          height: "calc(100% - 92px - 16px)", // Adjust height to account for top and bottom margins
         }}
       >
         {/* Header */}

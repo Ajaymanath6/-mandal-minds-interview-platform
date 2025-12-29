@@ -6,7 +6,6 @@ import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import "leaflet.markercluster";
 // MarkerClusterGroup is added to L namespace after import
 import { createPinDropIcon } from "./PinDrop";
-import MapLoader from "./MapLoader";
 import CompanyDetailsDrawer from "./CompanyDetailsDrawer";
 import mockJobs from "../data/mockJobs.json";
 
@@ -18,22 +17,28 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
 });
 
+// Logo URLs for Thrissur companies (5 logos from public folder)
+// First company: comp1.png, Second: comp2.png, Third: comp4.png, Fourth: comp5.png, Fifth: comp6.png
+const thrissurCompanyLogos = [
+  '/comp1.png',
+  '/comp2.png',
+  '/comp4.png',
+  '/comp5.png',
+  '/comp6.png',
+];
+
 // Create custom pin icon for company locations
 const createCustomTeardropIcon = (logoUrl = null, iconColor = '#7c00ff', size = 50, jobCount = 0) => {
   const boxSize = size;
-  const logoSize = size * 0.7;
-  const padding = size * 0.15;
   
   const iconId = `company-icon-${Math.random().toString(36).substr(2, 9)}`;
   
-  const html = `<div id="${iconId}" class="company-marker" style="width:${boxSize}px;height:${boxSize}px;background-color:#FFFFFF;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:${padding}px;box-shadow:0 2px 8px rgba(0,0,0,0.12),0 1px 3px rgba(0,0,0,0.08);border:1px solid rgba(0,0,0,0.05);cursor:pointer;transition:transform 0.2s ease,box-shadow 0.2s ease;">
-    ${logoUrl ? `<img src="${logoUrl}" alt="Logo" style="width:${logoSize}px;height:${logoSize}px;object-fit:contain;" onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='block';" />
-    <svg width="${logoSize}" height="${logoSize}" viewBox="0 0 32 32" style="display:none;">
-      <path d="M16,2A11.0134,11.0134,0,0,0,5,13a10.8885,10.8885,0,0,0,2.2163,6.6s.3.3945.3482.4517L16,30l8.439-9.9526c.0444-.0533.3447-.4478.3447-.4478l.0015-.0024A10.8846,10.8846,0,0,0,27,13,11.0134,11.0134,0,0,0,16,2Zm1,16H15V16h2Zm0-4H15V12h2Zm4,4H19V10H13v8H11V10a2.0023,2.0023,0,0,1,2-2h6a2.0023,2.0023,0,0,1,2,2Z" fill="${iconColor}" />
-    </svg>` : `<svg width="${logoSize}" height="${logoSize}" viewBox="0 0 32 32">
-      <path d="M16,2A11.0134,11.0134,0,0,0,5,13a10.8885,10.8885,0,0,0,2.2163,6.6s.3.3945.3482.4517L16,30l8.439-9.9526c.0444-.0533.3447-.4478.3447-.4478l.0015-.0024A10.8846,10.8846,0,0,0,27,13,11.0134,11.0134,0,0,0,16,2Zm1,16H15V16h2Zm0-4H15V12h2Zm4,4H19V10H13v8H11V10a2.0023,2.0023,0,0,1,2-2h6a2.0023,2.0023,0,0,1,2,2Z" fill="${iconColor}" />
-    </svg>`}
-    ${jobCount > 0 ? `<div style="position:absolute;top:-6px;right:-6px;background-color:#EC4899;color:white;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-center;font-size:10px;font-weight:bold;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.2);">${jobCount}</div>` : ''}
+  // Light blue border color (#87CEEB is sky blue)
+  const lightBlueBorder = '#87CEEB';
+  
+  // Image fills the entire box (no padding, object-fit: cover to fill background)
+  const html = `<div id="${iconId}" class="company-marker" style="width:${boxSize}px;height:${boxSize}px;background-color:#FFFFFF;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0;box-shadow:0 2px 8px rgba(0,0,0,0.12),0 1px 3px rgba(0,0,0,0.08);border:2px solid ${lightBlueBorder};cursor:pointer;transition:transform 0.2s ease,box-shadow 0.2s ease;overflow:hidden;">
+    ${logoUrl ? `<img src="${logoUrl}" alt="Logo" style="width:100%;height:100%;object-fit:cover;border-radius:6px;" />` : ''}
   </div>`;
   
   return L.divIcon({
@@ -41,7 +46,7 @@ const createCustomTeardropIcon = (logoUrl = null, iconColor = '#7c00ff', size = 
     className: 'custom-pindrop-marker',
     iconSize: [boxSize, boxSize],
     iconAnchor: [boxSize / 2, boxSize / 2],
-    popupAnchor: [0, -boxSize / 2 - 5],
+    popupAnchor: [0, -boxSize - 10], // Position tooltip above the top border of the box
   });
 };
 
@@ -104,26 +109,28 @@ const getCompaniesForLocation = (location) => {
   return matchingCompanies;
 };
 
+// Export getCompaniesForLocation for use in other components
+export { getCompaniesForLocation };
+
 export default function GlobeView({ 
   location, 
   searchQuery, 
   hasSearched, 
   zoom = 10, 
   journeyStep = null,
-  onLocationChange = null 
+  onLocationChange = null,
+  onLoadingComplete = null,
+  onFindingJobsStart = null
 }) {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markerRef = useRef(null);
   const clusterGroupRef = useRef(null);
-  const tooltipRef = useRef(null);
   const pinAnimationTimeoutRefs = useRef([]);
   const previousLocationRef = useRef(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const findingJobsCalledRef = useRef(false); // Prevent multiple calls to onFindingJobsStart
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [hoveredCompany, setHoveredCompany] = useState(null);
-  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
 
   // Initialize map
   useEffect(() => {
@@ -147,13 +154,9 @@ export default function GlobeView({
   // Main effect: Handle location changes and display companies
   useEffect(() => {
     if (!location || !hasSearched || !mapInstanceRef.current) return;
-
-    setIsLoading(true);
     
-    // Safety timeout: ensure loading is cleared after 10 seconds max
-    let safetyTimeout = setTimeout(() => {
-      setIsLoading(false);
-    }, 10000);
+    // Reset findingJobsCalledRef when location changes
+    findingJobsCalledRef.current = false;
 
     // Cleanup previous markers and clusters
     if (markerRef.current && mapInstanceRef.current) {
@@ -184,24 +187,6 @@ export default function GlobeView({
           const isStateView = journeyStep === 1;
           const isLocationView = journeyStep === 2;
 
-          // Fly to location
-          if (isStateView) {
-            mapInstanceRef.current.flyTo([lat, lon], zoom, {
-              duration: 1.5,
-              easeLinearity: 0.25,
-            });
-          } else if (isLocationView) {
-            mapInstanceRef.current.flyTo([lat, lon], zoom, {
-              duration: 2.5,
-              easeLinearity: 0.25,
-            });
-          } else {
-            mapInstanceRef.current.flyTo([lat, lon], zoom, {
-              duration: 1.5,
-              easeLinearity: 0.25,
-            });
-          }
-
           // Get companies for this location
           const companies = getCompaniesForLocation(location);
           
@@ -214,6 +199,13 @@ export default function GlobeView({
           // Show companies if we have them and we're not in state view (step 1)
           // Allow showing in location view (step 2) or when journeyStep is null (direct search)
           if (companies.length > 0 && !isStateView) {
+            // Signal that we're finding jobs (only once per location)
+            if (!findingJobsCalledRef.current) {
+              onFindingJobsStart?.();
+              findingJobsCalledRef.current = true;
+            }
+            
+            // Skip flyTo to geocoded location - go directly to fitBounds to show all companies
             
             // Calculate bounds
             const lats = companies.map(c => c.lat);
@@ -235,25 +227,32 @@ export default function GlobeView({
             const fitBoundsDelay = 1000;
             setTimeout(() => {
               const padding = calculateOptimalPadding(companies.length);
+              // Set initial zoom to show clusters (badges) - zoom level should be < 15 to show clusters
+              // disableClusteringAtZoom is 15, so zoom < 15 shows clusters, zoom >= 15 shows individual pins
+              const normalizedLocation = location?.toLowerCase().trim() || '';
+              const isThrissur = normalizedLocation.includes('thrissur') || normalizedLocation.includes('trichur');
+              // Use zoom 12 for Thrissur to show cluster badge initially, user can zoom in manually to see individual pins
+              const maxZoomLevel = isThrissur && companies.length >= 5 ? 12 : 14; // Show clusters initially
+              
               mapInstanceRef.current.flyToBounds(bounds, {
                 padding: L.point(padding, padding),
                 duration: 1.5,
                 easeLinearity: 0.25,
-                maxZoom: 16,
+                maxZoom: maxZoomLevel,
               });
 
-              // After fitBounds, add markers with clustering
+              // After fitBounds, add markers with clustering (all at once, no staggered animation)
               const fitBoundsDuration = 1500;
               const baseDelay = fitBoundsDelay + fitBoundsDuration;
-              const pinDelay = 300;
 
-              // Create cluster group
+              // Create cluster group with proper clustering behavior
               const clusterGroup = new L.markerClusterGroup({
                 chunkedLoading: true,
-                maxClusterRadius: 50,
+                maxClusterRadius: 80, // Increased radius for better clustering
                 spiderfyOnMaxZoom: true,
                 showCoverageOnHover: false,
                 zoomToBoundsOnClick: true,
+                disableClusteringAtZoom: 15, // Disable clustering at zoom 15+ to show individual pins
                 iconCreateFunction: function(cluster) {
                   const count = cluster.getChildCount();
                   return L.divIcon({
@@ -309,16 +308,16 @@ export default function GlobeView({
                 document.head.appendChild(style);
               }
 
-              companies.forEach((company, index) => {
-                const delay = baseDelay + (index * pinDelay);
-
-                const timeoutId = setTimeout(() => {
-                  const jobCount = company.jobs?.length || 0;
+              // Add all markers at once (no staggered animation)
+              setTimeout(() => {
+                companies.forEach((company, index) => {
+                  // Always use uploaded images for Thrissur companies (comp1.png to comp6.png)
+                  const logoUrl = index < thrissurCompanyLogos.length ? thrissurCompanyLogos[index] : (company.logoUrl || null);
                   const customIcon = createCustomTeardropIcon(
-                    company.logoUrl || null,
+                    logoUrl,
                     '#7c00ff',
                     50,
-                    jobCount
+                    0 // Remove jobCount badge
                   );
 
                   const marker = L.marker([company.lat, company.lon], {
@@ -330,35 +329,8 @@ export default function GlobeView({
                   // Store company data in marker
                   marker.companyData = company;
 
-                  // Add marker to cluster group first (needed to get element)
+                  // Add marker to cluster group
                   clusterGroup.addLayer(marker);
-
-                  // Bouncy animation - get element after adding to cluster
-                  setTimeout(() => {
-                    const markerElement = marker.getElement();
-                    if (markerElement) {
-                      markerElement.style.transform = 'scale(0)';
-                      markerElement.style.opacity = '0';
-                      setTimeout(() => {
-                        markerElement.classList.add('pin-bounce-animate');
-                      }, 10);
-                    }
-                  }, 50);
-
-                  // Hover tooltip
-                  marker.on('mouseover', function(e) {
-                    const company = marker.companyData;
-                    if (company) {
-                      setHoveredCompany(company);
-                      const latlng = e.latlng;
-                      const point = mapInstanceRef.current.latLngToContainerPoint(latlng);
-                      setTooltipPosition({ x: point.x, y: point.y - 60 });
-                    }
-                  });
-
-                  marker.on('mouseout', function() {
-                    setTimeout(() => setHoveredCompany(null), 200);
-                  });
 
                   // Click handler - open drawer
                   marker.on('click', function() {
@@ -367,46 +339,53 @@ export default function GlobeView({
                   });
 
                   console.log('✅ Added marker for:', company.name, 'at', company.lat, company.lon);
-                }, delay);
-
-                pinAnimationTimeoutRefs.current.push(timeoutId);
-              });
+                });
+              }, baseDelay);
 
               // Add cluster group to map immediately (markers will be added to it as they're created)
               mapInstanceRef.current.addLayer(clusterGroup);
               clusterGroupRef.current = clusterGroup;
               console.log('✅ Cluster group added to map with', companies.length, 'companies');
               
-              // Set loading to false after all markers are added
+              // Call loading complete callback after all markers are added
               setTimeout(() => {
-                setIsLoading(false);
-                clearTimeout(safetyTimeout);
+                onLoadingComplete?.();
                 console.log('✅ All markers added, loading complete');
-              }, baseDelay + (companies.length * pinDelay) + 500);
+              }, baseDelay + 500);
             }, fitBoundsDelay);
           } else {
-            // No companies to show or not in location view, hide loading
-            setIsLoading(false);
-            clearTimeout(safetyTimeout);
+            // No companies to show - fly to geocoded location
+            if (isStateView) {
+              mapInstanceRef.current.flyTo([lat, lon], zoom, {
+                duration: 1.5,
+                easeLinearity: 0.25,
+              });
+            } else if (isLocationView) {
+              mapInstanceRef.current.flyTo([lat, lon], zoom, {
+                duration: 2.5,
+                easeLinearity: 0.25,
+              });
+            } else {
+              mapInstanceRef.current.flyTo([lat, lon], zoom, {
+                duration: 1.5,
+                easeLinearity: 0.25,
+              });
+            }
+            // Call loading complete when no companies
+            onLoadingComplete?.();
           }
 
           previousLocationRef.current = location;
         } else {
-          setIsLoading(false);
-          clearTimeout(safetyTimeout);
+          // No geocoding data - call loading complete
+          onLoadingComplete?.();
         }
       })
       .catch((error) => {
         console.error("Geocoding error:", error);
-        setIsLoading(false);
-        clearTimeout(safetyTimeout);
+        onLoadingComplete?.();
       });
-    
-    // Cleanup safety timeout
-    return () => {
-      clearTimeout(safetyTimeout);
-    };
-  }, [location, hasSearched, zoom, journeyStep]);
+  }, [location, hasSearched, zoom, journeyStep, onLoadingComplete, onFindingJobsStart]);
 
   // Update zoom when prop changes
   useEffect(() => {
@@ -433,55 +412,6 @@ export default function GlobeView({
     };
   }, []);
 
-  // Tooltip component
-  const Tooltip = ({ company, position }) => {
-    if (!company) return null;
-    const jobCount = company.jobs?.length || 0;
-
-    return (
-      <div
-        className="absolute pointer-events-none z-[1500] bg-white rounded-lg shadow-lg border border-gray-200 p-3 min-w-[200px]"
-        style={{
-          left: `${position.x}px`,
-          top: `${position.y}px`,
-          transform: 'translateX(-50%)',
-          fontFamily: 'Open Sans',
-        }}
-      >
-        <div className="flex items-center gap-2 mb-2">
-          {company.logoUrl && (
-            <img
-              src={company.logoUrl}
-              alt={company.name}
-              className="w-8 h-8 rounded object-contain"
-              onError={(e) => e.target.style.display = 'none'}
-            />
-          )}
-          <div>
-            <p className="text-sm font-semibold" style={{ color: '#1A1A1A' }}>
-              {company.name}
-            </p>
-            <p className="text-xs" style={{ color: '#575757' }}>
-              {jobCount} {jobCount === 1 ? 'position' : 'positions'} open
-            </p>
-          </div>
-        </div>
-        <p className="text-xs" style={{ color: '#575757' }}>
-          {company.address}
-        </p>
-        <div
-          className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full"
-          style={{
-            width: 0,
-            height: 0,
-            borderLeft: '6px solid transparent',
-            borderRight: '6px solid transparent',
-            borderTop: '6px solid white',
-          }}
-        />
-      </div>
-    );
-  };
 
   if (!location && hasSearched) {
     return (
@@ -512,8 +442,6 @@ export default function GlobeView({
         overflow: "hidden",
       }}
     >
-      {isLoading && <MapLoader message="Finding jobs..." />}
-      
       <div
         ref={mapRef}
         style={{
@@ -522,8 +450,6 @@ export default function GlobeView({
           zIndex: 1,
         }}
       />
-
-      <Tooltip company={hoveredCompany} position={tooltipPosition} />
 
       <CompanyDetailsDrawer
         isOpen={isDrawerOpen}

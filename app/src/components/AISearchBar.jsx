@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   RiFileTextLine,
@@ -12,7 +12,8 @@ import {
 import { IbmWatsonDiscovery, Chat, IbmWatsonOpenscale, CheckmarkFilled, List, Grid, Earth, EarthFilled, TableOfContents, Filter, ArrowLeft, Return } from "@carbon/icons-react";
 import FileUploadModal from "./FileUploadModal";
 import SimpleDropdown from "./SimpleDropdown";
-import GlobeView from "./GlobeView";
+import GlobeView, { getCompaniesForLocation } from "./GlobeView";
+import mockJobs from "../data/mockJobs.json";
 import FilterDropdown from "./FilterDropdown";
 
 export default function AISearchBar({
@@ -38,6 +39,7 @@ export default function AISearchBar({
   const [selectedFilterOption, setSelectedFilterOption] = useState(null);
   const [hasSearched, setHasSearched] = useState(false);
   const [isMapLoading, setIsMapLoading] = useState(false);
+  const [isFindingJobs, setIsFindingJobs] = useState(false);
   const [mapJourneyStep, setMapJourneyStep] = useState(0); // 0 = initial, 1 = show state, 2 = zoom to pincode
   const [currentMapLocation, setCurrentMapLocation] = useState(null);
   const [currentMapZoom, setCurrentMapZoom] = useState(10);
@@ -397,10 +399,10 @@ export default function AISearchBar({
       // Check if we have a state selected for animation
       const hasState = selectedFilterOption && selectedFilterOption.state;
       
+      // Keep isMapLoading true - GlobeView will call onLoadingComplete when done
       if ((pincode || location) && selectedFilterOption && hasState) {
         // Journey animation: Step 1 - Show state first
         setTimeout(() => {
-          setIsMapLoading(false);
           setMapJourneyStep(1);
           // Show state with medium zoom
           const stateLocation = selectedFilterOption.state 
@@ -428,7 +430,6 @@ export default function AISearchBar({
       } else {
         // No journey animation, just show map
         setTimeout(() => {
-          setIsMapLoading(false);
           setMapJourneyStep(2);
         }, 1500);
       }
@@ -938,11 +939,22 @@ export default function AISearchBar({
     </div>
   );
 
-  // Check if we should show GlobeView (after location selected from filter and search clicked, or Globe view with location)
-  const shouldShowGlobeView = (hasSearched && selectedFilterOption) || (isGlobeView && hasSearched && (selectedFilterOption || extractedLocation));
+  // Check if we should show GlobeView - only when Globe view is selected
+  const shouldShowGlobeView = isGlobeView && hasSearched && (selectedFilterOption || extractedLocation);
   
   // Check if search bar should be collapsed (after search in Globe view or when filter is selected and search clicked)
   const isSearchBarCollapsed = (isGlobeView && hasSearched) || (hasSearched && selectedFilterOption);
+  
+  // Stable callbacks for GlobeView to prevent loops
+  const handleLoadingComplete = useCallback(() => {
+    setIsMapLoading(false);
+    setIsFindingJobs(false);
+  }, []);
+  
+  const handleFindingJobsStart = useCallback(() => {
+    setIsMapLoading(false);
+    setIsFindingJobs(true);
+  }, []);
 
   // Collapsed layout: Show after search is clicked with Globe view or with filter selected
   if (isSearchBarCollapsed) {
@@ -965,19 +977,19 @@ export default function AISearchBar({
         `}</style>
         <div className="w-full h-full" style={{ position: 'fixed', top: 0, left: leftOffset, right: 0, bottom: 0, height: '100vh', width: widthCalc, margin: 0, padding: 0, zIndex: 0 }}>
           {/* Loading State */}
-          {isMapLoading && (
+          {(isMapLoading || isFindingJobs) && (
             <div className="absolute inset-0 flex items-center justify-center bg-white z-10" style={{ width: '100%', height: '100%', zIndex: 2 }}>
               <div className="text-center">
                 <div className="w-12 h-12 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mx-auto mb-4"></div>
                 <p className="text-base font-medium text-[#1A1A1A]" style={{ fontFamily: 'Open Sans' }}>
-                  Loading map...
+                  {isFindingJobs ? 'Finding jobs...' : 'Loading map...'}
                 </p>
               </div>
             </div>
           )}
 
           {/* Map - Full coverage of right side area, no padding */}
-          {shouldShowGlobeView && !isMapLoading && (
+          {shouldShowGlobeView && (
             <div className="absolute inset-0" style={{ width: '100%', height: '100%', zIndex: 1, margin: 0, padding: 0 }}>
               <GlobeView 
                 location={(() => {
@@ -1084,6 +1096,8 @@ export default function AISearchBar({
                   return 10;
                 })()}
                 key={`${mapJourneyStep}-${currentMapLocation}-${currentMapZoom}`}
+                onLoadingComplete={handleLoadingComplete}
+                onFindingJobsStart={handleFindingJobsStart}
               />
             </div>
           )}
@@ -1203,6 +1217,100 @@ export default function AISearchBar({
       <div className="w-full max-w-4xl mx-auto">
         {/* Search Bar Container */}
         {renderSearchBar()}
+
+        {/* List View - Show companies when List view is selected and search is done */}
+        {!isGlobeView && hasSearched && extractedLocation && (
+          <div className="mt-6 px-4">
+            {(() => {
+              const companies = getCompaniesForLocation(extractedLocation);
+              const thrissurLogos = ['/comp1.png', '/comp2.png', '/comp4.png', '/comp5.png', '/comp6.png'];
+              
+              return companies.length > 0 ? (
+                <>
+                  {/* Company Count Badge */}
+                  <div className="mb-4 flex items-center gap-2">
+                    <span className="px-3 py-1 rounded-lg text-sm font-medium" style={{ 
+                      backgroundColor: '#7c00ff', 
+                      color: 'white',
+                      fontFamily: 'Open Sans'
+                    }}>
+                      {companies.length} {companies.length === 1 ? 'company' : 'companies'}
+                    </span>
+                  </div>
+                  
+                  {/* Company Cards */}
+                  <div className="space-y-4">
+                    {companies.map((company, index) => {
+                      const firstJob = company.jobs && company.jobs.length > 0 ? company.jobs[0] : null;
+                      const logoUrl = index < thrissurLogos.length ? thrissurLogos[index] : (company.logoUrl || '/comp1.png');
+                      
+                      return (
+                        <div
+                          key={company.id}
+                          className="bg-white rounded-xl border border-[#E5E5E5] p-4 hover:shadow-md transition-shadow"
+                          style={{ fontFamily: 'Open Sans' }}
+                        >
+                          <div className="flex items-start gap-4">
+                            {/* Company Logo - Left Side */}
+                            <div className="flex-shrink-0">
+                              <img
+                                src={logoUrl}
+                                alt={company.name}
+                                className="w-16 h-16 rounded-lg object-cover"
+                                style={{ border: '2px solid #87CEEB' }}
+                              />
+                            </div>
+                            
+                            {/* Company Details - Right Side */}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-start justify-between gap-4">
+                                <div className="flex-1">
+                                  {/* Role and Company Name */}
+                                  {firstJob && (
+                                    <h3 className="text-base font-semibold text-[#1A1A1A] mb-1">
+                                      {firstJob.title}
+                                    </h3>
+                                  )}
+                                  <p className="text-sm text-[#575757] mb-2">
+                                    {company.name}
+                                  </p>
+                                  
+                                  {/* Location and Experience */}
+                                  <div className="flex items-center gap-4 text-sm text-[#575757]">
+                                    <span>{company.address}</span>
+                                    {firstJob && firstJob.experience && (
+                                      <span>{firstJob.experience} experience</span>
+                                    )}
+                                  </div>
+                                </div>
+                                
+                                {/* Posted Date - Right End */}
+                                {firstJob && (
+                                  <div className="text-right text-sm text-[#575757] flex-shrink-0">
+                                    <span>Posted 2 days ago</span>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-12">
+                  <p className="text-base text-[#575757]" style={{ fontFamily: 'Open Sans' }}>
+                    No companies found for "{extractedLocation || searchQuery}"
+                  </p>
+                  <p className="text-sm text-[#A5A5A5] mt-2" style={{ fontFamily: 'Open Sans' }}>
+                    Try searching for "Thrissur" or another location
+                  </p>
+                </div>
+              );
+            })()}
+          </div>
+        )}
 
         {/* File Upload Modal */}
         <FileUploadModal
