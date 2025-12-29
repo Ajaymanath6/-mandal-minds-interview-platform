@@ -9,12 +9,13 @@ import {
   RiSearchLine,
   RiArrowDownSLine,
 } from "@remixicon/react";
-import { IbmWatsonDiscovery, Chat, IbmWatsonOpenscale, CheckmarkFilled, List, Grid, Earth, EarthFilled, TableOfContents, Filter, ArrowLeft, Return } from "@carbon/icons-react";
+import { IbmWatsonDiscovery, Chat, IbmWatsonOpenscale, CheckmarkFilled, List, Grid, Earth, EarthFilled, TableOfContents, Filter, ArrowLeft, Return, SendFilled } from "@carbon/icons-react";
 import FileUploadModal from "./FileUploadModal";
 import SimpleDropdown from "./SimpleDropdown";
 import GlobeView, { getCompaniesForLocation } from "./GlobeView";
 import mockJobs from "../data/mockJobs.json";
 import FilterDropdown from "./FilterDropdown";
+import HomeLocationDropdown from "./HomeLocationDropdown";
 import ListViewLayout from "../layouts/ListViewLayout";
 
 export default function AISearchBar({
@@ -38,6 +39,15 @@ export default function AISearchBar({
   const [extractedLocation, setExtractedLocation] = useState(null);
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
   const [selectedFilterOption, setSelectedFilterOption] = useState(null);
+  const [isHomeLocationDropdownOpen, setIsHomeLocationDropdownOpen] = useState(false);
+  const [isHomeFilterActive, setIsHomeFilterActive] = useState(false); // Track if home filter is active (showing lines)
+  // Default home location coordinates
+  const [homeLocation, setHomeLocation] = useState({
+    lat: 10.368495,
+    lon: 76.219310,
+    query: "Home",
+    displayName: "Home"
+  });
   const [hasSearched, setHasSearched] = useState(false);
   const [isMapLoading, setIsMapLoading] = useState(false);
   const [isFindingJobs, setIsFindingJobs] = useState(false);
@@ -48,6 +58,8 @@ export default function AISearchBar({
   const bottomButtonDropdownRef = useRef(null);
   const filterButtonRef = useRef(null);
   const filterDropdownRef = useRef(null);
+  const homeLocationButtonRef = useRef(null);
+  const homeLocationDropdownRef = useRef(null);
   const navigate = useNavigate();
 
   const tabs = [
@@ -1133,6 +1145,8 @@ export default function AISearchBar({
                 key={`${mapJourneyStep}-${currentMapLocation}-${currentMapZoom}`}
                 onLoadingComplete={handleLoadingComplete}
                 onFindingJobsStart={handleFindingJobsStart}
+                homeLocation={homeLocation}
+                showHomeLines={isHomeFilterActive}
               />
             </div>
           )}
@@ -1152,6 +1166,56 @@ export default function AISearchBar({
           ) : null;
         })()}
 
+          {/* Home Filter Button - Separate overlay, same line as search bar, only in Globe view */}
+          {isGlobeView && hasSearched && (
+            <div className="absolute top-4 right-4 z-50">
+              <div className="relative">
+                <button
+                  ref={homeLocationButtonRef}
+                  onClick={() => {
+                    if (!isHomeFilterActive) {
+                      // First click: Immediately show lines (home location already set by default)
+                      setIsHomeFilterActive(true);
+                    } else {
+                      // Second click: Toggle off the lines
+                      setIsHomeFilterActive(false);
+                    }
+                  }}
+                  onContextMenu={(e) => {
+                    // Right click: Open dropdown to edit home location
+                    e.preventDefault();
+                    setIsHomeLocationDropdownOpen(!isHomeLocationDropdownOpen);
+                  }}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all shadow-lg border ${
+                    isHomeFilterActive 
+                      ? 'bg-[#7c00ff] text-white hover:bg-[#6a00e6] border-[#7c00ff]' 
+                      : 'bg-white text-[#1A1A1A] hover:bg-[#F5F5F5] border-[#E5E5E5]'
+                  }`}
+                  style={{ fontFamily: 'Open Sans' }}
+                  aria-label="Home Location"
+                >
+                  <span style={{ fontSize: '16px' }}>🏠</span>
+                  <span style={{ fontFamily: 'Open Sans', fontSize: '14px' }}>
+                    {isHomeFilterActive ? 'Hide Distance' : 'Show Distance'}
+                  </span>
+                </button>
+                <HomeLocationDropdown
+                  isOpen={isHomeLocationDropdownOpen}
+                  onClose={() => setIsHomeLocationDropdownOpen(false)}
+                  dropdownRef={homeLocationDropdownRef}
+                  homeLocation={homeLocation}
+                  onSelect={(location) => {
+                    setHomeLocation(location);
+                    setIsHomeFilterActive(true); // Activate when location is set
+                    setIsHomeLocationDropdownOpen(false);
+                  }}
+                  position={{ top: '100%', bottom: 'auto', right: '0', left: 'auto', marginTop: '8px' }}
+                  width="300px"
+                />
+              </div>
+            </div>
+          )}
+
           {/* Collapsed Search Bar - Overlay on top of map (Globe view) or bottom (List view) */}
           <div 
             className={`absolute left-1/2 transform -translate-x-1/2 z-50 ${!isGlobeView && hasSearched ? 'bottom-4' : 'top-4'}`} 
@@ -1159,21 +1223,73 @@ export default function AISearchBar({
           >
             <div className="bg-white rounded-xl border border-[#E5E5E5] shadow-lg px-4 py-2" style={{ width: '100%' }}>
               <div className="flex items-center gap-3">
-                {/* Selected view option */}
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  {selectedBottomOption ? (
-                    <>
-                      <selectedBottomOption.icon size={18} style={{ color: '#7c00ff' }} />
+                {/* Selected view option with dropdown - Show in both Globe and List view */}
+                {hasSearched ? (
+                  <div className="relative flex-shrink-0">
+                    <button
+                      ref={bottomButtonRef}
+                      onClick={() => setIsBottomButtonDropdownOpen(!isBottomButtonDropdownOpen)}
+                      className="flex items-center gap-2 px-3 py-1 rounded-lg text-sm font-medium transition-all bg-transparent text-[#A5A5A5] hover:text-[#1A1A1A] hover:bg-[#F5F5F5]"
+                      style={{ border: 'none' }}
+                      aria-label="View options"
+                    >
+                      {selectedBottomOption ? (
+                        <>
+                          <selectedBottomOption.icon size={18} style={{ color: '#7c00ff' }} />
+                          <span style={{ color: '#1A1A1A', fontFamily: 'Open Sans', fontSize: '14px' }}>
+                            {selectedBottomOption.label}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          {isGlobeView ? (
+                            <>
+                              <EarthFilled size={18} style={{ color: '#7c00ff' }} />
+                              <span style={{ color: '#1A1A1A', fontFamily: 'Open Sans', fontSize: '14px' }}>
+                                Globe view
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <List size={18} style={{ color: '#7c00ff' }} />
+                              <span style={{ color: '#1A1A1A', fontFamily: 'Open Sans', fontSize: '14px' }}>
+                                List view
+                              </span>
+                            </>
+                          )}
+                        </>
+                      )}
+                      <RiArrowDownSLine size={16} style={{ color: '#1A1A1A' }} />
+                    </button>
+                    <SimpleDropdown
+                      isOpen={isBottomButtonDropdownOpen}
+                      onClose={() => setIsBottomButtonDropdownOpen(false)}
+                      dropdownRef={bottomButtonDropdownRef}
+                      items={[
+                        { label: 'Globe view', icon: EarthFilled, onClick: () => setSelectedBottomOption({ label: 'Globe view', icon: EarthFilled }) },
+                        { label: 'List view', icon: List, onClick: () => setSelectedBottomOption({ label: 'List view', icon: List }) },
+                      ]}
+                      selectedOption={selectedBottomOption}
+                      position={isGlobeView ? { top: '100%', bottom: 'auto', left: '0', right: 'auto', marginTop: '8px' } : { top: 'auto', bottom: '100%', left: '0', right: 'auto', marginBottom: '8px' }}
+                      width="200px"
+                    />
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    {selectedBottomOption ? (
+                      <>
+                        <selectedBottomOption.icon size={18} style={{ color: '#7c00ff' }} />
+                        <span style={{ color: '#1A1A1A', fontFamily: 'Open Sans', fontSize: '14px' }}>
+                          {selectedBottomOption.label}
+                        </span>
+                      </>
+                    ) : (
                       <span style={{ color: '#1A1A1A', fontFamily: 'Open Sans', fontSize: '14px' }}>
-                        {selectedBottomOption.label}
+                        {isGlobeView ? 'Globe view' : 'List view'}
                       </span>
-                    </>
-                  ) : (
-                    <span style={{ color: '#1A1A1A', fontFamily: 'Open Sans', fontSize: '14px' }}>
-                      List view
-                    </span>
-                  )}
-                </div>
+                    )}
+                  </div>
+                )}
                 {/* Search query - Editable input field */}
                 <input
                   type="text"
@@ -1186,11 +1302,12 @@ export default function AISearchBar({
                     }
                   }}
                   placeholder="Search for keywords, product design, frontend developer..."
-                  className="flex-1 min-w-0 bg-white rounded-lg px-3 py-2 border border-[#E5E5E5] focus:outline-none focus:border-[#7c00ff] text-sm"
+                  className="flex-1 min-w-0 bg-white rounded-lg px-3 py-2 border border-[#E5E5E5] focus:outline-none focus:border-[#7c00ff] focus:shadow-[0_1px_6px_rgba(32,33,36,0.15),0_0_0_3px_rgba(124,0,255,0.2)] hover:bg-[#F5F5F5] transition-all text-sm"
                   style={{ 
                     fontFamily: 'Open Sans', 
                     fontSize: '14px',
                     color: '#1A1A1A',
+                    boxShadow: '0_1px_6px_rgba(32,33,36,0.08)',
                   }}
                 />
                 <style>{`
@@ -1198,6 +1315,20 @@ export default function AISearchBar({
                     color: #A5A5A5 !important;
                   }
                 `}</style>
+                {/* Search button - SendFilled icon with brand color */}
+                <button
+                  onClick={() => {
+                    if (searchQuery.trim()) {
+                      handleSearch();
+                    }
+                  }}
+                  disabled={!searchQuery.trim()}
+                  className="flex items-center justify-center p-2 rounded-lg transition-colors hover:bg-[#F5F5F5] flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                  aria-label="Search"
+                  title="Search"
+                >
+                  <SendFilled size={20} style={{ color: searchQuery.trim() ? '#7c00ff' : '#A5A5A5' }} />
+                </button>
                 {/* Filter button if location selected */}
                 {selectedFilterOption && (
                   <div className="relative flex-shrink-0">
@@ -1222,7 +1353,7 @@ export default function AISearchBar({
                       dropdownRef={filterDropdownRef}
                       selectedOption={selectedFilterOption}
                       onSelect={(option) => setSelectedFilterOption(option)}
-                      position={{ top: '100%', bottom: 'auto', right: '0', left: 'auto', marginTop: '8px' }}
+                      position={isGlobeView ? { top: '100%', bottom: 'auto', right: '0', left: 'auto', marginTop: '8px' } : { top: 'auto', bottom: '100%', right: '0', left: 'auto', marginBottom: '8px' }}
                       width="300px"
                     />
                   </div>

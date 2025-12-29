@@ -102,7 +102,13 @@ export default function ListViewLayout({ companies = [], extractedLocation = "",
   const searchTerm = extractedLocation || searchQuery || "your search";
 
   return (
-    <div className="px-4" style={{ marginTop: '48px', paddingBottom: '100px' }}>
+    <div className="bg-white" style={{ 
+      paddingBottom: '100px', 
+      paddingLeft: '56px', 
+      paddingRight: '56px',
+      minHeight: '100vh',
+      height: '100%'
+    }}>
       {/* H1 with search query - same padding as row list */}
       <div className="p-4">
         <h1 className="text-2xl font-semibold text-[#1A1A1A] mb-4" style={{ fontFamily: 'Open Sans' }}>
@@ -126,7 +132,7 @@ export default function ListViewLayout({ companies = [], extractedLocation = "",
           return (
             <div
               key={job.id}
-              className="bg-white p-4 transition-colors hover:bg-[#F5F5F5] cursor-pointer relative"
+              className="p-4 transition-colors hover:bg-[#F5F5F5] cursor-pointer relative"
               style={{ 
                 fontFamily: 'Open Sans',
                 borderRadius: '16px',
@@ -157,27 +163,23 @@ export default function ListViewLayout({ companies = [], extractedLocation = "",
                         {job.companyName}
                       </p>
                       
-                      {/* Location and Experience */}
+                      {/* Location, Experience, and Posted Date - All in same line */}
                       <div className="flex items-center gap-4 text-sm text-[#575757]">
                         <span>{job.companyAddress}</span>
                         {job.experience && (
                           <span>{job.experience} experience</span>
                         )}
+                        <span>Posted 2 days ago</span>
                       </div>
-                    </div>
-                    
-                    {/* Posted Date - Right End */}
-                    <div className="text-right text-sm text-[#575757] flex-shrink-0">
-                      <span>Posted 2 days ago</span>
                     </div>
                   </div>
                 </div>
               </div>
               
-              {/* Saved button - appears on hover in bottom right corner */}
+              {/* Saved button - appears on hover in bottom right corner, icon only */}
               {hoveredJobId === job.id && (
                 <button
-                  className="absolute bottom-4 right-4 p-2 rounded-lg bg-white border border-[#E5E5E5] hover:bg-[#F5F5F5] transition-colors shadow-sm flex items-center gap-2"
+                  className="absolute bottom-4 right-4 p-2 rounded-lg bg-white hover:bg-white transition-colors flex items-center justify-center"
                   style={{ fontFamily: 'Open Sans' }}
                   onClick={(e) => {
                     e.stopPropagation();
@@ -187,7 +189,6 @@ export default function ListViewLayout({ companies = [], extractedLocation = "",
                   aria-label="Save job"
                 >
                   <Bookmark size={16} style={{ color: '#575757' }} />
-                  <span className="text-sm text-[#575757]">Saved</span>
                 </button>
               )}
             </div>

@@ -126,7 +126,7 @@ export default function FilterDropdown({
         {/* Country Dropdown */}
         {showCountryDropdown && (
           <div 
-            className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#E5E5E5] rounded-lg shadow-lg z-50"
+            className="absolute bottom-full left-0 right-0 mb-1 bg-white border border-[#E5E5E5] rounded-lg shadow-lg z-[60]"
             style={{ maxHeight: '200px', overflowY: 'auto' }}
           >
             {countries.map((country, index) => (
