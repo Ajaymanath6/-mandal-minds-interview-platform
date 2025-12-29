@@ -485,17 +485,22 @@ export default function GlobeView({
                       interactive: true
                     }).addTo(mapInstanceRef.current);
 
-                    // Create home panel content with all connected locations (no km labels)
+                    // Create home panel content with all connected locations (with km labels)
                     const createHomePanelContent = (companiesList) => {
                       if (!companiesList || companiesList.length === 0) return 'No locations';
                       
                       const items = companiesList.map((company, idx) => {
+                        const home = [homeLocation.lat, homeLocation.lon];
+                        const companyLoc = [company.lat, company.lon];
+                        const distance = mapInstanceRef.current.distance(home, companyLoc);
+                        const distanceKm = (distance / 1000).toFixed(1);
                         const logoUrl = idx < thrissurCompanyLogos.length ? thrissurCompanyLogos[idx] : (company.logoUrl || null);
                         
                         return `
                           <div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(0,0,0,0.1);">
                             ${logoUrl ? `<img src="${logoUrl}" style="width:24px;height:24px;border-radius:4px;object-fit:cover;" />` : '<div style="width:24px;height:24px;background:#7c00ff;border-radius:4px;"></div>'}
-                            <span style="font-size:13px;color:#1A1A1A;">${company.name || 'Location'}</span>
+                            <span style="flex:1;font-size:13px;color:#1A1A1A;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${company.name || 'Location'}</span>
+                            <span style="font-size:12px;font-weight:600;color:#0A0A0A;white-space:nowrap;flex-shrink:0;margin-left:4px;">${distanceKm} km</span>
                           </div>
                         `;
                       }).join('');
@@ -683,7 +688,7 @@ export default function GlobeView({
           }).join('');
           
           return `
-            <div style="width:500px;max-height:none;overflow:visible;">
+            <div style="width:auto;max-width:none;overflow:visible;">
               <div style="font-weight:bold;margin-bottom:8px;color:#1A1A1A;font-size:14px;">Connected Locations</div>
               ${items}
             </div>
