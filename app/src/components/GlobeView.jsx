@@ -196,163 +196,175 @@ export default function GlobeView({
           console.log('🎯 isLocationView:', isLocationView, 'journeyStep:', journeyStep);
           console.log('✅ Will show companies?', companies.length > 0 && (isLocationView || journeyStep === null || journeyStep === 2));
 
-          // Show companies if we have them and we're not in state view (step 1)
-          // Allow showing in location view (step 2) or when journeyStep is null (direct search)
-          if (companies.length > 0 && !isStateView) {
-            // Signal that we're finding jobs (only once per location)
-            if (!findingJobsCalledRef.current) {
-              onFindingJobsStart?.();
-              findingJobsCalledRef.current = true;
-            }
+          // Journey animation: First show state, then zoom to location, then show companies
+          if (isStateView) {
+            // Step 1: Show state first
+            mapInstanceRef.current.flyTo([lat, lon], zoom, {
+              duration: 1.5,
+              easeLinearity: 0.25,
+            });
+          } else if (isLocationView || journeyStep === null) {
+            // Step 2: Zoom to specific location first (journey animation)
+            mapInstanceRef.current.flyTo([lat, lon], zoom, {
+              duration: 2.5,
+              easeLinearity: 0.25,
+            });
             
-            // Skip flyTo to geocoded location - go directly to fitBounds to show all companies
-            
-            // Calculate bounds
-            const lats = companies.map(c => c.lat);
-            const lons = companies.map(c => c.lon);
-            const minLat = Math.min(...lats);
-            const maxLat = Math.max(...lats);
-            const minLon = Math.min(...lons);
-            const maxLon = Math.max(...lons);
-
-            const latPadding = (maxLat - minLat) * 0.1;
-            const lonPadding = (maxLon - minLon) * 0.1;
-
-            const bounds = L.latLngBounds(
-              [minLat - latPadding, minLon - lonPadding],
-              [maxLat + latPadding, maxLon + lonPadding]
-            );
-
-            // Wait then fit bounds
-            const fitBoundsDelay = 1000;
-            setTimeout(() => {
-              const padding = calculateOptimalPadding(companies.length);
-              // Set initial zoom to show clusters (badges) - zoom level should be < 15 to show clusters
-              // disableClusteringAtZoom is 15, so zoom < 15 shows clusters, zoom >= 15 shows individual pins
-              const normalizedLocation = location?.toLowerCase().trim() || '';
-              const isThrissur = normalizedLocation.includes('thrissur') || normalizedLocation.includes('trichur');
-              // Use zoom 12 for Thrissur to show cluster badge initially, user can zoom in manually to see individual pins
-              const maxZoomLevel = isThrissur && companies.length >= 5 ? 12 : 14; // Show clusters initially
-              
-              mapInstanceRef.current.flyToBounds(bounds, {
-                padding: L.point(padding, padding),
-                duration: 1.5,
-                easeLinearity: 0.25,
-                maxZoom: maxZoomLevel,
-              });
-
-              // After fitBounds, add markers with clustering (all at once, no staggered animation)
-              const fitBoundsDuration = 1500;
-              const baseDelay = fitBoundsDelay + fitBoundsDuration;
-
-              // Create cluster group with proper clustering behavior
-              const clusterGroup = new L.markerClusterGroup({
-                chunkedLoading: true,
-                maxClusterRadius: 80, // Increased radius for better clustering
-                spiderfyOnMaxZoom: true,
-                showCoverageOnHover: false,
-                zoomToBoundsOnClick: true,
-                disableClusteringAtZoom: 15, // Disable clustering at zoom 15+ to show individual pins
-                iconCreateFunction: function(cluster) {
-                  const count = cluster.getChildCount();
-                  return L.divIcon({
-                    html: `<div style="background-color:#7c00ff;color:white;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);">${count}</div>`,
-                    className: 'marker-cluster-custom',
-                    iconSize: L.point(40, 40),
-                  });
-                },
-              });
-
-              // Add CSS styles once
-              if (!document.getElementById('pinBounceStyle')) {
-                const style = document.createElement('style');
-                style.id = 'pinBounceStyle';
-                style.textContent = `
-                  @keyframes pinBounce {
-                    0% { transform: scale(0) translateY(0); opacity: 0; }
-                    50% { transform: scale(1.2) translateY(-10px); opacity: 1; }
-                    70% { transform: scale(0.9) translateY(3px); }
-                    100% { transform: scale(1) translateY(0); opacity: 1; }
-                  }
-                  .leaflet-marker-icon.pin-bounce-animate {
-                    animation: pinBounce 0.6s ease-out forwards !important;
-                  }
-                  .company-marker:hover {
-                    transform: scale(1.05) !important;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
-                  }
-                  @keyframes ripple {
-                    0% {
-                      transform: scale(0);
-                      opacity: 1;
-                    }
-                    100% {
-                      transform: scale(2);
-                      opacity: 0;
-                    }
-                  }
-                  .company-marker:active::after {
-                    content: '';
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    width: 20px;
-                    height: 20px;
-                    border-radius: 50%;
-                    background: rgba(124, 0, 255, 0.3);
-                    transform: translate(-50%, -50%) scale(0);
-                    animation: ripple 0.6s ease-out;
-                    pointer-events: none;
-                  }
-                `;
-                document.head.appendChild(style);
+            // Then show companies after zoom completes
+            if (companies.length > 0) {
+              // Signal that we're finding jobs (only once per location)
+              if (!findingJobsCalledRef.current) {
+                onFindingJobsStart?.();
+                findingJobsCalledRef.current = true;
               }
-
-              // Add all markers at once (no staggered animation)
-              setTimeout(() => {
-                companies.forEach((company, index) => {
-                  // Always use uploaded images for Thrissur companies (comp1.png to comp6.png)
-                  const logoUrl = index < thrissurCompanyLogos.length ? thrissurCompanyLogos[index] : (company.logoUrl || null);
-                  const customIcon = createCustomTeardropIcon(
-                    logoUrl,
-                    '#7c00ff',
-                    50,
-                    0 // Remove jobCount badge
-                  );
-
-                  const marker = L.marker([company.lat, company.lon], {
-                    icon: customIcon,
-                    zIndexOffset: 1000 + index,
-                    opacity: 1,
-                  });
-
-                  // Store company data in marker
-                  marker.companyData = company;
-
-                  // Add marker to cluster group
-                  clusterGroup.addLayer(marker);
-
-                  // Click handler - open drawer
-                  marker.on('click', function() {
-                    setSelectedCompany(marker.companyData);
-                    setIsDrawerOpen(true);
-                  });
-
-                  console.log('✅ Added marker for:', company.name, 'at', company.lat, company.lon);
-                });
-              }, baseDelay);
-
-              // Add cluster group to map immediately (markers will be added to it as they're created)
-              mapInstanceRef.current.addLayer(clusterGroup);
-              clusterGroupRef.current = clusterGroup;
-              console.log('✅ Cluster group added to map with', companies.length, 'companies');
               
-              // Call loading complete callback after all markers are added
+              // Calculate bounds
+              const lats = companies.map(c => c.lat);
+              const lons = companies.map(c => c.lon);
+              const minLat = Math.min(...lats);
+              const maxLat = Math.max(...lats);
+              const minLon = Math.min(...lons);
+              const maxLon = Math.max(...lons);
+
+              const latPadding = (maxLat - minLat) * 0.1;
+              const lonPadding = (maxLon - minLon) * 0.1;
+
+              const bounds = L.latLngBounds(
+                [minLat - latPadding, minLon - lonPadding],
+                [maxLat + latPadding, maxLon + lonPadding]
+              );
+
+              // Wait for location zoom to complete, then fit bounds to show all companies
+              const fitBoundsDelay = 2500; // Wait for flyTo to complete (2.5s duration)
               setTimeout(() => {
-                onLoadingComplete?.();
-                console.log('✅ All markers added, loading complete');
-              }, baseDelay + 500);
-            }, fitBoundsDelay);
+                const padding = calculateOptimalPadding(companies.length);
+                // Set initial zoom to show clusters (badges) - zoom level should be < 15 to show clusters
+                // disableClusteringAtZoom is 15, so zoom < 15 shows clusters, zoom >= 15 shows individual pins
+                const normalizedLocation = location?.toLowerCase().trim() || '';
+                const isThrissur = normalizedLocation.includes('thrissur') || normalizedLocation.includes('trichur');
+                // Use zoom 12 for Thrissur to show cluster badge initially, user can zoom in manually to see individual pins
+                const maxZoomLevel = isThrissur && companies.length >= 5 ? 12 : 14; // Show clusters initially
+                
+                mapInstanceRef.current.flyToBounds(bounds, {
+                  padding: L.point(padding, padding),
+                  duration: 1.5,
+                  easeLinearity: 0.25,
+                  maxZoom: maxZoomLevel,
+                });
+
+                // After fitBounds, add markers with clustering (all at once, no staggered animation)
+                const fitBoundsDuration = 1500;
+                const baseDelay = fitBoundsDelay + fitBoundsDuration;
+
+                // Create cluster group with proper clustering behavior
+                const clusterGroup = new L.markerClusterGroup({
+                  chunkedLoading: true,
+                  maxClusterRadius: 80, // Increased radius for better clustering
+                  spiderfyOnMaxZoom: true,
+                  showCoverageOnHover: false,
+                  zoomToBoundsOnClick: true,
+                  disableClusteringAtZoom: 15, // Disable clustering at zoom 15+ to show individual pins
+                  iconCreateFunction: function(cluster) {
+                    const count = cluster.getChildCount();
+                    return L.divIcon({
+                      html: `<div style="background-color:#7c00ff;color:white;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);">${count}</div>`,
+                      className: 'marker-cluster-custom',
+                      iconSize: L.point(40, 40),
+                    });
+                  },
+                });
+
+                // Add CSS styles once
+                if (!document.getElementById('pinBounceStyle')) {
+                  const style = document.createElement('style');
+                  style.id = 'pinBounceStyle';
+                  style.textContent = `
+                    @keyframes pinBounce {
+                      0% { transform: scale(0) translateY(0); opacity: 0; }
+                      50% { transform: scale(1.2) translateY(-10px); opacity: 1; }
+                      70% { transform: scale(0.9) translateY(3px); }
+                      100% { transform: scale(1) translateY(0); opacity: 1; }
+                    }
+                    .leaflet-marker-icon.pin-bounce-animate {
+                      animation: pinBounce 0.6s ease-out forwards !important;
+                    }
+                    .company-marker:hover {
+                      transform: scale(1.05) !important;
+                      box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
+                    }
+                    @keyframes ripple {
+                      0% {
+                        transform: scale(0);
+                        opacity: 1;
+                      }
+                      100% {
+                        transform: scale(2);
+                        opacity: 0;
+                      }
+                    }
+                    .company-marker:active::after {
+                      content: '';
+                      position: absolute;
+                      top: 50%;
+                      left: 50%;
+                      width: 20px;
+                      height: 20px;
+                      border-radius: 50%;
+                      background: rgba(124, 0, 255, 0.3);
+                      transform: translate(-50%, -50%) scale(0);
+                      animation: ripple 0.6s ease-out;
+                      pointer-events: none;
+                    }
+                  `;
+                  document.head.appendChild(style);
+                }
+
+                // Add all markers at once (no staggered animation)
+                setTimeout(() => {
+                  companies.forEach((company, index) => {
+                    // Always use uploaded images for Thrissur companies (comp1.png to comp6.png)
+                    const logoUrl = index < thrissurCompanyLogos.length ? thrissurCompanyLogos[index] : (company.logoUrl || null);
+                    const customIcon = createCustomTeardropIcon(
+                      logoUrl,
+                      '#7c00ff',
+                      50,
+                      0 // Remove jobCount badge
+                    );
+
+                    const marker = L.marker([company.lat, company.lon], {
+                      icon: customIcon,
+                      zIndexOffset: 1000 + index,
+                      opacity: 1,
+                    });
+
+                    // Store company data in marker
+                    marker.companyData = company;
+
+                    // Add marker to cluster group
+                    clusterGroup.addLayer(marker);
+
+                    // Click handler - open drawer
+                    marker.on('click', function() {
+                      setSelectedCompany(marker.companyData);
+                      setIsDrawerOpen(true);
+                    });
+
+                    console.log('✅ Added marker for:', company.name, 'at', company.lat, company.lon);
+                  });
+                }, baseDelay);
+
+                // Add cluster group to map immediately (markers will be added to it as they're created)
+                mapInstanceRef.current.addLayer(clusterGroup);
+                clusterGroupRef.current = clusterGroup;
+                console.log('✅ Cluster group added to map with', companies.length, 'companies');
+                
+                // Call loading complete callback after all markers are added
+                setTimeout(() => {
+                  onLoadingComplete?.();
+                  console.log('✅ All markers added, loading complete');
+                }, baseDelay + 500);
+              }, fitBoundsDelay);
+            }
           } else {
             // No companies to show - fly to geocoded location
             if (isStateView) {
