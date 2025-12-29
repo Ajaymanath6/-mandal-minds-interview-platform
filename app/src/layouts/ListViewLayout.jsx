@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Bookmark } from "@carbon/icons-react";
 
 // Logo URLs for Thrissur companies (5 logos from public folder)
 const thrissurLogos = ['/comp1.png', '/comp2.png', '/comp4.png', '/comp5.png', '/comp6.png'];
@@ -81,7 +82,7 @@ const getDummyCompanies = (location) => {
  * Used when user is in List view mode
  */
 export default function ListViewLayout({ companies = [], extractedLocation = "", searchQuery = "" }) {
-  const [activeTab, setActiveTab] = useState("Recommended");
+  const [hoveredJobId, setHoveredJobId] = useState(null);
   
   // If no companies found, use dummy data
   const displayCompanies = companies.length > 0 ? companies : getDummyCompanies(extractedLocation || searchQuery);
@@ -101,31 +102,17 @@ export default function ListViewLayout({ companies = [], extractedLocation = "",
   const searchTerm = extractedLocation || searchQuery || "your search";
 
   return (
-    <div className="px-4" style={{ marginTop: '48px' }}>
-      {/* Message showing job count */}
-      <div className="mb-6">
+    <div className="px-4" style={{ marginTop: '48px', paddingBottom: '100px' }}>
+      {/* H1 with search query - same padding as row list */}
+      <div className="p-4">
+        <h1 className="text-2xl font-semibold text-[#1A1A1A] mb-4" style={{ fontFamily: 'Open Sans' }}>
+          {searchTerm}
+        </h1>
+        
+        {/* Message showing job count */}
         <p className="text-base text-[#1A1A1A]" style={{ fontFamily: 'Open Sans' }}>
           I found {totalJobsCount} jobs for "{searchTerm}"
         </p>
-      </div>
-      
-      {/* Tabs */}
-      <div className="flex items-center gap-4 mb-6 border-b border-[#E5E5E5]">
-        {["Recommended", "All Jobs", "Saved", "Applied"].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className="px-4 py-2 text-sm font-medium transition-colors relative"
-            style={{
-              fontFamily: 'Open Sans',
-              color: activeTab === tab ? '#7c00ff' : '#575757',
-              borderBottom: activeTab === tab ? '2px solid #7c00ff' : '2px solid transparent',
-              marginBottom: '-2px'
-            }}
-          >
-            {tab}
-          </button>
-        ))}
       </div>
       
       {/* Job List - No borders, gaps, or shadows */}
@@ -139,10 +126,14 @@ export default function ListViewLayout({ companies = [], extractedLocation = "",
           return (
             <div
               key={job.id}
-              className="bg-white p-4"
+              className="bg-white p-4 transition-colors hover:bg-[#F5F5F5] cursor-pointer relative"
               style={{ 
-                fontFamily: 'Open Sans'
+                fontFamily: 'Open Sans',
+                borderRadius: '16px',
+                borderBottom: '0.5px solid #E5E5E5'
               }}
+              onMouseEnter={() => setHoveredJobId(job.id)}
+              onMouseLeave={() => setHoveredJobId(null)}
             >
               <div className="flex items-start gap-4">
                 {/* Company Logo - Left Side */}
@@ -151,7 +142,6 @@ export default function ListViewLayout({ companies = [], extractedLocation = "",
                     src={logoUrl}
                     alt={job.companyName}
                     className="w-16 h-16 rounded-lg object-cover"
-                    style={{ border: '2px solid #87CEEB' }}
                   />
                 </div>
                 
@@ -183,6 +173,23 @@ export default function ListViewLayout({ companies = [], extractedLocation = "",
                   </div>
                 </div>
               </div>
+              
+              {/* Saved button - appears on hover in bottom right corner */}
+              {hoveredJobId === job.id && (
+                <button
+                  className="absolute bottom-4 right-4 p-2 rounded-lg bg-white border border-[#E5E5E5] hover:bg-[#F5F5F5] transition-colors shadow-sm flex items-center gap-2"
+                  style={{ fontFamily: 'Open Sans' }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    // Handle save action here
+                    console.log('Save job:', job.id);
+                  }}
+                  aria-label="Save job"
+                >
+                  <Bookmark size={16} style={{ color: '#575757' }} />
+                  <span className="text-sm text-[#575757]">Saved</span>
+                </button>
+              )}
             </div>
           );
         })}

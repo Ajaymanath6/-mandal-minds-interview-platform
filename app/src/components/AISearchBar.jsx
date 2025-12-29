@@ -1152,8 +1152,11 @@ export default function AISearchBar({
           ) : null;
         })()}
 
-          {/* Collapsed Search Bar - Overlay on top of map */}
-          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50" style={{ width: '90%', maxWidth: '800px' }}>
+          {/* Collapsed Search Bar - Overlay on top of map (Globe view) or bottom (List view) */}
+          <div 
+            className={`absolute left-1/2 transform -translate-x-1/2 z-50 ${!isGlobeView && hasSearched ? 'bottom-4' : 'top-4'}`} 
+            style={{ width: '90%', maxWidth: '800px' }}
+          >
             <div className="bg-white rounded-xl border border-[#E5E5E5] shadow-lg px-4 py-2" style={{ width: '100%' }}>
               <div className="flex items-center gap-3">
                 {/* Selected view option */}
