@@ -15,6 +15,7 @@ import SimpleDropdown from "./SimpleDropdown";
 import GlobeView, { getCompaniesForLocation } from "./GlobeView";
 import mockJobs from "../data/mockJobs.json";
 import FilterDropdown from "./FilterDropdown";
+import ListViewLayout from "../layouts/ListViewLayout";
 
 export default function AISearchBar({
   onCompare,
@@ -293,6 +294,9 @@ export default function AISearchBar({
       // Check Kerala districts directly in query
       if (selectedState === 'Kerala' || (!selectedState && selectedFilterOption.country === 'India')) {
         const matchedDistrict = findMatchingDistrict(keralaDistrictPincodes, normalizedQuery);
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/4864df2a-28d6-48bd-b6d5-087622789fe4',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AISearchBar.jsx:296',message:'Kerala district check',data:{query,normalizedQuery,matchedDistrict,selectedState},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+        // #endregion
         if (matchedDistrict) {
           return matchedDistrict;
         }
@@ -301,12 +305,18 @@ export default function AISearchBar({
       // Check Karnataka districts directly in query
       if (selectedState === 'Karnataka' || (!selectedState && selectedFilterOption.country === 'India')) {
         const matchedDistrict = findMatchingDistrict(karnatakaDistrictPincodes, normalizedQuery);
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/4864df2a-28d6-48bd-b6d5-087622789fe4',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AISearchBar.jsx:304',message:'Karnataka district check',data:{query,normalizedQuery,matchedDistrict,selectedState},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+        // #endregion
         if (matchedDistrict) {
           return matchedDistrict;
         }
       }
     }
     
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/4864df2a-28d6-48bd-b6d5-087622789fe4',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AISearchBar.jsx:311',message:'extractLocation returning null',data:{query,normalizedQuery,hasSelectedFilter:!!selectedFilterOption,selectedState:selectedFilterOption?.state},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+    // #endregion
     return null;
   };
 
@@ -377,6 +387,9 @@ export default function AISearchBar({
   };
 
   const handleSearch = () => {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/4864df2a-28d6-48bd-b6d5-087622789fe4',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AISearchBar.jsx:389',message:'handleSearch called',data:{searchQuery,hasSearched,extractedLocation,selectedBottomOption:selectedBottomOption?.label},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'D'})}).catch(()=>{});
+    // #endregion
     if (!searchQuery.trim()) return;
 
     // Check if Globe view is selected
@@ -435,7 +448,19 @@ export default function AISearchBar({
       }
     } else {
       // List view: trigger comparison as before
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/4864df2a-28d6-48bd-b6d5-087622789fe4',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AISearchBar.jsx:437',message:'List view handleSearch entry',data:{searchQuery,selectedBottomOption:selectedBottomOption?.label,selectedFilterOption:selectedFilterOption?.state||selectedFilterOption?.country},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
+      // #endregion
       setHasSearched(true);
+      // Extract location from search query for list view
+      const location = extractLocation(searchQuery);
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/4864df2a-28d6-48bd-b6d5-087622789fe4',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AISearchBar.jsx:441',message:'Location extracted and setting state',data:{searchQuery,extractedLocation:location,settingHasSearched:true},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
+      // #endregion
+      setExtractedLocation(location);
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/4864df2a-28d6-48bd-b6d5-087622789fe4',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AISearchBar.jsx:445',message:'State set complete',data:{hasSearchedSet:true,extractedLocationSet:location},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
+      // #endregion
       if (onCompare) {
         onCompare(searchQuery);
       }
@@ -611,8 +636,9 @@ export default function AISearchBar({
     if (isGlobeView && searchQuery) {
       const location = extractLocation(searchQuery);
       setExtractedLocation(location);
-    } else if (!isGlobeView) {
-      // Clear extracted location when switching away from Globe view
+    } else if (!isGlobeView && !hasSearched) {
+      // Clear extracted location only when switching away from Globe view AND no search has been performed
+      // Don't clear if user has already searched in List view (preserve the location for list display)
       setExtractedLocation(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -978,7 +1004,16 @@ export default function AISearchBar({
         <div className="w-full h-full" style={{ position: 'fixed', top: 0, left: leftOffset, right: 0, bottom: 0, height: '100vh', width: widthCalc, margin: 0, padding: 0, zIndex: 0 }}>
           {/* Loading State */}
           {(isMapLoading || isFindingJobs) && (
-            <div className="absolute inset-0 flex items-center justify-center bg-white z-10" style={{ width: '100%', height: '100%', zIndex: 2 }}>
+            <div 
+              className="absolute inset-0 flex items-center justify-center z-10" 
+              style={{ 
+                width: '100%', 
+                height: '100%', 
+                zIndex: 2,
+                backgroundColor: isFindingJobs ? 'rgba(255, 255, 255, 0.85)' : 'rgba(255, 255, 255, 1)',
+                backdropFilter: isFindingJobs ? 'blur(2px)' : 'none'
+              }}
+            >
               <div className="text-center">
                 <div className="w-12 h-12 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mx-auto mb-4"></div>
                 <p className="text-base font-medium text-[#1A1A1A]" style={{ fontFamily: 'Open Sans' }}>
@@ -1102,6 +1137,21 @@ export default function AISearchBar({
             </div>
           )}
 
+{(() => {
+          // #region agent log
+          const conditionResult = !isGlobeView && hasSearched && extractedLocation;
+          const companies = extractedLocation ? getCompaniesForLocation(extractedLocation) : [];
+          fetch('http://127.0.0.1:7242/ingest/4864df2a-28d6-48bd-b6d5-087622789fe4',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AISearchBar.jsx:1226',message:'List view render condition check',data:{isGlobeView,hasSearched,extractedLocation,conditionResult,companiesCount:companies.length,selectedBottomOption:selectedBottomOption?.label},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+          // #endregion
+          return !isGlobeView && hasSearched && extractedLocation ? (
+            <ListViewLayout 
+              companies={companies}
+              extractedLocation={extractedLocation}
+              searchQuery={searchQuery}
+            />
+          ) : null;
+        })()}
+
           {/* Collapsed Search Bar - Overlay on top of map */}
           <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50" style={{ width: '90%', maxWidth: '800px' }}>
             <div className="bg-white rounded-xl border border-[#E5E5E5] shadow-lg px-4 py-2" style={{ width: '100%' }}>
@@ -1219,99 +1269,20 @@ export default function AISearchBar({
         {renderSearchBar()}
 
         {/* List View - Show companies when List view is selected and search is done */}
-        {!isGlobeView && hasSearched && extractedLocation && (
-          <div className="mt-6 px-4">
-            {(() => {
-              const companies = getCompaniesForLocation(extractedLocation);
-              const thrissurLogos = ['/comp1.png', '/comp2.png', '/comp4.png', '/comp5.png', '/comp6.png'];
-              
-              return companies.length > 0 ? (
-                <>
-                  {/* Company Count Badge */}
-                  <div className="mb-4 flex items-center gap-2">
-                    <span className="px-3 py-1 rounded-lg text-sm font-medium" style={{ 
-                      backgroundColor: '#7c00ff', 
-                      color: 'white',
-                      fontFamily: 'Open Sans'
-                    }}>
-                      {companies.length} {companies.length === 1 ? 'company' : 'companies'}
-                    </span>
-                  </div>
-                  
-                  {/* Company Cards */}
-                  <div className="space-y-4">
-                    {companies.map((company, index) => {
-                      const firstJob = company.jobs && company.jobs.length > 0 ? company.jobs[0] : null;
-                      const logoUrl = index < thrissurLogos.length ? thrissurLogos[index] : (company.logoUrl || '/comp1.png');
-                      
-                      return (
-                        <div
-                          key={company.id}
-                          className="bg-white rounded-xl border border-[#E5E5E5] p-4 hover:shadow-md transition-shadow"
-                          style={{ fontFamily: 'Open Sans' }}
-                        >
-                          <div className="flex items-start gap-4">
-                            {/* Company Logo - Left Side */}
-                            <div className="flex-shrink-0">
-                              <img
-                                src={logoUrl}
-                                alt={company.name}
-                                className="w-16 h-16 rounded-lg object-cover"
-                                style={{ border: '2px solid #87CEEB' }}
-                              />
-                            </div>
-                            
-                            {/* Company Details - Right Side */}
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-start justify-between gap-4">
-                                <div className="flex-1">
-                                  {/* Role and Company Name */}
-                                  {firstJob && (
-                                    <h3 className="text-base font-semibold text-[#1A1A1A] mb-1">
-                                      {firstJob.title}
-                                    </h3>
-                                  )}
-                                  <p className="text-sm text-[#575757] mb-2">
-                                    {company.name}
-                                  </p>
-                                  
-                                  {/* Location and Experience */}
-                                  <div className="flex items-center gap-4 text-sm text-[#575757]">
-                                    <span>{company.address}</span>
-                                    {firstJob && firstJob.experience && (
-                                      <span>{firstJob.experience} experience</span>
-                                    )}
-                                  </div>
-                                </div>
-                                
-                                {/* Posted Date - Right End */}
-                                {firstJob && (
-                                  <div className="text-right text-sm text-[#575757] flex-shrink-0">
-                                    <span>Posted 2 days ago</span>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </>
-              ) : (
-                <div className="text-center py-12">
-                  <p className="text-base text-[#575757]" style={{ fontFamily: 'Open Sans' }}>
-                    No companies found for "{extractedLocation || searchQuery}"
-                  </p>
-                  <p className="text-sm text-[#A5A5A5] mt-2" style={{ fontFamily: 'Open Sans' }}>
-                    Try searching for "Thrissur" or another location
-                  </p>
-                </div>
-              );
-            })()}
-          </div>
-        )}
-
+        {(() => {
+          // #region agent log
+          const conditionResult = !isGlobeView && hasSearched && extractedLocation;
+          const companies = extractedLocation ? getCompaniesForLocation(extractedLocation) : [];
+          fetch('http://127.0.0.1:7242/ingest/4864df2a-28d6-48bd-b6d5-087622789fe4',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AISearchBar.jsx:1226',message:'List view render condition check',data:{isGlobeView,hasSearched,extractedLocation,conditionResult,companiesCount:companies.length,selectedBottomOption:selectedBottomOption?.label},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+          // #endregion
+          return !isGlobeView && hasSearched && extractedLocation ? (
+            <ListViewLayout 
+              companies={companies}
+              extractedLocation={extractedLocation}
+              searchQuery={searchQuery}
+            />
+          ) : null;
+        })()}
         {/* File Upload Modal */}
         <FileUploadModal
           isOpen={isUploadModalOpen}

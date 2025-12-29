@@ -204,7 +204,13 @@ export default function GlobeView({
               easeLinearity: 0.25,
             });
           } else if (isLocationView || journeyStep === null) {
-            // Step 2: Zoom to specific location first (journey animation)
+            // Signal that we're finding jobs BEFORE zoom starts (so overlay appears during zoom)
+            if (companies.length > 0 && !findingJobsCalledRef.current) {
+              onFindingJobsStart?.();
+              findingJobsCalledRef.current = true;
+            }
+            
+            // Step 2: Zoom to specific location first (journey animation) - happens in background while "Finding jobs..." shows
             mapInstanceRef.current.flyTo([lat, lon], zoom, {
               duration: 2.5,
               easeLinearity: 0.25,
@@ -212,11 +218,6 @@ export default function GlobeView({
             
             // Then show companies after zoom completes
             if (companies.length > 0) {
-              // Signal that we're finding jobs (only once per location)
-              if (!findingJobsCalledRef.current) {
-                onFindingJobsStart?.();
-                findingJobsCalledRef.current = true;
-              }
               
               // Calculate bounds
               const lats = companies.map(c => c.lat);
@@ -366,13 +367,14 @@ export default function GlobeView({
               }, fitBoundsDelay);
             }
           } else {
-            // No companies to show - fly to geocoded location
+            // No companies to show - still zoom to geocoded location
             if (isStateView) {
               mapInstanceRef.current.flyTo([lat, lon], zoom, {
                 duration: 1.5,
                 easeLinearity: 0.25,
               });
-            } else if (isLocationView) {
+            } else if (isLocationView || journeyStep === null) {
+              // Zoom to location even when no companies (auto zoom should still happen)
               mapInstanceRef.current.flyTo([lat, lon], zoom, {
                 duration: 2.5,
                 easeLinearity: 0.25,
