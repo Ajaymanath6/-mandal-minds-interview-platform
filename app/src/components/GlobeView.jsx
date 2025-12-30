@@ -19,13 +19,16 @@ L.Icon.Default.mergeOptions({
 // Logo URLs for Thrissur companies (5 logos from public folder)
 // First company: comp1.png, Second: comp2.png, Third: comp4.png, Fourth: comp5.png, Fifth: comp6.png
 // Use BASE_URL for GitHub Pages compatibility (Vite provides this at build time)
+// Files in public folder are served at root, so we prepend BASE_URL
 const baseUrl = import.meta.env.BASE_URL || '/';
+// Ensure baseUrl ends with / for proper path construction
+const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
 const thrissurCompanyLogos = [
-  `${baseUrl}comp1.png`,
-  `${baseUrl}comp2.png`,
-  `${baseUrl}comp4.png`,
-  `${baseUrl}comp5.png`,
-  `${baseUrl}comp6.png`,
+  `${normalizedBaseUrl}comp1.png`,
+  `${normalizedBaseUrl}comp2.png`,
+  `${normalizedBaseUrl}comp4.png`,
+  `${normalizedBaseUrl}comp5.png`,
+  `${normalizedBaseUrl}comp6.png`,
 ];
 
 // Create custom pin icon for company locations with distance badge attached

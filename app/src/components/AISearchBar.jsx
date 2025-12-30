@@ -25,9 +25,11 @@ export default function AISearchBar({
   externalJDFile,
   secondSidebarOpen = true,
   firstSidebarOpen = true,
+  initialSearchQuery = null,
+  initialViewMode = null,
 }) {
   const [activeTab, setActiveTab] = useState("upload");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialSearchQuery || "");
   const [jdUploadStatus, setJdUploadStatus] = useState("idle"); // idle, uploading, loaded
   const [jdImage, setJdImage] = useState(null);
   const [jdFileName, setJdFileName] = useState(null);
@@ -641,6 +643,29 @@ export default function AISearchBar({
       }
     }
   }, [activeTab, jdUploadStatus, onCompare, onJDUploaded]);
+
+  // Initialize with default search when navigating from "Jobs Near You"
+  useEffect(() => {
+    if (initialSearchQuery && initialViewMode === 'globe' && !hasSearched) {
+      // Set Globe view
+      setSelectedBottomOption({ label: 'Globe view', icon: EarthFilled });
+      // Set Kerala filter for Kochi (Kochi is in Kerala)
+      setSelectedFilterOption({ 
+        state: 'Kerala', 
+        country: 'India',
+        label: 'Kerala, India'
+      });
+      // Trigger search after state is set
+      const timer = setTimeout(() => {
+        // Use the searchQuery state which should already be set from initialSearchQuery prop
+        if (searchQuery.trim()) {
+          handleSearch();
+        }
+      }, 200);
+      return () => clearTimeout(timer);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialSearchQuery, initialViewMode]); // Only run when these props change
 
   // Update extracted location when switching to Globe view or when searchQuery changes in Globe view
   useEffect(() => {

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   RiNotification3Line,
   RiMenuLine,
@@ -34,10 +34,14 @@ import logoSvg from "../assets/logo.svg";
 import voiceResponsesData from "../data/voiceResponses.json";
 
 export default function Resume() {
+  const location = useLocation();
   const [firstSidebarOpen, setFirstSidebarOpen] = useState(true);
   const [secondSidebarOpen, setSecondSidebarOpen] = useState(true);
   const [jdContent, setJdContent] = useState("");
   const [isAnalyzed, setIsAnalyzed] = useState(false);
+  // Get initial search query from navigation state
+  const initialSearchQuery = location.state?.initialSearch || null;
+  const initialViewMode = location.state?.viewMode || null;
   const [skills, setSkills] = useState([
     "JavaScript",
     "React",
@@ -712,6 +716,8 @@ export default function Resume() {
 
                 {/* AI Search Bar Component */}
                 <AISearchBar
+                  initialSearchQuery={initialSearchQuery}
+                  initialViewMode={initialViewMode}
                   onCompare={(jdContent) => {
                     // Set JD content in sidebar and trigger analysis
                     setJdContent(jdContent);

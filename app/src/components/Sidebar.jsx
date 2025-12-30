@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Home, Document, Archive, SidePanelClose, SidePanelOpen, User, Logout, ThumbsUpDouble, Settings, Bullhorn, UserAvatar } from "@carbon/icons-react";
+import { Home, Document, Archive, SidePanelClose, SidePanelOpen, User, Logout, ThumbsUpDouble, Settings, Bullhorn, UserAvatar, EarthFilled } from "@carbon/icons-react";
 import logoSvg from "../assets/logo.svg";
 import AccountDropdown from "./AccountDropdown";
 
@@ -257,6 +257,41 @@ export default function Sidebar({ activeItem = "home", onToggle, isOpen: externa
                 }}
               >
                 Manage JDs
+              </span>
+            )}
+          </button>
+
+          <button
+            onClick={() => navigate("/home", { state: { initialSearch: "Kochi", viewMode: "globe" } })}
+            className={`flex items-center ${
+              firstSidebarOpen ? "space-x-3" : "justify-center"
+            } pt-1 pr-2 pb-1 pl-2 text-gray-900 rounded-[12px] w-full transition-colors border-0 ${
+              activeItem === "jobs-near-you"
+                ? "bg-[#F5F5F5]"
+                : "hover:bg-[#F5F5F5]"
+            }`}
+          >
+            <div className="w-8 h-8 rounded-md flex items-center justify-center">
+              <EarthFilled
+                size={24}
+                style={{
+                  color: "rgba(87, 87, 87, 1)",
+                }}
+              />
+            </div>
+            {firstSidebarOpen && (
+              <span
+                style={{
+                  fontFamily: "Open Sans",
+                  fontWeight: 500,
+                  fontStyle: "normal",
+                  fontSize: "16px",
+                  lineHeight: "24px",
+                  letterSpacing: "-0.03em",
+                  color: "#575757",
+                }}
+              >
+                Jobs Near You
               </span>
             )}
           </button>

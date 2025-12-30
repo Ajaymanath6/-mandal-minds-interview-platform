@@ -126,7 +126,7 @@ export default function CompanyDetailsDrawer({
                 {company.jobs.map((job) => (
                   <div
                     key={job.id}
-                    className="border border-gray-200 rounded-lg p-4 hover:border-[#7c00ff] transition-colors"
+                    className="rounded-lg p-4 transition-colors"
                   >
                     <div className="mb-3">
                       <h5
